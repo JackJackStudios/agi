@@ -1,0 +1,13 @@
+bin/
+bin-int/
+
+examples/
+
+*.log
+
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj
