@@ -1,11 +1,10 @@
 project "agi"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++20"
-	staticruntime "off"
+	cppdialect "C++17"
 
-	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
     files
     {
@@ -13,17 +12,12 @@ project "agi"
         "src/**.cpp",
     }
 
-	defines
-	{
-		"_CRT_SECURE_NO_WARNINGS",
-	}
-
     includedirs
     {
         "src",
-        "%{wks.location}/lib/glm/",
-        "%{wks.location}/lib/glm/",
-        "%{wks.location}/lib/glad/include/",
+        "lib/glad/include",
+        "lib/stb_image",
+        "lib/glm/"
     }
 
     links
@@ -31,6 +25,11 @@ project "agi"
         "glad",
     }
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS",
+	}
+    
     filter "configurations:Debug"
         defines "AGI_DEBUG"
         runtime "Debug"
@@ -42,5 +41,6 @@ project "agi"
         symbols "on"
 
 group "Dependencies"
-    include "lib/glad/"
+    include "lib/glad"
 group ""
+    
