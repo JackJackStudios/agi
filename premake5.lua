@@ -39,8 +39,4 @@ project "agi"
         defines "AGI_RELEASE"
         runtime "Release"
         symbols "on"
-
-group "Dependencies"
-    include "lib/glad"
-group ""
     
