@@ -1,7 +1,5 @@
 #pragma once
 
-#include "defines.h"
-
 namespace AGI {
 
 	class Framebuffer
@@ -20,7 +18,7 @@ namespace AGI {
 
 		virtual uint32_t GetAttachmentID() = 0;
 		
-		static Ref<Framebuffer> Create(int width, int height);
+		static std::shared_ptr<Framebuffer> Create(int width, int height);
 	};
 
 }

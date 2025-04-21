@@ -1,7 +1,5 @@
 #pragma once
 
-#include "defines.h"
-
 namespace AGI {
 
 	enum class ShaderDataType
@@ -26,7 +24,6 @@ namespace AGI {
 			case ShaderDataType::Bool:     return 1;
 		}
 
-		AGI_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
@@ -62,7 +59,6 @@ namespace AGI {
 			case ShaderDataType::Bool:    return 1;
 			}
 
-			AGI_ASSERT(false, "Unknown ShaderDataType!");
 			return 0;
 		}
 	};
@@ -110,13 +106,13 @@ namespace AGI {
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void SetData(const Buffer& data) = 0;
+		virtual void SetData(void* data, uint32_t size) = 0;
 
 		virtual const BufferLayout& GetLayout() const = 0;
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 
-		static Ref<VertexBuffer> Create(uint32_t size);
-		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
+		static std::shared_ptr<VertexBuffer> Create(uint32_t size);
+		static std::shared_ptr<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 
 	class IndexBuffer
@@ -129,7 +125,7 @@ namespace AGI {
 
 		virtual uint32_t GetCount() const = 0;
 
-		static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
+		static std::shared_ptr<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 	};
 
 }
