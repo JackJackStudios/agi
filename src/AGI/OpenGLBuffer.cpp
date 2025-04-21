@@ -1,3 +1,4 @@
+#include "agipch.h"
 #include "OpenGLBuffer.h"
 
 #include <glad/glad.h>
@@ -35,10 +36,10 @@ namespace AGI {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void OpenGLVertexBuffer::SetData(const Buffer& data)
+	void OpenGLVertexBuffer::SetData(void* data, uint32_t size)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, data.Size, data.Data);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
 	// IndexBuffer 

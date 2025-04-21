@@ -1,3 +1,4 @@
+#include "agipch.h"
 #include "OpenGLVertexArray.h"
 
 #include <glad/glad.h>
@@ -21,7 +22,7 @@ namespace AGI {
 			case ShaderDataType::Bool:     return GL_BOOL;
 		}
 
-		AGI_ASSERT(false, "Unknown ShaderDataType!");
+		AGI_VERIFY(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
@@ -45,9 +46,9 @@ namespace AGI {
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
+	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 	{
-		AGI_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+		AGI_VERIFY(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
@@ -68,7 +69,7 @@ namespace AGI {
 		m_VertexBuffers.push_back(vertexBuffer);
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
+	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
 	{
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();

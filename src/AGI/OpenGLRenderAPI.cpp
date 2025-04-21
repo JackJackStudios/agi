@@ -1,13 +1,14 @@
+#include "agipch.h"
 #include "OpenGLRenderAPI.h"
 
 #include <glad/glad.h>
 
 namespace AGI {
 
-	void OpenGLRenderAPI::Init(GLADloadproc loadfunc)
+	void OpenGLRenderAPI::Init(AGIloadproc loadfunc)
 	{
 		int status = gladLoadGLLoader(loadfunc);
-		AGI_ASSERT(status, "Failed to initialize Glad!");
+		AGI_VERIFY(status, "Failed to initialize Glad!");
 
 		AGI_INFO("OpenGL Info:");
 		AGI_INFO("  Vendor: {0}", (char*)glGetString(GL_VENDOR));
@@ -33,7 +34,7 @@ namespace AGI {
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+	void OpenGLRenderAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount)
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);

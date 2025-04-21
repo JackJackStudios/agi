@@ -1,3 +1,4 @@
+#include "agipch.h"
 #include "OpenGLTexture.h"
 
 #include <stb_image.h>
@@ -36,7 +37,7 @@ namespace AGI {
         stbi_uc* data = nullptr;
         data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
-        AGI_ASSERT(data, "Failed to load image!");
+        AGI_VERIFY(data, "Failed to load image!");
 
         m_Width = width;
         m_Height = height;
@@ -56,7 +57,7 @@ namespace AGI {
         m_InternalFormat = internalFormat;
         m_DataFormat = dataFormat;
 
-        AGI_ASSERT(internalFormat & dataFormat, "Format not supported!");
+        AGI_VERIFY(internalFormat & dataFormat, "Format not supported!");
 
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -75,13 +76,13 @@ namespace AGI {
         glDeleteTextures(1, &m_RendererID);
     }
 
-    void OpenGLTexture::SetData(const Buffer& data)
+    void OpenGLTexture::SetData(void* data, uint32_t size)
     {
         uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-        AGI_ASSERT(data.Size == m_Width * m_Height * bpp, "Data must be entire texture!");
+        AGI_VERIFY(size == m_Width * m_Height * bpp, "Data must be entire texture!");
 
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data.Data);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
         glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture
     }
 
