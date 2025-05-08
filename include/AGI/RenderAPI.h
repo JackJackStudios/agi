@@ -7,18 +7,18 @@
 
 namespace AGI {
 
-	enum class GraphicsEngine
+	enum class APIType
 	{
-		None = 0, 
+		None = 0,
+		Guess,
 		OpenGL,
 	};
-
-	static GraphicsEngine BestAPI();
 
 	typedef void* (* OpenGLloaderFn)(const char *name);
 
 	struct RenderAPISetttings
 	{
+		APIType PreferedAPI;
 		OpenGLloaderFn loaderfunc;
 		MessageCallbackFn messagefunc;
 	};
@@ -27,20 +27,20 @@ namespace AGI {
 	{
 	public:
 		virtual ~RenderAPI() = default;
-
-		virtual void Init(RenderAPISetttings settings) = 0;
+		
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 		virtual void SetClearColour(const glm::vec4& colour) = 0;
 		virtual void Clear() = 0;
 
 		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount) = 0;
 		
-		GraphicsEngine GetGraphicsEngine() const { return m_GraphicsEngine; }
+		APIType GetType() const { return m_APIType; }
 
-		static GraphicsEngine GetAPI() { return s_CurrentAPI->GetGraphicsEngine(); }
-		static std::unique_ptr<RenderAPI> Create(GraphicsEngine api);
+		static RenderAPI* GetCurrentAPI() { return s_CurrentAPI; }
+		static std::unique_ptr<RenderAPI> Create(RenderAPISetttings settings);
 	private:
-		GraphicsEngine m_GraphicsEngine;
+		APIType m_APIType;
+		RenderAPISetttings m_Settings;
 
 		inline static RenderAPI* s_CurrentAPI;
 	};
