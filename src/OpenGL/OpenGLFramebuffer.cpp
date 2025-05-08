@@ -7,7 +7,7 @@ namespace AGI {
 
 	static const uint32_t s_MaxFramebufferSize = 8192;
 
-	OpenGLFramebuffer::OpenGLFramebuffer(int width, int height)
+	OpenGLFramebuffer::OpenGLFramebuffer(uint32_t width, uint32_t height)
 		: m_Width(width), m_Height(height)
 	{
 		Invalidate();
@@ -61,9 +61,10 @@ namespace AGI {
 	{
 		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
 		{
-			AGI_WARN("Attempted to rezize framebuffer to {0}, {1}", width, height);
+			AGI_WARN("Attempted to resize framebuffer to {0}, {1}", width, height);
 			return;
 		}
+		
 		m_Width = width;
 		m_Height = height;
 

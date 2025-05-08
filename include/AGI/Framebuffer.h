@@ -18,7 +18,7 @@ namespace AGI {
 
 		virtual uint32_t GetAttachmentID() = 0;
 		
-		static std::shared_ptr<Framebuffer> Create(int width, int height);
+		static std::shared_ptr<Framebuffer> Create(uint32_t width, uint32_t height);
 	};
 
 }

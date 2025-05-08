@@ -1,8 +1,6 @@
 #include "agipch.h"
 #include "OpenGLTexture.h"
 
-#include <stb_image.h>
-
 namespace AGI {
 
     OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height, uint16_t channels)

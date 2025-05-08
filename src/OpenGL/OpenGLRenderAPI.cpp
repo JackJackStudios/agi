@@ -5,9 +5,12 @@
 
 namespace AGI {
 
-	void OpenGLRenderAPI::Init(AGIloadproc loadfunc)
+	void OpenGLRenderAPI::Init(RenderAPISetttings settings)
 	{
-		int status = gladLoadGLLoader(loadfunc);
+		Log::Init(settings.messagefunc);
+
+		//typedef void* (* GLADloadproc)(const char *name);
+		int status = gladLoadGLLoader(settings.loaderfunc);
 		AGI_VERIFY(status, "Failed to initialize Glad!");
 
 		AGI_INFO("OpenGL Info:");

@@ -7,11 +7,9 @@ namespace AGI {
 	class OpenGLFramebuffer : public Framebuffer
 	{
 	public:
-		OpenGLFramebuffer(int width, int height);
+		OpenGLFramebuffer(uint32_t width, uint32_t height);
 		virtual ~OpenGLFramebuffer();
-
-		void Invalidate();
-
+		
 		virtual void Bind() override;
 		virtual void Unbind() override;
 
@@ -22,7 +20,8 @@ namespace AGI {
 		virtual int GetHeight() override { return m_Height; };
 
 		virtual uint32_t GetAttachmentID() override { return m_ColourAttachment; };
-
+	private:
+		void Invalidate();
 	private:
 		uint32_t m_RendererID = 0;
 		uint32_t m_ColourAttachment = 0;
