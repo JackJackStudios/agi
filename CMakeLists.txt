@@ -7,6 +7,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_compile_definitions(
+    $<$<PLATFORM_ID:Windows>:AGI_WINDOWS>
+    $<$<PLATFORM_ID:Linux>:AGI_LINUX>
+    $<$<PLATFORM_ID:Darwin>:AGI_MACOSX>
+
     $<$<CONFIG:Debug>:AGI_DEBUG>
     $<$<CONFIG:Release>:AGI_RELEASE>
     $<$<CONFIG:RelWithDebInfo>:AGI_RELEASE>
