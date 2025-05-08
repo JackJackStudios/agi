@@ -10,7 +10,6 @@ namespace AGI {
 	{
 	public:
 		OpenGLTexture(uint32_t width, uint32_t height, uint16_t channels);
-		OpenGLTexture(const std::string& path);
 		virtual ~OpenGLTexture();
 
 		virtual uint32_t GetWidth() const override { return m_Width; }
@@ -20,8 +19,6 @@ namespace AGI {
 		virtual void SetData(void* data, uint32_t size) override;
 
 		virtual void Bind(uint32_t slot = 0) const override;
-
-		void SetParams();
 
 		virtual bool operator==(const Texture& other) const override
 		{
