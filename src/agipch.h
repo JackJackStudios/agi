@@ -62,13 +62,8 @@
 #endif
 
 #include "AGI/RenderAPI.h"
-
-#define AGI_TRACE(...) ::AGI::RenderAPI::LogToConsole(std::format(__VA_ARGS__), ::AGI::LogLevel::Trace)
-#define AGI_INFO(...)  ::AGI::RenderAPI::LogToConsole(std::format(__VA_ARGS__), ::AGI::LogLevel::Info)
-#define AGI_WARN(...)  ::AGI::RenderAPI::LogToConsole(std::format(__VA_ARGS__), ::AGI::LogLevel::Warning)  
-#define AGI_ERROR(...) ::AGI::RenderAPI::LogToConsole(std::format(__VA_ARGS__), ::AGI::LogLevel::Error); AGI_DEBUGBREAK()
-
-#define AGI_VERIFY(x, ...) { if(!(x)) { AGI_ERROR(__VA_ARGS__); } }
+#include "AGI/Log.h"
 
 #include <glm/glm.hpp>
+
 
