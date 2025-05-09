@@ -5,6 +5,34 @@
 
 namespace AGI {
 
+	namespace Utils {
+
+		static GLenum AGITextureTypeToOpenGLInternalType(FramebufferTextureFormat format)
+		{
+			switch (format)
+			{
+				case FramebufferTextureFormat::RGBA8: return GL_RGBA8;
+				case FramebufferTextureFormat::RED_INTEGER: return GL_R32I;
+			}
+
+			AGI_VERIFY(false, "Unknown FramebufferTextureFormat")
+			return 0;
+		}
+
+		static GLenum AGITextureTypeToOpenGLType(FramebufferTextureFormat format)
+		{
+			switch (format)
+			{
+				case FramebufferTextureFormat::RGBA8: return GL_RGBA;
+				case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+			}
+
+			AGI_VERIFY(false, "Unknown FramebufferTextureFormat")
+			return 0;
+		}
+
+	}
+
 	static const uint32_t s_MaxFramebufferSize = 8192;
 
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
@@ -41,7 +69,16 @@ namespace AGI {
 		for (size_t i=0; i<m_ColourAttachments.size(); i++)
 		{
 			glBindTexture(GL_TEXTURE_2D, m_ColourAttachments[i]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Specifation.Width, m_Specifation.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+			
+			glTexImage2D(GL_TEXTURE_2D, 0, 
+				Utils::AGITextureTypeToOpenGLInternalType(m_Specifation.Attachments[i]), 
+				m_Specifation.Width, 
+				m_Specifation.Height, 
+				0, 
+				Utils::AGITextureTypeToOpenGLType(m_Specifation.Attachments[i]), 
+				GL_UNSIGNED_BYTE, 
+				nullptr
+			);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

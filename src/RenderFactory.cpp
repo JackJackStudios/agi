@@ -46,7 +46,7 @@ namespace AGI {
 		case APIType::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(size);
 		}
 
-		AGI_VERIFY(false, "Unknown RendererAPI!");
+		AGI_VERIFY(false, "Unknown VertexBuffer!");
 		return nullptr;
 	}
 
@@ -58,7 +58,7 @@ namespace AGI {
 		case APIType::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, size);
 		}
 
-		AGI_VERIFY(false, "Unknown RendererAPI!");
+		AGI_VERIFY(false, "Unknown VertexBuffer!");
 		return nullptr;
 	}
 
@@ -70,7 +70,7 @@ namespace AGI {
 		case APIType::OpenGL:  return std::make_shared<OpenGLIndexBuffer>(indices, size);
 		}
 
-		AGI_VERIFY(false, "Unknown RendererAPI!");
+		AGI_VERIFY(false, "Unknown IndexBuffer!");
 		return nullptr;
 	}
 
@@ -82,7 +82,7 @@ namespace AGI {
 		case APIType::OpenGL:  return std::make_shared<OpenGLShader>(filepath);
 		}
 
-		AGI_VERIFY(false, "Unknown RendererAPI!");
+		AGI_VERIFY(false, "Unknown Shader!");
 		return nullptr;
 	}
 
@@ -94,7 +94,7 @@ namespace AGI {
 		case APIType::OpenGL:  return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
 		}
 
-		AGI_VERIFY(false, "Unknown RendererAPI!");
+		AGI_VERIFY(false, "Unknown Shader!");
 		return nullptr;
 	}
 
@@ -106,7 +106,7 @@ namespace AGI {
 		case APIType::OpenGL:  return std::make_shared<OpenGLTexture>(width, height, channels);
 		}
 
-		AGI_VERIFY(false, "Unknown RendererAPI!");
+		AGI_VERIFY(false, "Unknown Texture!");
 		return nullptr;
 	}
 
@@ -118,7 +118,7 @@ namespace AGI {
 		case APIType::OpenGL:  return std::make_shared<OpenGLVertexArray>();
 		}
 
-		AGI_VERIFY(false, "Unknown RendererAPI!");
+		AGI_VERIFY(false, "Unknown VertexArray!");
 		return nullptr;
 	}
 
@@ -130,7 +130,7 @@ namespace AGI {
 		case APIType::OpenGL:  return std::make_shared<OpenGLFramebuffer>(spec);
 		}
 
-		AGI_VERIFY(false, "Unknown RendererAPI!");
+		AGI_VERIFY(false, "Unknown Framebuffer!");
 		return nullptr;
 	}
 
