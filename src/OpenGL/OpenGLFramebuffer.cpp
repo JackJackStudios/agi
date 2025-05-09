@@ -11,7 +11,9 @@ namespace AGI {
 		: m_Specifation(spec)
 	{
 		if (spec.Attachments.size() == 0)
+		{
 			AGI_ERROR("Cannot create Framebuffer with no attachments");
+		}
 
 		Invalidate();
 	}
@@ -33,7 +35,7 @@ namespace AGI {
 		glGenFramebuffers(1, &m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 		
-		m_ColourAttachments.reserve(m_Specifation.Attachments.size());
+		m_ColourAttachments.resize(m_Specifation.Attachments.size());
 		glGenTextures(m_ColourAttachments.size(), m_ColourAttachments.data());
 
 		for (size_t i=0; i<m_ColourAttachments.size(); i++)
