@@ -122,12 +122,12 @@ namespace AGI {
 		return nullptr;
 	}
 
-	std::shared_ptr<Framebuffer> Framebuffer::Create(uint32_t width, uint32_t height)
+	std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 	{
 		switch (RenderAPI::GetCurrentAPI()->GetType())
 		{
 		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLFramebuffer>(width, height);
+		case APIType::OpenGL:  return std::make_shared<OpenGLFramebuffer>(spec);
 		}
 
 		AGI_VERIFY(false, "Unknown RendererAPI!");

@@ -7,27 +7,26 @@ namespace AGI {
 	class OpenGLFramebuffer : public Framebuffer
 	{
 	public:
-		OpenGLFramebuffer(uint32_t width, uint32_t height);
+		OpenGLFramebuffer(const FramebufferSpecification& spec);
 		virtual ~OpenGLFramebuffer();
 		
 		virtual void Bind() override;
 		virtual void Unbind() override;
 
 		virtual void Resize(uint32_t width, uint32_t height) override;
-		virtual int ReadPixel(int x, int y) override;
+		virtual int ReadPixel(uint32_t index, uint32_t x, uint32_t y) override;
 
-		virtual int GetWidth() override { return m_Width; };
-		virtual int GetHeight() override { return m_Height; };
+		virtual int GetWidth() override { return m_Specifation.Width; };
+		virtual int GetHeight() override { return m_Specifation.Height; };
 
-		virtual uint32_t GetAttachmentID() override { return m_ColourAttachment; };
+		virtual uint32_t GetAttachmentID(uint32_t index = 0) override { return m_ColourAttachments[index]; };
 	private:
 		void Invalidate();
 	private:
 		uint32_t m_RendererID = 0;
-		uint32_t m_ColourAttachment = 0;
 
-		uint32_t m_Width;
-		uint32_t m_Height;
+		FramebufferSpecification m_Specifation;
+		std::vector<uint32_t> m_ColourAttachments;
 	};
 
 }
