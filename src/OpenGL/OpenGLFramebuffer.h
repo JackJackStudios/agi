@@ -16,6 +16,8 @@ namespace AGI {
 		virtual void Resize(uint32_t width, uint32_t height) override;
 		virtual int ReadPixel(uint32_t index, uint32_t x, uint32_t y) override;
 
+		virtual void ClearAttachment(uint32_t attachmentIndex, int value) override;
+
 		virtual int GetWidth() override { return m_Specifation.Width; };
 		virtual int GetHeight() override { return m_Specifation.Height; };
 
