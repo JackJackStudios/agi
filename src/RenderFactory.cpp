@@ -62,6 +62,18 @@ namespace AGI {
 		return nullptr;
 	}
 
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(uint32_t vertices, const BufferLayout& layout)
+	{
+		switch (RenderAPI::GetCurrentAPI()->GetType())
+		{
+		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case APIType::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, layout);
+		}
+
+		AGI_VERIFY(false, "Unknown VertexBuffer!");
+		return nullptr;
+	}
+
 	std::shared_ptr<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
 	{
 		switch (RenderAPI::GetCurrentAPI()->GetType())

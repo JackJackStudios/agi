@@ -141,6 +141,7 @@ namespace AGI {
 		
 		static std::shared_ptr<VertexBuffer> Create(uint32_t size);
 		static std::shared_ptr<VertexBuffer> Create(float* vertices, uint32_t size);
+		static std::shared_ptr<VertexBuffer> Create(uint32_t vertices, const BufferLayout& layout);
 	};
 
 	class IndexBuffer
