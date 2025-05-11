@@ -8,6 +8,7 @@ namespace AGI {
 	{
 	public:
 		OpenGLVertexBuffer(uint32_t size);
+		OpenGLVertexBuffer(uint32_t vertices, const BufferLayout& layout);
 		OpenGLVertexBuffer(float* vertices, uint32_t size);
 		virtual ~OpenGLVertexBuffer();
 
