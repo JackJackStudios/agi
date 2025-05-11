@@ -8,6 +8,7 @@ namespace AGI {
 	// VertexBuffer
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+		: m_BufferSize(size)
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
@@ -15,6 +16,7 @@ namespace AGI {
 	}
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+		: m_BufferSize(size)
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
