@@ -3,24 +3,96 @@
 
 namespace AGI {
 
-    OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height, uint16_t channels)
-        : m_Width(width), m_Height(height)
-    {
-        if (channels == 4)
+    namespace Utils {
+
+        static GLenum GetFormat(TextureSpecifaction spec)
         {
-            m_InternalFormat = GL_RGBA8;
-            m_DataFormat = GL_RGBA;
-        }
-        else if (channels == 3)
-        {
-            m_InternalFormat = GL_RGB8;
-            m_DataFormat = GL_RGB;
+            switch (spec.Format)
+            {
+                case ImageFormat::RED: return GL_RED;
+                case ImageFormat::RG: return GL_RG;
+                case ImageFormat::RGB: return GL_RGB;
+                case ImageFormat::RGBA: return GL_RGBA;
+            }
+
+            AGI_VERIFY(false, "Unsupported OpenGL format");
+            return 0;
         }
 
+        static GLenum GetDataType(TextureSpecifaction spec)
+        {
+            switch (spec.BytesPerChannel)
+            {
+                case 8:  return GL_UNSIGNED_BYTE;
+                case 16: return GL_HALF_FLOAT;
+                case 32: return GL_FLOAT;
+            }
+
+            AGI_VERIFY(false, "Unsupported OpenGL format");
+            return 0;
+        }
+
+        static GLenum GetInternalFormat(TextureSpecifaction spec)
+        {
+            switch (spec.Format)
+            {
+            case ImageFormat::RED:
+                switch (spec.BytesPerChannel)
+                {
+                case 8:  return GL_R8;
+                case 16: return GL_R16F;
+                case 32: return GL_R32F;
+                }
+                break;
+            case ImageFormat::RG:
+                switch (spec.BytesPerChannel)
+                {
+                case 8:  return GL_RG8;
+                case 16: return GL_RG16F;
+                case 32: return GL_RG32F;
+                }
+                break;
+            case ImageFormat::RGB:
+                switch (spec.BytesPerChannel)
+                {
+                case 8:  return GL_RGB8;
+                case 16: return GL_RGB16F;
+                case 32: return GL_RGB32F;
+                }
+                break;
+            case ImageFormat::RGBA:
+                switch (spec.BytesPerChannel)
+                {
+                case 8:  return GL_RGBA8;
+                case 16: return GL_RGBA16F;
+                case 32: return GL_RGBA32F;
+                }
+                break;
+            }
+
+            AGI_VERIFY(false, "Unsupported OpenGL format");
+            return 0;
+        }
+
+    }
+
+    OpenGLTexture::OpenGLTexture(TextureSpecifaction spec)
+        : m_Specifaction(spec)
+    {
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2D(
+            GL_TEXTURE_2D, 
+            0, 
+            Utils::GetInternalFormat(m_Specifaction), 
+            m_Specifaction.Width, 
+            m_Specifaction.Height, 
+            0, 
+            Utils::GetFormat(m_Specifaction), 
+            Utils::GetDataType(m_Specifaction), 
+            nullptr
+        );
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -38,12 +110,11 @@ namespace AGI {
 
     void OpenGLTexture::SetData(void* data, uint32_t size)
     {
-        uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-        AGI_VERIFY(size == m_Width * m_Height * bpp, "Data must be entire texture!");
+        AGI_VERIFY(size == m_Specifaction.Width * m_Specifaction.Height * ImageFormatToChannels(m_Specifaction.Format), "Data must be entire texture!");
 
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
-        glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Specifaction.Width, m_Specifaction.Height, Utils::GetFormat(m_Specifaction), GL_UNSIGNED_BYTE, data);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void OpenGLTexture::Bind(uint32_t slot) const
