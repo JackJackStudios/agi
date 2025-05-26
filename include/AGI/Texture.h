@@ -7,6 +7,11 @@ namespace AGI {
 		None = 0, RED, RG, RGB, RGBA
 	};
 
+	enum class WrappingType
+	{
+		None = 0, ClampBorder, ClampEdge, Repeat, MirrorRepeat
+	};
+
 	ImageFormat ChannelsToImageFormat(uint16_t channels)
 	{
 		switch (channels)
@@ -43,6 +48,7 @@ namespace AGI {
 		uint32_t Height;
 		bool LinearFiltering = false;
 		ImageFormat Format = ImageFormat::RGB;
+		WrappingType WrappingType = WrappingType::Repeat;
 		uint16_t BytesPerChannel = 8;
 	};
 

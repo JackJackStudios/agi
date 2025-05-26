@@ -74,6 +74,21 @@ namespace AGI {
             return 0;
         }
 
+        static GLenum GetWrappingType(TextureSpecifaction spec)
+        {
+            switch (spec.WrappingType)
+            {
+                case WrappingType::None: return GL_CLAMP_TO_EDGE;
+                case WrappingType::ClampBorder: return GL_CLAMP_TO_BORDER;
+                case WrappingType::ClampEdge: return GL_CLAMP_TO_EDGE;
+                case WrappingType::Repeat: return GL_REPEAT;
+                case WrappingType::MirrorRepeat: GL_MIRRORED_REPEAT;
+            }
+
+            AGI_VERIFY(false, "Unsupported WrappingType");
+            return 0;
+        }
+
     }
 
     OpenGLTexture::OpenGLTexture(TextureSpecifaction spec)
@@ -94,11 +109,11 @@ namespace AGI {
             nullptr
         );
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_Specifaction.LinearFiltering ? GL_NEAREST : GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_Specifaction.LinearFiltering ? GL_NEAREST : GL_LINEAR);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, Utils::GetWrappingType(m_Specifaction));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, Utils::GetWrappingType(m_Specifaction));
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
