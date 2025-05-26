@@ -110,12 +110,12 @@ namespace AGI {
 		return nullptr;
 	}
 
-	std::shared_ptr<Texture> Texture::Create(uint32_t width, uint32_t height, uint16_t channels = 4)
+	std::shared_ptr<Texture> Texture::Create(TextureSpecifaction spec)
 	{
 		switch (RenderAPI::GetCurrentAPI()->GetType())
 		{
 		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLTexture>(width, height, channels);
+		case APIType::OpenGL:  return std::make_shared<OpenGLTexture>(spec);
 		}
 
 		AGI_VERIFY(false, "Unknown Texture!");

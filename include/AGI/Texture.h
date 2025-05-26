@@ -68,8 +68,7 @@ namespace AGI {
 
 		virtual bool operator==(const Texture& other) const = 0;
 
-		static std::shared_ptr<Texture> Create(uint32_t width, uint32_t height, uint16_t channels);
-		static std::shared_ptr<Texture> Create(const std::string& path);
+		static std::shared_ptr<Texture> Create(TextureSpecifaction spec);
 	};
 
 }
