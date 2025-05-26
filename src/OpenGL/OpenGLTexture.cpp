@@ -94,6 +94,8 @@ namespace AGI {
     OpenGLTexture::OpenGLTexture(TextureSpecifaction spec)
         : m_Specifaction(spec)
     {
+        RenderAPI::GetCurrentAPI()->SetTextureAlignment(glm::clamp<uint16_t>(ImageFormatToChannels(m_Specifaction.Format), 0, 4));
+
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
 

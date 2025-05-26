@@ -32,6 +32,11 @@ namespace AGI {
 		glClearColor(colour.r, colour.g, colour.b, colour.a);
 	}
 
+	void OpenGLRenderAPI::SetTextureAlignment(int align)
+	{
+		glGetIntegerv(GL_UNPACK_ALIGNMENT, &align);
+	}
+
 	void OpenGLRenderAPI::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
