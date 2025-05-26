@@ -94,7 +94,15 @@ namespace AGI {
     OpenGLTexture::OpenGLTexture(TextureSpecifaction spec)
         : m_Specifaction(spec)
     {
-        RenderAPI::GetCurrentAPI()->SetTextureAlignment(glm::clamp<uint16_t>(ImageFormatToChannels(m_Specifaction.Format), 0, 4));
+        int channels = ImageFormatToChannels(m_Specifaction.Format);
+        int bytesPerPixel = channels * (m_Specifaction.BytesPerChannel / 8);
+
+        GLint alignment = 1;
+        if (bytesPerPixel % 8 == 0) alignment = 8;
+        else if (bytesPerPixel % 4 == 0) alignment = 4;
+        else if (bytesPerPixel % 2 == 0) alignment = 2;
+
+        RenderAPI::GetCurrentAPI()->SetTextureAlignment(alignment);
 
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);

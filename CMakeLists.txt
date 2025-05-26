@@ -21,9 +21,9 @@ add_compile_definitions(
 add_subdirectory(lib/glad)
 
 FetchContent_Declare(
-  glm
-  GIT_REPOSITORY https://github.com/icaven/glm.git
-  GIT_TAG        master
+    glm
+    GIT_REPOSITORY https://github.com/icaven/glm.git
+    GIT_TAG        master
 )
 FetchContent_MakeAvailable(glm)
 
