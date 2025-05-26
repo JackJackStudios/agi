@@ -12,35 +12,8 @@ namespace AGI {
 		None = 0, ClampBorder, ClampEdge, Repeat, MirrorRepeat
 	};
 
-	ImageFormat ChannelsToImageFormat(uint16_t channels)
-	{
-		switch (channels)
-		{
-			case 0: return ImageFormat::None;
-			case 1: return ImageFormat::RED;
-			case 2: return ImageFormat::RG;
-			case 3: return ImageFormat::RGB;
-			case 4: return ImageFormat::RGBA;
-		}
-
-		AGI_WARN("Unknown channels count");
-		return ImageFormat::None;
-	}
-
-	uint16_t ImageFormatToChannels(ImageFormat format)
-	{
-		switch (format)
-		{
-			case ImageFormat::None: return 0;
-			case ImageFormat::RED:  return 1;
-			case ImageFormat::RG:   return 2;
-			case ImageFormat::RGB:  return 3;
-			case ImageFormat::RGBA: return 4;
-		}
-
-		AGI_WARN("Unknown ImageFormat");
-		return 0;
-	}
+	ImageFormat ChannelsToImageFormat(uint16_t channels);
+	uint16_t ImageFormatToChannels(ImageFormat format);
 
 	struct TextureSpecifaction
 	{
