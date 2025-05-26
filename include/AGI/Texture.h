@@ -19,7 +19,10 @@ namespace AGI {
 	{
 		uint32_t Width;
 		uint32_t Height;
+
+		bool Grayscale = false;
 		bool LinearFiltering = false;
+
 		ImageFormat Format = ImageFormat::RGB;
 		WrappingType WrappingType = WrappingType::Repeat;
 		uint16_t BytesPerChannel = 8;
