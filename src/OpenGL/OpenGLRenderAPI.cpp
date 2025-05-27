@@ -7,10 +7,8 @@ namespace AGI {
 
 	OpenGLRenderAPI::OpenGLRenderAPI(RenderAPISetttings settings)
 	{
-		Log::Init(settings.messagefunc);
-
 		//typedef void* (* GLADloadproc)(const char *name);
-		int status = gladLoadGLLoader(settings.loaderfunc);
+		int status = gladLoadGLLoader(settings.LoaderFunc);
 		AGI_VERIFY(status, "Failed to initialize Glad!");
 
 		AGI_INFO("OpenGL Info:");
@@ -18,8 +16,11 @@ namespace AGI {
 		AGI_INFO("  Renderer: {0}", (char*)glGetString(GL_RENDERER));
 		AGI_INFO("  Version: {0}", (char*)glGetString(GL_VERSION));
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		if (settings.Blending)
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
 	}
 
 	void OpenGLRenderAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

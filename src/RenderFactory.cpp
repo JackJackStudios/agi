@@ -55,6 +55,8 @@ namespace AGI {
 	{
 		std::unique_ptr<RenderAPI> newapi;
 		APIType newtype = settings.PreferedAPI == APIType::Guess ? BestAPI() : settings.PreferedAPI;
+		
+		Log::Init(settings.MessageFunc);
 
 		switch (newtype)
 		{
@@ -140,7 +142,7 @@ namespace AGI {
 		return nullptr;
 	}
 
-	std::shared_ptr<Texture> Texture::Create(TextureSpecifaction spec)
+	std::shared_ptr<Texture> Texture::Create(TextureSpecification spec)
 	{
 		switch (RenderAPI::GetCurrentAPI()->GetType())
 		{

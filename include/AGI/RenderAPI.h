@@ -19,8 +19,9 @@ namespace AGI {
 	struct RenderAPISetttings
 	{
 		APIType PreferedAPI;
-		OpenGLloaderFn loaderfunc;
-		MessageCallbackFn messagefunc;
+		bool Blending;
+		OpenGLloaderFn LoaderFunc;
+		MessageCallbackFn MessageFunc;
 	};
 
 	class RenderAPI

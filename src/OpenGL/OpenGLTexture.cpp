@@ -5,7 +5,7 @@ namespace AGI {
 
     namespace Utils {
 
-        static GLenum GetFormat(TextureSpecifaction spec)
+        static GLenum GetFormat(TextureSpecification spec)
         {
             switch (spec.Format)
             {
@@ -19,7 +19,7 @@ namespace AGI {
             return 0;
         }
 
-        static GLenum GetDataType(TextureSpecifaction spec)
+        static GLenum GetDataType(TextureSpecification spec)
         {
             switch (spec.BytesPerChannel)
             {
@@ -32,7 +32,7 @@ namespace AGI {
             return 0;
         }
 
-        static GLenum GetInternalFormat(TextureSpecifaction spec)
+        static GLenum GetInternalFormat(TextureSpecification spec)
         {
             switch (spec.Format)
             {
@@ -74,7 +74,7 @@ namespace AGI {
             return 0;
         }
 
-        static GLenum GetWrappingType(TextureSpecifaction spec)
+        static GLenum GetWrappingType(TextureSpecification spec)
         {
             switch (spec.WrappingType)
             {
@@ -91,11 +91,11 @@ namespace AGI {
 
     }
 
-    OpenGLTexture::OpenGLTexture(TextureSpecifaction spec)
-        : m_Specifaction(spec)
+    OpenGLTexture::OpenGLTexture(TextureSpecification spec)
+        : m_Specification(spec)
     {
-        int channels = ImageFormatToChannels(m_Specifaction.Format);
-        int bytesPerPixel = channels * (m_Specifaction.BytesPerChannel / 8);
+        int channels = ImageFormatToChannels(m_Specification.Format);
+        int bytesPerPixel = channels * (m_Specification.BytesPerChannel / 8);
 
         GLint alignment = 1;
         if (bytesPerPixel % 8 == 0) alignment = 8;
@@ -110,22 +110,22 @@ namespace AGI {
         glTexImage2D(
             GL_TEXTURE_2D, 
             0, 
-            Utils::GetInternalFormat(m_Specifaction), 
-            m_Specifaction.Width, 
-            m_Specifaction.Height, 
+            Utils::GetInternalFormat(m_Specification), 
+            m_Specification.Width, 
+            m_Specification.Height, 
             0, 
-            Utils::GetFormat(m_Specifaction), 
-            Utils::GetDataType(m_Specifaction), 
+            Utils::GetFormat(m_Specification), 
+            Utils::GetDataType(m_Specification), 
             nullptr
         );
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_Specifaction.LinearFiltering ? GL_LINEAR : GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_Specifaction.LinearFiltering ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_Specification.LinearFiltering ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_Specification.LinearFiltering ? GL_LINEAR : GL_NEAREST);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, Utils::GetWrappingType(m_Specifaction));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, Utils::GetWrappingType(m_Specifaction));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, Utils::GetWrappingType(m_Specification));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, Utils::GetWrappingType(m_Specification));
 
-        if (m_Specifaction.Grayscale || m_Specifaction.Format == ImageFormat::RED)
+        if (m_Specification.Grayscale || m_Specification.Format == ImageFormat::RED)
         {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_RED);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_RED);
@@ -142,10 +142,10 @@ namespace AGI {
 
     void OpenGLTexture::SetData(void* data, uint32_t size)
     {
-        AGI_VERIFY(size == m_Specifaction.Width * m_Specifaction.Height * ImageFormatToChannels(m_Specifaction.Format), "Data must be entire texture!");
+        AGI_VERIFY(size == m_Specification.Width * m_Specification.Height * ImageFormatToChannels(m_Specification.Format), "Data must be entire texture!");
 
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Specifaction.Width, m_Specifaction.Height, Utils::GetFormat(m_Specifaction), GL_UNSIGNED_BYTE, data);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Specification.Width, m_Specification.Height, Utils::GetFormat(m_Specification), GL_UNSIGNED_BYTE, data);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

@@ -9,12 +9,12 @@ namespace AGI {
 	class OpenGLTexture : public Texture
 	{
 	public:
-		OpenGLTexture(TextureSpecifaction spec);
+		OpenGLTexture(TextureSpecification spec);
 		virtual ~OpenGLTexture();
 
-		virtual uint32_t GetWidth() const override { return m_Specifaction.Width; }
-		virtual uint32_t GetHeight() const override { return m_Specifaction.Height; }
-		virtual ImageFormat GetFormat() const override { return m_Specifaction.Format; }
+		virtual uint32_t GetWidth() const override { return m_Specification.Width; }
+		virtual uint32_t GetHeight() const override { return m_Specification.Height; }
+		virtual TextureSpecification GetSpecification() const override { return m_Specification; }
 		virtual uint32_t GetRendererID() const override { return m_RendererID; }
 
 		virtual void SetData(void* data, uint32_t size) override;
@@ -26,7 +26,7 @@ namespace AGI {
 			return m_RendererID == ((OpenGLTexture&)other).m_RendererID;
 		}
 	private:
-		TextureSpecifaction m_Specifaction;
+		TextureSpecification m_Specification;
 		uint32_t m_RendererID;
 	};
 
