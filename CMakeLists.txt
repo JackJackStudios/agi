@@ -18,6 +18,7 @@ add_compile_definitions(
     $<$<CONFIG:MinSizeRel>:AGI_DIST>
 )
 
+add_subdirectory(src)
 add_subdirectory(lib/glad)
 
 FetchContent_Declare(
@@ -26,16 +27,3 @@ FetchContent_Declare(
     GIT_TAG        master
 )
 FetchContent_MakeAvailable(glm)
-
-# Actual static library
-file(GLOB_RECURSE SOURCE_DIR "src/**.cpp" "src/**.h" "include/**.h")
-add_library(AGI STATIC ${SOURCE_DIR})
-
-target_precompile_headers(AGI PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/agipch.h")
-
-target_include_directories(AGI PUBLIC 
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include"
-)
-
-target_link_libraries(AGI PUBLIC glm glad)

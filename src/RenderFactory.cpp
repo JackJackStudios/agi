@@ -51,6 +51,49 @@ namespace AGI {
 		return 0;
 	}
 
+	ShaderType StringToShaderType(const std::string& type)
+	{
+		if (type == "vertex")   return ShaderType::Vertex;
+		if (type == "fragment") return ShaderType::Fragment;
+		if (type == "pixel")    return ShaderType::Fragment;
+
+		AGI_VERIFY(false, "Unknown shader type '{}'", type);
+		return ShaderType::None;
+	}
+
+	ShaderSources Shader::ProcessSource(const std::string& source)
+	{
+		ShaderSources shaderSources;
+
+		const std::string typeToken = "#type";
+		size_t typeTokenLength = typeToken.length();
+		size_t pos = 0;
+
+		while ((pos = source.find(typeToken, pos)) != std::string::npos)
+		{
+			size_t eol = source.find_first_of("\r\n", pos);
+			AGI_VERIFY(eol != std::string::npos, "Syntax error: Missing end of line after #type");
+
+			size_t typeStart = pos + typeTokenLength + 1;
+			std::string typeStr = source.substr(typeStart, eol - typeStart);
+			ShaderType shaderType = StringToShaderType(typeStr);
+
+			size_t codeStart = source.find_first_not_of("\r\n", eol);
+			AGI_VERIFY(codeStart != std::string::npos, "Syntax error: No shader code after #type");
+
+			size_t nextTypePos = source.find(typeToken, codeStart);
+
+			std::string shaderCode = (nextTypePos == std::string::npos)
+				? source.substr(codeStart)
+				: source.substr(codeStart, nextTypePos - codeStart);
+
+			shaderSources[shaderType] = shaderCode;
+			pos = nextTypePos;
+		}
+
+		return shaderSources;
+	}
+
 	std::unique_ptr<RenderAPI> RenderAPI::Create(RenderAPISetttings settings)
 	{
 		std::unique_ptr<RenderAPI> newapi;
@@ -118,24 +161,12 @@ namespace AGI {
 		return nullptr;
 	}
 
-	std::shared_ptr<Shader> Shader::Create(const std::string& filepath)
+	std::shared_ptr<Shader> Shader::Create(const ShaderSources& shaderSources)
 	{
 		switch (RenderAPI::GetCurrentAPI()->GetType())
 		{
 		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLShader>(filepath);
-		}
-
-		AGI_VERIFY(false, "Unknown Shader!");
-		return nullptr;
-	}
-
-	std::shared_ptr<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
-	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
+		case APIType::OpenGL:  return std::make_shared<OpenGLShader>(shaderSources);
 		}
 
 		AGI_VERIFY(false, "Unknown Shader!");

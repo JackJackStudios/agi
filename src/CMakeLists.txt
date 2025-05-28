@@ -1,0 +1,9 @@
+file(GLOB_RECURSE SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp")
+add_library(AGI STATIC ${SOURCE_DIR})
+
+target_include_directories(AGI PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+target_precompile_headers(AGI PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/agipch.h")
+
+target_include_directories(AGI PUBLIC "${CMAKE_SOURCE_DIR}/include")
+
+target_link_libraries(AGI PUBLIC glm glad)
