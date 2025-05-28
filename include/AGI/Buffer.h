@@ -61,6 +61,14 @@ namespace AGI {
 
 			return 0;
 		}
+
+		bool operator==(const BufferElement& other) const {
+			return Name == other.Name &&
+				Type == other.Type &&
+				Size == other.Size &&
+				Offset == other.Offset;
+		}
+
 	};
 
 	class BufferLayout
