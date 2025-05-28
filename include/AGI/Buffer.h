@@ -84,6 +84,18 @@ namespace AGI {
 		uint32_t GetStride() const { return m_Stride; }
 		const std::vector<BufferElement>& GetElements() const { return m_Elements; }
 
+		void PushBack(const BufferElement& element)
+		{
+			m_Elements.push_back(element);
+		}
+
+		void Erase(const BufferElement& element)
+		{
+			auto it = std::find(m_Elements.begin(), m_Elements.end(), element);
+			if (it != m_Elements.end())
+				m_Elements.erase(it);
+		}
+
 		bool HasElement(const std::string& name) const
 		{
 			return std::any_of(begin(), end(), [&](const BufferElement& e) {
