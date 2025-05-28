@@ -1,5 +1,5 @@
-#include "agipch.h"
-#include "OpenGLShader.h"
+#include "agipch.hpp"
+#include "OpenGLShader.hpp"
 
 #include <fstream>
 #include <array>

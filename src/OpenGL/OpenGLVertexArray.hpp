@@ -1,6 +1,6 @@
 #pragma once
 
-#include "agi/VertexArray.h"
+#include "AGI/VertexArray.hpp"
 
 namespace AGI {
 

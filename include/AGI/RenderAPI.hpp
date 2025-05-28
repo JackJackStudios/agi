@@ -1,7 +1,7 @@
 #pragma once
 
-#include "VertexArray.h"
-#include "Log.h"
+#include "VertexArray.hpp"
+#include "Log.hpp"
 
 #include <glm/glm.hpp>
 
@@ -34,7 +34,7 @@ namespace AGI {
 		virtual void SetTextureAlignment(int align) = 0;
 		virtual void Clear() = 0;
 
-		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount) = 0;
+		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
 		
 		APIType GetType() const { return m_APIType; }
 

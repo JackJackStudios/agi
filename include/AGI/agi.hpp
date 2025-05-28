@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Buffer.h"
-#include "Framebuffer.h"
-#include "RenderAPI.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "VertexArray.h"
+#include "agipch.hpp"
+
+#include "Buffer.hpp"
+#include "Framebuffer.hpp"
+#include "RenderAPI.hpp"
+#include "Shader.hpp"
+#include "Texture.hpp"
+#include "VertexArray.hpp"

@@ -1,5 +1,5 @@
-#include "agipch.h"
-#include "AGI/Log.h"
+#include "agipch.hpp"
+#include "AGI/Log.hpp"
 
 namespace AGI {
 

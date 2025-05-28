@@ -7,6 +7,8 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(AGI_EXAMPLES "Build AGI-Examples and it's dependencies" ON)
+
 add_compile_definitions(
     $<$<PLATFORM_ID:Windows>:AGI_WINDOWS>
     $<$<PLATFORM_ID:Linux>:AGI_LINUX>
@@ -20,6 +22,10 @@ add_compile_definitions(
 
 add_subdirectory(src)
 add_subdirectory(lib/glad)
+
+if (AGI_EXAMPLES)
+    add_subdirectory(examples)
+endif()
 
 FetchContent_Declare(
     glm

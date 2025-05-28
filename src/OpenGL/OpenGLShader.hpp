@@ -1,6 +1,6 @@
 #pragma once
 
-#include "agi/Shader.h"
+#include "AGI/Shader.hpp"
 
 #include <glm/glm.hpp>
 #include <glad/glad.h>

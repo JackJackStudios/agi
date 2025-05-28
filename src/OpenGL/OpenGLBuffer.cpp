@@ -1,5 +1,5 @@
-#include "agipch.h"
-#include "OpenGLBuffer.h"
+#include "agipch.hpp"
+#include "OpenGLBuffer.hpp"
 
 #include <glad/glad.h>
 

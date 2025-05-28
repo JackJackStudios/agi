@@ -1,5 +1,5 @@
-#include "agipch.h"
-#include "OpenGLTexture.h"
+#include "agipch.hpp"
+#include "OpenGLTexture.hpp"
 
 namespace AGI {
 

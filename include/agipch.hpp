@@ -20,8 +20,8 @@
 #define AGI_DEBUGBREAK() raise(SIGTRAP)
 #endif
 
-#include "AGI/RenderAPI.h"
-#include "AGI/Log.h"
+#include "AGI/RenderAPI.hpp"
+#include "AGI/Log.hpp"
 
 #include <glm/glm.hpp>
 

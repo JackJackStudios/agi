@@ -1,6 +1,6 @@
 #pragma once
 
-#include "agi/RenderAPI.h"
+#include "AGI/RenderAPI.hpp"
 
 namespace AGI {
 
@@ -14,7 +14,7 @@ namespace AGI {
 		virtual void SetTextureAlignment(int align) override;
 		virtual void Clear() override;
 
-		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount) override;
+		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
 	};
 
 

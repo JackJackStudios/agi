@@ -1,18 +1,18 @@
-#include "agipch.h"
+#include "agipch.hpp"
 
-#include "AGI/Buffer.h"
-#include "AGI/RenderAPI.h"
-#include "AGI/Shader.h"
-#include "AGI/Texture.h"
-#include "AGI/VertexArray.h"
-#include "AGI/Framebuffer.h"
+#include "AGI/Buffer.hpp"
+#include "AGI/RenderAPI.hpp"
+#include "AGI/Shader.hpp"
+#include "AGI/Texture.hpp"
+#include "AGI/VertexArray.hpp"
+#include "AGI/Framebuffer.hpp"
 
-#include "OpenGL/OpenGLBuffer.h"
-#include "OpenGL/OpenGLRenderAPI.h"
-#include "OpenGL/OpenGLShader.h"
-#include "OpenGL/OpenGLTexture.h"
-#include "OpenGL/OpenGLVertexArray.h"
-#include "OpenGL/OpenGLFramebuffer.h"
+#include "OpenGL/OpenGLBuffer.hpp"
+#include "OpenGL/OpenGLRenderAPI.hpp"
+#include "OpenGL/OpenGLShader.hpp"
+#include "OpenGL/OpenGLTexture.hpp"
+#include "OpenGL/OpenGLVertexArray.hpp"
+#include "OpenGL/OpenGLFramebuffer.hpp"
 
 namespace AGI {
 

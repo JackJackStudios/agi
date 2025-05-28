@@ -1,5 +1,5 @@
-#include "agipch.h"
-#include "OpenGLRenderAPI.h"
+#include "agipch.hpp"
+#include "OpenGLRenderAPI.hpp"
 
 #include <glad/glad.h>
 
@@ -45,6 +45,7 @@ namespace AGI {
 
 	void OpenGLRenderAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount)
 	{
+		vertexArray->Bind();
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 		glBindTexture(GL_TEXTURE_2D, 0);

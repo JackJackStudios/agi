@@ -1,6 +1,6 @@
 #pragma once
 
-#include "agi/Texture.h"
+#include "AGI/Texture.hpp"
 
 #include <glad/glad.h>
 

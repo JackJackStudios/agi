@@ -1,6 +1,6 @@
 #pragma once
 
-#include "agi/Framebuffer.h"
+#include "AGI/Framebuffer.hpp"
 
 namespace AGI {
 

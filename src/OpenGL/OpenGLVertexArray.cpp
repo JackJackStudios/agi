@@ -1,5 +1,5 @@
-#include "agipch.h"
-#include "OpenGLVertexArray.h"
+#include "agipch.hpp"
+#include "OpenGLVertexArray.hpp"
 
 #include <glad/glad.h>
 

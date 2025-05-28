@@ -1,6 +1,6 @@
 #pragma once
 
-#include "agi/Buffer.h"
+#include "AGI/Buffer.hpp"
 
 namespace AGI {
 
