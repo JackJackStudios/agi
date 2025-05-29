@@ -84,41 +84,49 @@ namespace AGI {
 
 	void OpenGLShader::SetInt(const std::string& name, int value)
 	{
+		Bind();
 		glUniform1i(GetLocation(name.c_str()), value);
 	}
 
 	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
 	{
+		Bind();
 		glUniform1iv(GetLocation(name.c_str()), count, values);
 	}
 
 	void OpenGLShader::SetFloat(const std::string& name, float value)
 	{
+		Bind();
 		glUniform1f(GetLocation(name.c_str()), value);
 	}
 
 	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
 	{
+		Bind();
 		glUniform2f(GetLocation(name.c_str()), value.x, value.y);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
+		Bind();
 		glUniform3f(GetLocation(name.c_str()), value.x, value.y, value.z);
 	}
 
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
+		Bind();
 		glUniform4f(GetLocation(name.c_str()), value.x, value.y, value.z, value.w);
 	}
 
 	void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& matrix)
 	{
+		Bind();
 		glUniformMatrix3fv(GetLocation(name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& matrix)
 	{
+		Bind();
 		glUniformMatrix4fv(GetLocation(name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 

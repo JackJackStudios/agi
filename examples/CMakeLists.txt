@@ -1,9 +1,16 @@
-cmake_minimum_required(VERSION 3.15)
-project(AGI-Examples)
-
 include(FetchContent)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+function(add_example example_name)
+add_executable(${example_name} "${example_name}.cpp")
+
+target_compile_definitions(${example_name} PUBLIC EXECUTABLE_NAME="${example_name}")
+target_link_libraries(${example_name} PRIVATE AGI glfw spdlog::spdlog)
+target_include_directories(${example_name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${stb_SOURCE_DIR})
+endfunction()
+
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
 
 FetchContent_Declare(
     GLFW
@@ -13,14 +20,19 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(GLFW)
 
 FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb/
+    GIT_TAG        master
+)
+FetchContent_MakeAvailable(stb)
+FetchContent_GetProperties(stb)
+
+FetchContent_Declare(
     spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
     GIT_TAG        v1.15.2
 )
 FetchContent_MakeAvailable(spdlog)
 
-file(GLOB_RECURSE SOURCE_DIR "**.cpp")
-add_executable(AGI-Examples ${SOURCE_DIR})
-
-target_link_libraries(AGI-Examples PRIVATE AGI glfw spdlog::spdlog)
-target_include_directories(AGI-Examples PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_example(square)
+add_example(texture)
