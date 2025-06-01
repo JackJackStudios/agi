@@ -50,7 +50,7 @@ GLFWwindow* InitWindow(int width, int height)
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) { s_RenderAPI->SetViewport(0, 0, width, height); });
     glfwMakeContextCurrent(window);
 
-    s_RenderAPI = AGI::RenderAPI::Create(
+    s_RenderAPI = AGI::RenderAPI::Init(
     {
         .PreferedAPI = AGI::APIType::Guess,
         .Blending = true,

@@ -5,6 +5,9 @@
 
 #include <glm/glm.hpp>
 
+#undef INFINITE
+#include "msdf-atlas-gen/msdf-atlas-gen.h"
+
 namespace AGI {
 
 	enum class APIType
@@ -38,13 +41,16 @@ namespace AGI {
 		
 		APIType GetType() const { return m_APIType; }
 
+		static std::unique_ptr<RenderAPI> Init(RenderAPISetttings settings);
+		static void Shutdown(std::unique_ptr<RenderAPI>& api);
 		static RenderAPI* GetCurrentAPI() { return s_CurrentAPI; }
-		static std::unique_ptr<RenderAPI> Create(RenderAPISetttings settings);
 	private:
 		APIType m_APIType;
 		RenderAPISetttings m_Settings;
+		msdfgen::FreetypeHandle* m_Freetype;
 
 		inline static RenderAPI* s_CurrentAPI;
-	};
 
+		friend class Font;
+	};
 }

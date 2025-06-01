@@ -34,5 +34,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(spdlog)
 
-add_example(square)
-add_example(texture)
+file(GLOB_RECURSE EXAMPLES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp") 
+
+foreach(EXAMPLE ${EXAMPLES})
+get_filename_component(EXAMPLE_TARGET ${EXAMPLE} NAME_WE)
+add_example(${EXAMPLE_TARGET})
+endforeach()

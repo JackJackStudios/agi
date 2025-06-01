@@ -14,6 +14,9 @@
 #include "OpenGL/OpenGLVertexArray.hpp"
 #include "OpenGL/OpenGLFramebuffer.hpp"
 
+#undef INFINITE
+#include "msdf-atlas-gen/msdf-atlas-gen.h"
+
 namespace AGI {
 
 	APIType BestAPI()
@@ -94,23 +97,31 @@ namespace AGI {
 		return shaderSources;
 	}
 
-	std::unique_ptr<RenderAPI> RenderAPI::Create(RenderAPISetttings settings)
+	std::unique_ptr<RenderAPI> RenderAPI::Init(RenderAPISetttings settings)
 	{
 		std::unique_ptr<RenderAPI> newapi;
 		APIType newtype = settings.PreferedAPI == APIType::Guess ? BestAPI() : settings.PreferedAPI;
-		
+
 		Log::Init(settings.MessageFunc);
 
 		switch (newtype)
 		{
-			case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case APIType::OpenGL:  newapi = std::make_unique<OpenGLRenderAPI>(settings);
+		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case APIType::OpenGL:  newapi = std::make_unique<OpenGLRenderAPI>(settings);
 		}
 
 		s_CurrentAPI = newapi.get();
 
 		newapi->m_APIType = newtype;
+		newapi->m_Freetype = msdfgen::initializeFreetype();
 		return std::move(newapi);
+	}
+
+	void RenderAPI::Shutdown(std::unique_ptr<RenderAPI>& api)
+	{
+		msdfgen::deinitializeFreetype(api->m_Freetype);
+
+		api.reset();
 	}
 
 	std::shared_ptr<VertexBuffer> VertexBuffer::Create(uint32_t size)

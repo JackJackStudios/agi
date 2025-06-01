@@ -8,3 +8,4 @@
 #include "Shader.hpp"
 #include "Texture.hpp"
 #include "VertexArray.hpp"
+#include "Font.hpp"
