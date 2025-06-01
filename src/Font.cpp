@@ -22,6 +22,7 @@ namespace AGI {
 		textureSpec.Width = bitmap.width;
 		textureSpec.Height = bitmap.height;
 		textureSpec.Format = ImageFormat::RGB;
+		textureSpec.LinearFiltering = true;
 
 		std::shared_ptr<AGI::Texture> texture = Texture::Create(textureSpec);
 		texture->SetData((void*)bitmap.pixels, bitmap.width * bitmap.height * ImageFormatToChannels(ImageFormat::RGB));
@@ -73,6 +74,49 @@ namespace AGI {
 		m_AtlasTexture = CreateAndCacheAtlas<uint8_t, float, 3, msdf_atlas::msdfGenerator>((float)atlasScale, m_Glyphs, m_FontGeometry, width, height);
 
 		msdfgen::destroyFont(font);
+	}
+
+	const msdf_atlas::GlyphGeometry* Font::TryGetGlyph(UniCode codepoint) const
+	{
+		auto glyph = m_FontGeometry.getGlyph(codepoint);
+		if (!glyph) glyph = m_FontGeometry.getGlyph('?');
+
+		if (!glyph)
+		{
+			AGI_WARN("No available glyph for character ({})", codepoint);
+			return nullptr;
+		}
+
+		return glyph;
+	}
+
+	std::string Font::GetDefaultShader()
+	{
+		return R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+
+			float median(float r, float g, float b) 
+			{
+				return max(min(r, g), min(max(r, g), b));
+			}
+
+			void main() 
+			{
+				const float pxRange = 2.0; // set to distance field's pixel range
+
+				vec3 msd = texture(u_Texture, v_TexCoord).rgb;
+				float sd = median(msd.r, msd.g, msd.b);
+				float alpha = clamp((sd - 0.5) * pxRange + 0.5, 0.0, 1.0);
+
+				color = vec4(1.0, 1.0, 1.0f, alpha);
+			}
+		)";
 	}
 
 }

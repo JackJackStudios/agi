@@ -1,52 +1,18 @@
 #include "utils.hpp"
 
-static std::string shaderSrc = R"(
-    #type vertex
+static std::string vertexSrc = R"(
     #version 330 core
 			
-    layout(location = 0) in vec3 a_Position;
-    layout(location = 1) in vec2 a_TexCoord;
+	layout(location = 0) in vec3 a_Position;
+	layout(location = 1) in vec2 a_TexCoord;
 
-    out vec2 v_TexCoord;
+	out vec2 v_TexCoord;
 
-    void main()
-    {
-	    v_TexCoord = a_TexCoord;
-	    gl_Position = vec4(a_Position, 1.0);	
-    }
-
-    #type fragment
-    #version 330 core
-			
-    layout(location = 0) out vec4 color;
-
-    in vec2 v_TexCoord;
-
-    uniform sampler2D u_Texture;
-    
-    float screenPxRange() 
-    {
-	    const float pxRange = 2.0; // set to distance field's pixel range
-
-        vec2 unitRange = vec2(pxRange)/vec2(textureSize(u_Texture, 0));
-        vec2 screenTexSize = vec2(1.0)/fwidth(v_TexCoord);
-        return max(0.5*dot(unitRange, screenTexSize), 1.0);
-    }
-
-    float median(float r, float g, float b) 
-    {
-        return max(min(r, g), min(max(r, g), b));
-    }
-
-    void main() 
-    {
-        vec3 msd = texture(u_Texture, v_TexCoord).rgb;
-        float sd = median(msd.r, msd.g, msd.b);
-        float screenPxDistance = screenPxRange()*(sd - 0.5);
-        float opacity = clamp(screenPxDistance + 0.5, 0.0, 1.0);
-
-        color = mix(vec4(0.0), vec4(1.0), opacity);
-    }
+	void main()
+	{
+		v_TexCoord = a_TexCoord;
+		gl_Position = vec4(a_Position, 1.0);	
+	}
 )";
 
 int main(void)
@@ -84,7 +50,11 @@ int main(void)
     squareVA->SetIndexBuffer(squareIB);
 
     // Process shader source, compile and link with uniforms
-    std::shared_ptr<AGI::Shader> shader = AGI::Shader::Create(AGI::Shader::ProcessSource(shaderSrc));
+    AGI::ShaderSources src;
+    src[AGI::ShaderType::Vertex] = vertexSrc;
+    src[AGI::ShaderType::Fragment] = AGI::Font::GetDefaultShader();
+    
+    std::shared_ptr<AGI::Shader> shader = AGI::Shader::Create(src);
     shader->SetInt("u_Texture", 0);
 
     // Load test texture
