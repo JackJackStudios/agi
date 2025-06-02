@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef AGI_USE_TEXT
+
 #undef INFINITE
 #include "msdf-atlas-gen/msdf-atlas-gen.h"
 
@@ -27,8 +29,6 @@ namespace AGI {
 		const msdfgen::FontMetrics& GetMetrics() const { return m_FontGeometry.getMetrics(); }
 		std::shared_ptr<AGI::Texture> GetAtlasTexture() const { return m_AtlasTexture; }
 
-		 
-
 		static std::string GetDefaultShader();
 	private:
 		std::shared_ptr<AGI::Texture> m_AtlasTexture;
@@ -38,3 +38,5 @@ namespace AGI {
 	};
 
 }
+
+#endif

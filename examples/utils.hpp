@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
 #include <AGI/agi.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -10,12 +9,6 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 static std::shared_ptr<spdlog::logger> s_ClientLogger;
-static std::unique_ptr<AGI::RenderAPI> s_RenderAPI;
-
-static void GLFWErrorCallback(int error, const char* description)
-{
-    s_ClientLogger->error("GLFW Error ({0}): {1}", error, description);
-}
 
 static void OnAGIMessage(std::string_view message, AGI::LogLevel level)
 {
@@ -39,27 +32,6 @@ void InitLogging()
     spdlog::register_logger(s_ClientLogger);
     s_ClientLogger->set_level(spdlog::level::trace);
     s_ClientLogger->flush_on(spdlog::level::trace);
-}
-
-GLFWwindow* InitWindow(int width, int height)
-{
-    glfwInit();
-    glfwSetErrorCallback(GLFWErrorCallback);
-
-    GLFWwindow* window = glfwCreateWindow(width, height, EXECUTABLE_NAME, NULL, NULL);
-    glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) { s_RenderAPI->SetViewport(0, 0, width, height); });
-    glfwMakeContextCurrent(window);
-
-    s_RenderAPI = AGI::RenderAPI::Init(
-    {
-        .PreferedAPI = AGI::APIType::Guess,
-        .Blending = true,
-
-        .LoaderFunc = (AGI::OpenGLloaderFn)glfwGetProcAddress,
-        .MessageFunc = OnAGIMessage,
-    });
-
-    return window;
 }
 
 std::shared_ptr<AGI::Texture> LoadTexture(const std::filesystem::path& path)

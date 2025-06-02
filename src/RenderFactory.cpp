@@ -1,7 +1,7 @@
 #include "agipch.hpp"
 
 #include "AGI/Buffer.hpp"
-#include "AGI/RenderAPI.hpp"
+#include "AGI/RenderContext.hpp"
 #include "AGI/Shader.hpp"
 #include "AGI/Texture.hpp"
 #include "AGI/VertexArray.hpp"
@@ -17,11 +17,39 @@
 #undef INFINITE
 #include "msdf-atlas-gen/msdf-atlas-gen.h"
 
+#define GENERATE_FACTORY(x, ...) switch (RenderContext::GetCurrentContext()->GetType()) \
+                                 { \
+									case APIType::Headless: AGI_VERIFY(false, #x "::Headless is currently not supported!"); return nullptr;  \
+									case APIType::OpenGL:  return std::make_shared<OpenGL##x>(__VA_ARGS__);  \
+                                 } \
+                                 AGI_VERIFY(false, "Unknown " #x); \
+                                 return nullptr;
+
 namespace AGI {
 
 	APIType BestAPI()
 	{
 		return APIType::OpenGL;
+	}
+
+	std::unique_ptr<RenderContext> RenderContext::Init(Settings settings)
+	{
+		std::unique_ptr<RenderContext> newapi;
+		APIType newtype = settings.PreferedAPI == APIType::Guess ? BestAPI() : settings.PreferedAPI;
+
+		Log::Init(settings.MessageFunc);
+
+		switch (newtype)
+		{
+			case APIType::Headless: AGI_VERIFY(false, "RendererAPI::Headless is currently not supported!"); return nullptr;
+			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>(settings);
+		}
+
+		s_CurrentContext = newapi.get();
+
+		newapi->m_APIType = newtype;
+		newapi->m_Freetype = msdfgen::initializeFreetype();
+		return std::move(newapi);
 	}
 
 	ImageFormat ChannelsToImageFormat(uint16_t channels)
@@ -97,127 +125,50 @@ namespace AGI {
 		return shaderSources;
 	}
 
-	std::unique_ptr<RenderAPI> RenderAPI::Init(RenderAPISetttings settings)
-	{
-		std::unique_ptr<RenderAPI> newapi;
-		APIType newtype = settings.PreferedAPI == APIType::Guess ? BestAPI() : settings.PreferedAPI;
-
-		Log::Init(settings.MessageFunc);
-
-		switch (newtype)
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  newapi = std::make_unique<OpenGLRenderAPI>(settings);
-		}
-
-		s_CurrentAPI = newapi.get();
-
-		newapi->m_APIType = newtype;
-		newapi->m_Freetype = msdfgen::initializeFreetype();
-		return std::move(newapi);
-	}
-
-	void RenderAPI::Shutdown(std::unique_ptr<RenderAPI>& api)
+	void RenderContext::Shutdown(std::unique_ptr<RenderContext>& api)
 	{
 		msdfgen::deinitializeFreetype(api->m_Freetype);
-
 		api.reset();
 	}
 
 	std::shared_ptr<VertexBuffer> VertexBuffer::Create(uint32_t size)
 	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(size);
-		}
-
-		AGI_VERIFY(false, "Unknown VertexBuffer!");
-		return nullptr;
+		GENERATE_FACTORY(VertexBuffer, size)
 	}
 
 	std::shared_ptr<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, size);
-		}
-
-		AGI_VERIFY(false, "Unknown VertexBuffer!");
-		return nullptr;
+		GENERATE_FACTORY(VertexBuffer, vertices, size);
 	}
 
 	std::shared_ptr<VertexBuffer> VertexBuffer::Create(uint32_t vertices, const BufferLayout& layout)
 	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, layout);
-		}
-
-		AGI_VERIFY(false, "Unknown VertexBuffer!");
-		return nullptr;
+		GENERATE_FACTORY(VertexBuffer, vertices, layout);
 	}
 
 	std::shared_ptr<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
 	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLIndexBuffer>(indices, size);
-		}
-
-		AGI_VERIFY(false, "Unknown IndexBuffer!");
-		return nullptr;
+		GENERATE_FACTORY(IndexBuffer, indices, size);
 	}
 
 	std::shared_ptr<Shader> Shader::Create(const ShaderSources& shaderSources)
 	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLShader>(shaderSources);
-		}
-
-		AGI_VERIFY(false, "Unknown Shader!");
-		return nullptr;
+		GENERATE_FACTORY(Shader, shaderSources);
 	}
 
 	std::shared_ptr<Texture> Texture::Create(TextureSpecification spec)
 	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLTexture>(spec);
-		}
-
-		AGI_VERIFY(false, "Unknown Texture!");
-		return nullptr;
+		GENERATE_FACTORY(Texture, spec);
 	}
 
 	std::shared_ptr<VertexArray> VertexArray::Create()
 	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLVertexArray>();
-		}
-
-		AGI_VERIFY(false, "Unknown VertexArray!");
-		return nullptr;
+		GENERATE_FACTORY(VertexArray);
 	}
 
 	std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 	{
-		switch (RenderAPI::GetCurrentAPI()->GetType())
-		{
-		case APIType::None:    AGI_VERIFY(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case APIType::OpenGL:  return std::make_shared<OpenGLFramebuffer>(spec);
-		}
-
-		AGI_VERIFY(false, "Unknown Framebuffer!");
-		return nullptr;
+		GENERATE_FACTORY(Framebuffer, spec);
 	}
 
 }

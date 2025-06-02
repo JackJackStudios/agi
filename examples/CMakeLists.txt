@@ -1,23 +1,17 @@
 include(FetchContent)
 
+set(AGI_USE_TEXT ON CACHE BOOL "" FORCE)
+
 function(add_example example_name)
 add_executable(${example_name} "${example_name}.cpp")
 
 target_compile_definitions(${example_name} PUBLIC EXECUTABLE_NAME="${example_name}")
-target_link_libraries(${example_name} PRIVATE AGI glfw spdlog::spdlog)
+target_link_libraries(${example_name} PRIVATE AGI spdlog::spdlog)
 target_include_directories(${example_name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${stb_SOURCE_DIR})
 endfunction()
 
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets"
      DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-
-
-FetchContent_Declare(
-    GLFW
-    GIT_REPOSITORY https://github.com/glfw/glfw.git
-    GIT_TAG        3.4
-)
-FetchContent_MakeAvailable(GLFW)
 
 FetchContent_Declare(
     stb

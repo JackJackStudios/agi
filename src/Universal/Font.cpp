@@ -1,6 +1,8 @@
 #include "agipch.hpp"
 #include "AGI/Font.hpp"
 
+#ifdef AGI_USE_TEXT
+
 namespace AGI {
 
 	template<typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
@@ -32,7 +34,7 @@ namespace AGI {
 
 	Font::Font(const std::filesystem::path& filepath)
 	{
-		msdfgen::FontHandle* font = msdfgen::loadFont(RenderAPI::GetCurrentAPI()->m_Freetype, filepath.string().c_str());
+		msdfgen::FontHandle* font = msdfgen::loadFont(RenderContext::GetCurrentContext()->m_Freetype, filepath.string().c_str());
 		if (!font)
 		{
 			AGI_ERROR("Failed to load font: {}", filepath.string());
@@ -120,3 +122,5 @@ namespace AGI {
 	}
 
 }
+
+#endif

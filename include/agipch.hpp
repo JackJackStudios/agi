@@ -20,7 +20,7 @@
 #define AGI_DEBUGBREAK() raise(SIGTRAP)
 #endif
 
-#include "AGI/RenderAPI.hpp"
+#include "AGI/RenderContext.hpp"
 #include "AGI/Log.hpp"
 
 #include <glm/glm.hpp>

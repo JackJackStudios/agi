@@ -4,7 +4,8 @@
 
 #include "Buffer.hpp"
 #include "Framebuffer.hpp"
-#include "RenderAPI.hpp"
+#include "RenderContext.hpp"
+#include "Window.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
 #include "VertexArray.hpp"

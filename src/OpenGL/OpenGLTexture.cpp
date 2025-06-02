@@ -102,7 +102,7 @@ namespace AGI {
         else if (bytesPerPixel % 4 == 0) alignment = 4;
         else if (bytesPerPixel % 2 == 0) alignment = 2;
 
-        RenderAPI::GetCurrentAPI()->SetTextureAlignment(alignment);
+        RenderContext::GetCurrentContext()->SetTextureAlignment(alignment);
 
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);

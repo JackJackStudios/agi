@@ -36,7 +36,17 @@ int main(void)
     InitLogging();
 
     // Create GLFW window and the AGI::RenderAPI
-    GLFWwindow* window = InitWindow(720, 720);
+    AGI::Settings settings;
+    settings.PreferedAPI = AGI::APIType::Guess;
+    settings.MessageFunc = OnAGIMessage;
+    settings.Blending = true;
+
+    settings.WindowProps.Width = 720;
+    settings.WindowProps.Height = 720;
+    settings.WindowProps.Title = EXECUTABLE_NAME;
+
+    auto window = AGI::Window::Create(settings);
+    auto renderAPI = AGI::RenderContext::Init(settings);
 
     // Create VAO to hold buffers
     std::shared_ptr<AGI::VertexArray> squareVA = AGI::VertexArray::Create();
@@ -72,19 +82,18 @@ int main(void)
     std::shared_ptr<AGI::Texture> texture = LoadTexture("assets/Checkerboard.png");
 
     // Main loop now, you know the deal
-    while (!glfwWindowShouldClose(window))
+    while (!window->ShouldClose())
     {
-        s_RenderAPI->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        s_RenderAPI->Clear();
+        renderAPI->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
+        renderAPI->Clear();
 
         texture->Bind();
-        s_RenderAPI->DrawIndexed(squareVA);
+        renderAPI->DrawIndexed(squareVA);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        window->OnUpdate();
     }
 
-    s_RenderAPI.reset();
-    glfwTerminate();
+    renderAPI.reset();
+    window.reset();
     return 0;
 }
