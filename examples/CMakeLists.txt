@@ -1,7 +1,5 @@
 include(FetchContent)
 
-set(AGI_USE_TEXT ON CACHE BOOL "" FORCE)
-
 function(add_example example_name)
 add_executable(${example_name} "${example_name}.cpp")
 

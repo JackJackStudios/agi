@@ -1,7 +1,5 @@
 #pragma once
 
-#ifdef AGI_USE_TEXT
-
 #undef INFINITE
 #include "msdf-atlas-gen/msdf-atlas-gen.h"
 
@@ -38,5 +36,3 @@ namespace AGI {
 	};
 
 }
-
-#endif

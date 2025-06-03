@@ -1,26 +1,38 @@
 #include "agipch.hpp"
 #include "AGI/Window.hpp"
 
-#include <GLFW/glfw3.h>
-
 namespace AGI {
 
-	static uint8_t s_GLFWWindowCount = 0;
+	namespace Utils {
 
-	float Window::GetTime()
-	{
-		return (float)glfwGetTime();
+		static int AgiApiTypeToGlfwApiType(APIType type)
+		{
+			switch (type)
+			{
+				case APIType::Headless: return GLFW_NO_API;
+				case APIType::OpenGL: return GLFW_OPENGL_API;
+				case APIType::Vulkan: return GLFW_NO_API;
+			}
+
+			AGI_VERIFY(type != APIType::Guess, "APIType::Guess should not reach this function");
+
+			AGI_VERIFY(false, "Undefined APIType");
+			return 0;
+		}
+
 	}
+
+	static uint8_t s_GLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
 		AGI_ERROR("({0}): {1}", error, description);
 	}
 
-	Window::Window(const WindowProps& props)
-		: m_Data(props)
+	Window::Window(const std::unique_ptr<RenderContext>& context, bool initContext)
+		: m_Data(context->m_Settings.WindowProps)
 	{
-		AGI_INFO("Creating window \"{}\" ({}, {})", props.Title, props.Width, props.Height);
+		AGI_INFO("Creating window \"{}\" ({}, {})", m_Data.Title, m_Data.Width, m_Data.Height);
 
 		if (s_GLFWWindowCount == 0)
 		{
@@ -30,12 +42,18 @@ namespace AGI {
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
-		glfwWindowHint(GLFW_VISIBLE, props.Visible);
-		glfwWindowHint(GLFW_MAXIMIZED, props.Maximise);
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+		glfwWindowHint(GLFW_RESIZABLE, m_Data.Resize);
+		glfwWindowHint(GLFW_VISIBLE, m_Data.Visible);
+		glfwWindowHint(GLFW_DECORATED, m_Data.Decorated);
+		glfwWindowHint(GLFW_MAXIMIZED, m_Data.Maximise);
+		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(context->m_Settings.PreferedAPI));
+		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;
 
 		glfwMakeContextCurrent(m_Window);
+
+		if (initContext)
+			context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(m_Data.VSync);

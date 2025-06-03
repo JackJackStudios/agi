@@ -28,16 +28,22 @@ namespace AGI {
 		unsigned int Width;
 		unsigned int Height;
 		bool VSync;
-		bool Maximise;
+		bool Resize;
 		bool Visible;
+		bool Decorated;
+		bool Maximise;
 
 		WindowProps(const std::string& title = "AGI-Window",
 			unsigned int width = 1280,
 			unsigned int height = 720,
 			bool vsync = true,
-			bool maximise = false,
-			bool visible = true)
-			: Title(title), Width(width), Height(height), VSync(vsync), Maximise(maximise), Visible(visible)
+			bool resize = true,
+			bool visible = true,
+			bool decorated = true,
+			bool maximise = false)
+			: Title(title), Width(width), Height(height), VSync(vsync), 
+			  Resize(resize), Visible(visible), Decorated(decorated), 
+			  Maximise(maximise)
 		{
 		}
 	};

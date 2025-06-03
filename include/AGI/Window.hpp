@@ -1,21 +1,17 @@
 #pragma once
 
-#include "agipch.hpp"
-
 #include "RenderContext.hpp"
 #include "Log.hpp"
 
 #include <glm/glm.hpp>
-
-struct GLFWwindow;
+#include <GLFW/glfw3.h>
 
 namespace AGI {
 
-	// Interface representing a desktop system based Window
 	class Window
 	{
 	public:
-		Window(const WindowProps& props);
+		Window(const std::unique_ptr<RenderContext>& context, bool initContext);
 		~Window();
 
 		void OnUpdate();
@@ -34,8 +30,8 @@ namespace AGI {
 
 		GLFWwindow* GetNativeWindow() const { return m_Window; }
 
-		static float GetTime();
-		static std::unique_ptr<Window> Create(const Settings& settings) { Log::Init(settings.MessageFunc); return std::make_unique<Window>(settings.WindowProps); }
+		static float GetTime() { return glfwGetTime(); }
+		static std::unique_ptr<Window> Create(const std::unique_ptr<RenderContext>& context, bool initContext = false) { return std::make_unique<Window>(context, initContext); }
 	private:
 		GLFWwindow* m_Window;
 		WindowProps m_Data;
