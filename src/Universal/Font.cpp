@@ -1,8 +1,6 @@
 #include "agipch.hpp"
 #include "AGI/Font.hpp"
 
-#ifdef AGI_USE_TEXT
-
 namespace AGI {
 
 	template<typename T, typename S, int N, msdf_atlas::GeneratorFunction<S, N> GenFunc>
@@ -122,5 +120,3 @@ namespace AGI {
 	}
 
 }
-
-#endif

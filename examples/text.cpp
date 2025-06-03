@@ -30,8 +30,8 @@ int main(void)
     settings.WindowProps.Height = 720;
     settings.WindowProps.Title = EXECUTABLE_NAME;
 
-    auto window = AGI::Window::Create(settings);
-    auto renderAPI = AGI::RenderContext::Init(settings);
+    auto renderAPI = AGI::RenderContext::Create(settings);
+    auto window = AGI::Window::Create(renderAPI, true);
 
     // Create VAO to hold buffers
     std::shared_ptr<AGI::VertexArray> squareVA = AGI::VertexArray::Create();

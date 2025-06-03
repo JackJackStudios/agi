@@ -6,7 +6,7 @@
 
 namespace AGI {
 
-	OpenGLContext::OpenGLContext(Settings settings)
+	void OpenGLContext::Init()
 	{
 		//typedef void* (* GLADloadproc)(const char *name);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -17,11 +17,16 @@ namespace AGI {
 		AGI_INFO("  Renderer: {0}", (char*)glGetString(GL_RENDERER));
 		AGI_INFO("  Version: {0}", (char*)glGetString(GL_VERSION));
 
-		if (settings.Blending)
+		if (m_Settings.Blending)
 		{
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
+	}
+
+	void OpenGLContext::Shutdown()
+	{
+
 	}
 
 	void OpenGLContext::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

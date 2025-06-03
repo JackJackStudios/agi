@@ -32,22 +32,22 @@ namespace AGI {
 		return APIType::OpenGL;
 	}
 
-	std::unique_ptr<RenderContext> RenderContext::Init(Settings settings)
+	std::unique_ptr<RenderContext> RenderContext::Create(Settings settings)
 	{
 		std::unique_ptr<RenderContext> newapi;
-		APIType newtype = settings.PreferedAPI == APIType::Guess ? BestAPI() : settings.PreferedAPI;
+		settings.PreferedAPI = settings.PreferedAPI == APIType::Guess ? BestAPI() : settings.PreferedAPI;
 
 		Log::Init(settings.MessageFunc);
 
-		switch (newtype)
+		switch (settings.PreferedAPI)
 		{
 			case APIType::Headless: AGI_VERIFY(false, "RendererAPI::Headless is currently not supported!"); return nullptr;
-			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>(settings);
+			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>();
 		}
 
 		s_CurrentContext = newapi.get();
 
-		newapi->m_APIType = newtype;
+		newapi->m_Settings = settings;
 		newapi->m_Freetype = msdfgen::initializeFreetype();
 		return std::move(newapi);
 	}

@@ -33,7 +33,17 @@ int main(void)
     InitLogging();
 
     // Create GLFW window and the AGI::RenderAPI
-    GLFWwindow* window = InitWindow(1280, 720);
+    AGI::Settings settings;
+    settings.PreferedAPI = AGI::APIType::Guess;
+    settings.MessageFunc = OnAGIMessage;
+    settings.Blending = true;
+
+    settings.WindowProps.Width = 1280;
+    settings.WindowProps.Height = 720;
+    settings.WindowProps.Title = EXECUTABLE_NAME;
+
+    auto renderAPI = AGI::RenderContext::Create(settings);
+    auto window = AGI::Window::Create(renderAPI, true);
 
     // Create VAO to hold buffers
     std::shared_ptr<AGI::VertexArray> squareVA = AGI::VertexArray::Create();
@@ -64,18 +74,17 @@ int main(void)
     std::shared_ptr<AGI::Shader> shader = AGI::Shader::Create(AGI::Shader::ProcessSource(shaderSrc));
 
     // Main loop now, you know the deal
-    while (!glfwWindowShouldClose(window))
+    while (!window->ShouldClose())
     {
-        s_RenderAPI->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        s_RenderAPI->Clear();
+        renderAPI->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
+        renderAPI->Clear();
+        
+        renderAPI->DrawIndexed(squareVA);
 
-        s_RenderAPI->DrawIndexed(squareVA);
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        window->OnUpdate();
     }
 
-    s_RenderAPI.reset();
-    glfwTerminate();
+    renderAPI->Shutdown();
+    window.reset();
     return 0;
 }
