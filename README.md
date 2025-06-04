@@ -30,6 +30,16 @@ To include AGI into a CMake project as static libraries:
 	* `nvrhi_window` for Vulkan (enabled when `AGI_USE_WINDOW` is `ON`)
 	* `nvrhi_text` for Vulkan (enabled when `AGI_USE_TEXT` is `ON`)
 
+To build AGI with tests and examples:
+
+```console
+git clone --recursive https://github.com/JackKnox/agi
+cd agi
+mkdir build && cd build
+cmake ..
+```
+You can then run `cmake --build .` to build the repository including tests and examples or use your prefered IDE to run the executables or tweek the source code.
+
 ## License
 
 AGI is licensed under the [MIT License](LICENSE).
