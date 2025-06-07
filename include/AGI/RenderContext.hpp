@@ -16,6 +16,23 @@ namespace AGI {
 	};
 
 	typedef void* (* OpenGLloaderFn)(const char *name);
+	typedef void(* 	WindowPosFunc) (glm::vec2 pos);
+	typedef void(* 	WindowSizeFunc) (glm::vec2 size);
+	typedef void(* 	WindowCloseFunc) ();
+	typedef void(* 	WindowRefreshFunc) ();
+	typedef void(* 	WindowFocusFunc) (bool focused);
+	typedef void(* 	WindowIconifyFunc) (bool iconified);
+	typedef void(* 	WindowMaximizeFunc) (bool maximized);
+	typedef void(* 	FramebufferSizeFunc) (glm::vec2 size);
+	typedef void(* 	ContentScaleFunc) (glm::vec2 scale);
+	typedef void(* 	MouseButtonFunc) (int button, int action, int mods);
+	typedef void(* 	CursorPosFunc) (glm::vec2 pos);
+	typedef void(* 	CursorEnterFunc) (bool entered);
+	typedef void(* 	ScrollFunc) (glm::vec2 offset);
+	typedef void(* 	KeyFunc) (int key, int scancode, int action, int mods);
+	typedef void(* 	CharFunc) (unsigned int codepoint);
+	typedef void(* 	CharModsFunc) (unsigned int codepoint, int mods);
+	typedef void(* 	DropFunc) (int path_count, const char *paths[]);
 
 	struct WindowProps
 	{
@@ -27,7 +44,25 @@ namespace AGI {
 		bool Visible;
 		bool Decorated;
 		bool Maximise;
-
+		
+		WindowPosFunc WindowPosCallback = nullptr;
+		WindowSizeFunc WindowSizeCallback = nullptr;
+		WindowCloseFunc WindowCloseCallback = nullptr;
+		WindowRefreshFunc WindowRefreshCallback = nullptr;
+		WindowFocusFunc WindowFocusCallback = nullptr;
+		WindowIconifyFunc WindowIconifyCallback = nullptr;
+		WindowMaximizeFunc WindowMaximizeCallback = nullptr;
+		FramebufferSizeFunc FramebufferSizeCallback = nullptr;
+		ContentScaleFunc WindowContentScaleCallback = nullptr;
+		MouseButtonFunc MouseButtonCallback = nullptr;
+		CursorPosFunc CursorPosCallback = nullptr;
+		CursorEnterFunc CursorEnterCallback = nullptr;
+		ScrollFunc ScrollCallback = nullptr;
+		KeyFunc KeyCallback = nullptr;
+		CharFunc CharCallback = nullptr;
+		CharModsFunc CharModsCallback = nullptr;
+		DropFunc DropCallback = nullptr;
+		
 		WindowProps(const std::string& title = "AGI-Window",
 			unsigned int width = 1280,
 			unsigned int height = 720,

@@ -1,6 +1,12 @@
 #include "agipch.hpp"
 #include "AGI/Window.hpp"
 
+#define SET_CALLBACK(NAME, ARGS, ...) \
+	glfwSet##NAME##(m_Window, []ARGS{ \
+		WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window); \
+		if (data.NAME) data.NAME(__VA_ARGS__); \
+	})
+
 namespace AGI {
 
 	namespace Utils {
@@ -59,50 +65,7 @@ namespace AGI {
 		SetVSync(m_Data.VSync);
 
 		// Set GLFW callbacks
-		//glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-		//{
-		//	WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
-		//	data.Width = width;
-		//	data.Height = height;
-		//
-		//	WindowResizeEvent event(width, height);
-		//	Application::Get().OnEvent(event);
-		//});
-		//
-		//glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-		//{
-		//	WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
-		//	WindowCloseEvent event;
-		//	Application::Get().OnEvent(event);
-		//});
-		//
-		//glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
-		//{
-		//	WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
-		//
-		//	MouseScrolledEvent event((float)xOffset, (float)yOffset);
-		//	Application::Get().OnEvent(event);
-		//});
-		//
-		//glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
-		//{
-		//	WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
-		//
-		//	MouseMovedEvent event((float)xPos, (float)yPos);
-		//	Application::Get().OnEvent(event);
-		//});
-		//
-		//glfwSetDropCallback(m_Window, [](GLFWwindow* window, int pathCount, const char* paths[])
-		//{
-		//	WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window);
-		//
-		//	std::vector<std::filesystem::path> filepaths(pathCount);
-		//	for (int i = 0; i < pathCount; i++)
-		//		filepaths[i] = paths[i];
-		//
-		//	WindowDropEvent event(std::move(filepaths));
-		//	Application::Get().OnEvent(event);
-		//});
+		InstallCallbacks();
 	}
 
 	Window::~Window()
@@ -164,6 +127,28 @@ namespace AGI {
 		glfwSetWindowTitle(m_Window, title.c_str());
 		m_Data.Title = title;
 	}
+
+    void Window::InstallCallbacks()
+    {
+		// Just try debugging this :)
+		SET_CALLBACK(WindowPosCallback, (GLFWwindow* window, int xpos, int ypos), { xpos, ypos });
+		SET_CALLBACK(WindowSizeCallback, (GLFWwindow* window, int width, int height), { width, height });
+		SET_CALLBACK(WindowCloseCallback, (GLFWwindow* window));
+		SET_CALLBACK(WindowRefreshCallback, (GLFWwindow* window));
+		SET_CALLBACK(WindowFocusCallback, (GLFWwindow* window, int focused), (bool)focused);
+		SET_CALLBACK(WindowIconifyCallback, (GLFWwindow* window, int iconifed), (bool)iconifed);
+		SET_CALLBACK(WindowMaximizeCallback, (GLFWwindow* window, int maximsed), (bool)maximsed);
+		SET_CALLBACK(FramebufferSizeCallback, (GLFWwindow* window, int width, int height), { width, height });
+		SET_CALLBACK(WindowContentScaleCallback, (GLFWwindow* window, float xscale, float yscale), { xscale, yscale });
+		SET_CALLBACK(MouseButtonCallback, (GLFWwindow* window, int button, int action, int mods), button, action, mods);
+		SET_CALLBACK(CursorPosCallback, (GLFWwindow* window, double xpos, double ypos), { xpos, ypos });
+		SET_CALLBACK(CursorEnterCallback, (GLFWwindow* window, int entered), (bool)entered);
+		SET_CALLBACK(ScrollCallback, (GLFWwindow* window, double xoffset, double yoffset), { xoffset, yoffset });
+		SET_CALLBACK(KeyCallback, (GLFWwindow* window, int key, int scancode, int action, int mods), key, scancode, action, mods);
+		SET_CALLBACK(CharCallback, (GLFWwindow* window, unsigned int codepoint), codepoint);
+		SET_CALLBACK(CharModsCallback, (GLFWwindow* window, unsigned int codepoint, int mods), codepoint, mods);
+		SET_CALLBACK(DropCallback, (GLFWwindow* window, int path_count, const char *paths[]), path_count, paths);
+    }
 
     NativeWindow Window::GetNativeWindow() const
     {
