@@ -165,4 +165,29 @@ namespace AGI {
 		m_Data.Title = title;
 	}
 
+    NativeWindow Window::GetNativeWindow() const
+    {
+#if defined(AGI_WINDOWS)
+    	return glfwGetWin32Window(m_Window);
+
+#elif defined(AGI_MACOSX)
+    	return glfwGetCocoaWindow(m_Window);
+
+#elif defined(AGI_LINUX)
+		if (glfwGetPlatform() == GLFW_PLATFORM_WAYLAND) 
+		{
+			return (void*)glfwGetWaylandWindow(m_Window); // wl_surface*
+		} 
+		else if (glfwGetPlatform() == GLFW_PLATFORM_X11) 
+		{
+			return (void*)(uintptr_t)glfwGetX11Window(m_Window); // cast X11 Window (unsigned long) to void*
+		} 
+		else 
+		{
+			return nullptr; // Unknown or unsupported backend
+		}
+#else
+    	return nullptr; // Unsupported platform
+#endif
+    }
 }

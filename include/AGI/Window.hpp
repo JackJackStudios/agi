@@ -8,6 +8,24 @@
 
 namespace AGI {
 
+#if defined(AGI_WINDOWS)
+    #define GLFW_EXPOSE_NATIVE_WIN32
+    #include <GLFW/glfw3native.h>
+    using NativeWindow = HWND;
+
+#elif defined(AGI_MACOSX)
+    #define GLFW_EXPOSE_NATIVE_COCOA
+    #include <GLFW/glfw3native.h>
+    using NativeWindow = void*; // NSWindow*
+
+#elif defined(AGI_LINUX)
+    #define GLFW_EXPOSE_NATIVE_X11
+    #define GLFW_EXPOSE_NATIVE_WAYLAND
+    #include <GLFW/glfw3native.h>
+    using NativeWindow = void*; // Will be X11 Window or wl_surface*
+
+#endif
+
 	class Window
 	{
 	public:
@@ -28,7 +46,7 @@ namespace AGI {
 		void SetVisable(bool enabled);
 		void SetTitle(const std::string& title);
 
-		GLFWwindow* GetNativeWindow() const { return m_Window; }
+		NativeWindow GetNativeWindow() const;
 
 		static float GetTime() { return glfwGetTime(); }
 		static std::unique_ptr<Window> Create(const std::unique_ptr<RenderContext>& context, bool initContext = false) { return std::make_unique<Window>(context, initContext); }
