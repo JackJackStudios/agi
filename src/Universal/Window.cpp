@@ -92,8 +92,7 @@ namespace AGI {
 
 	glm::vec2 Window::GetPosition() const
 	{
-		int x;
-		int y;
+		int x, y;
 		glfwGetWindowPos(m_Window, &x, &y);
 
 		return glm::vec2(x, y);
@@ -101,10 +100,8 @@ namespace AGI {
 
 	void Window::SetVSync(bool enabled)
 	{
-		if (enabled)
-			glfwSwapInterval(1);
-		else
-			glfwSwapInterval(0);
+		if (m_Data.VSync != enabled)
+			glfwSwapInterval((int)enabled);
 
 		m_Data.VSync = enabled;
 	}
@@ -127,6 +124,24 @@ namespace AGI {
 		glfwSetWindowTitle(m_Window, title.c_str());
 		m_Data.Title = title;
 	}
+
+    bool Window::IsKeyOn(int32_t key) const
+    {
+		return glfwGetKey(m_Window, key) == GLFW_PRESS;
+    }
+
+    bool Window::IsMouseButtonOn(int32_t button) const
+    {
+		return glfwGetMouseButton(m_Window, button) == GLFW_PRESS;
+    }
+
+    glm::vec2 Window::GetCursorPos() const
+    {
+		double xpos, ypos;
+		glfwGetCursorPos(m_Window, &xpos, &ypos);
+
+		return glm::vec2(xpos, ypos);
+    }
 
     void Window::InstallCallbacks()
     {

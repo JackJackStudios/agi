@@ -12,7 +12,7 @@ namespace AGI {
     #define GLFW_EXPOSE_NATIVE_WIN32
     #include <GLFW/glfw3native.h>
     using NativeWindow = HWND;
-
+ 
 #elif defined(AGI_MACOSX)
     #define GLFW_EXPOSE_NATIVE_COCOA
     #include <GLFW/glfw3native.h>
@@ -45,6 +45,10 @@ namespace AGI {
 		void SetVSync(bool enabled);
 		void SetVisable(bool enabled);
 		void SetTitle(const std::string& title);
+
+		bool IsKeyOn(int32_t key) const;
+		bool IsMouseButtonOn(int32_t button) const;
+		glm::vec2 GetCursorPos() const;
 
 		NativeWindow GetNativeWindow() const;
 
