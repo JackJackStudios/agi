@@ -51,6 +51,7 @@ namespace AGI {
 		glm::vec2 GetCursorPos() const;
 
 		NativeWindow GetNativeWindow() const;
+		GLFWwindow* GetGlfwWindow() const { return m_Window; }
 
 		// Events
 		void SetWindowPosCallback(WindowPosFunc callback) { m_Data.WindowPosCallback = callback; InstallCallbacks(); }
