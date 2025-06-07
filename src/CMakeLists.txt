@@ -6,4 +6,4 @@ target_precompile_headers(AGI PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include/ag
 
 target_include_directories(AGI PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")
 
-target_link_libraries(AGI PUBLIC glm glad glfw msdf-atlas-gen::msdf-atlas-gen)
+target_link_libraries(AGI PUBLIC glm glad glfw)
