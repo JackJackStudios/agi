@@ -12,19 +12,6 @@ option(AGI_EXAMPLES "Build AGI examples and it's dependencies" ON)
 set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "" FORCE)
 set(MSDFGEN_USE_SKIA OFF CACHE BOOL "" FORCE)
 
-add_compile_definitions(
-    $<$<PLATFORM_ID:Windows>:AGI_WINDOWS>
-    $<$<PLATFORM_ID:Linux>:AGI_LINUX>
-    $<$<PLATFORM_ID:Darwin>:AGI_MACOSX>
-
-    $<$<CONFIG:Debug>:AGI_DEBUG>
-    $<$<CONFIG:Release>:AGI_RELEASE>
-    $<$<CONFIG:RelWithDebInfo>:AGI_RELEASE>
-    $<$<CONFIG:MinSizeRel>:AGI_DIST>
-
-    AGI_VERSION="${PROJECT_VERSION}"
-)
-
 add_subdirectory(src)
 add_subdirectory(lib/glad)
 
