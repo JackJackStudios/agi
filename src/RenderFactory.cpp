@@ -14,9 +14,6 @@
 #include "OpenGL/OpenGLVertexArray.hpp"
 #include "OpenGL/OpenGLFramebuffer.hpp"
 
-#undef INFINITE
-#include "msdf-atlas-gen/msdf-atlas-gen.h"
-
 #define GENERATE_FACTORY(x, ...) switch (RenderContext::GetCurrentContext()->GetType()) \
                                  { \
 									case APIType::Headless: AGI_VERIFY(false, #x "::Headless is currently not supported!"); return nullptr;  \
@@ -48,7 +45,6 @@ namespace AGI {
 		s_CurrentContext = newapi.get();
 
 		newapi->m_Settings = settings;
-		newapi->m_Freetype = msdfgen::initializeFreetype();
 		return std::move(newapi);
 	}
 
@@ -127,7 +123,6 @@ namespace AGI {
 
 	void RenderContext::Shutdown(std::unique_ptr<RenderContext>& api)
 	{
-		msdfgen::deinitializeFreetype(api->m_Freetype);
 		api.reset();
 	}
 

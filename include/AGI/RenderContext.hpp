@@ -5,12 +5,6 @@
 
 #include <glm/glm.hpp>
 
-namespace msdfgen {
-
-	struct FreetypeHandle;
-
-};
-
 namespace AGI {
 
 	enum class APIType
@@ -77,7 +71,6 @@ namespace AGI {
 		static RenderContext* GetCurrentContext() { return s_CurrentContext; }
 	protected:
 		Settings m_Settings;
-		msdfgen::FreetypeHandle* m_Freetype;
 	private:
 		inline static RenderContext* s_CurrentContext;
 
