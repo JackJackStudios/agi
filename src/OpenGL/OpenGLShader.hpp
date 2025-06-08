@@ -3,7 +3,6 @@
 #include "AGI/Shader.hpp"
 
 #include <glm/glm.hpp>
-#include <glad/glad.h>
 
 namespace AGI {
 
@@ -26,9 +25,6 @@ namespace AGI {
 		virtual void SetFloat4(const std::string& name, const glm::vec4& value) override;
 		virtual void SetMat3(const std::string& name, const glm::mat3& matrix) override;
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) override;
-	private:
-		GLint GetLocation(const char* attr) const;
-		GLuint Compile(GLenum type, const std::string& source);
 	private:
 		uint32_t m_RendererID;
 	};

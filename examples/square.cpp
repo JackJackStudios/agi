@@ -38,12 +38,15 @@ int main(void)
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
-    settings.WindowProps.Width = 1280;
-    settings.WindowProps.Height = 720;
-    settings.WindowProps.Title = EXECUTABLE_NAME;
+    AGI::WindowProps windowProps;
+    windowProps.Width = 1280;
+    windowProps.Height = 720;
+    windowProps.Title = EXECUTABLE_NAME;
 
     auto renderAPI = AGI::RenderContext::Create(settings);
-    auto window = AGI::Window::Create(renderAPI, true);
+    auto window = AGI::Window::Create(windowProps, renderAPI);
+
+    renderAPI->Init();
 
     // Create VAO to hold buffers
     std::shared_ptr<AGI::VertexArray> squareVA = AGI::VertexArray::Create();

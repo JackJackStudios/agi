@@ -1,6 +1,8 @@
 #include "agipch.hpp"
 #include "OpenGLTexture.hpp"
 
+#include <glad/glad.h>
+
 namespace AGI {
 
     namespace Utils {

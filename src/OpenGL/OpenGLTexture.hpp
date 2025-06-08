@@ -2,8 +2,6 @@
 
 #include "AGI/Texture.hpp"
 
-#include <glad/glad.h>
-
 namespace AGI {
 
 	class OpenGLTexture : public Texture
