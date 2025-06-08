@@ -1,13 +1,5 @@
 include(FetchContent)
 
-function(add_example example_name)
-add_executable(${example_name} "${example_name}.cpp")
-
-target_compile_definitions(${example_name} PUBLIC EXECUTABLE_NAME="${example_name}")
-target_link_libraries(${example_name} PRIVATE AGI spdlog::spdlog)
-target_include_directories(${example_name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${stb_SOURCE_DIR})
-endfunction()
-
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets"
      DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -30,5 +22,9 @@ file(GLOB_RECURSE EXAMPLES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp")
 
 foreach(EXAMPLE ${EXAMPLES})
 get_filename_component(EXAMPLE_TARGET ${EXAMPLE} NAME_WE)
-add_example(${EXAMPLE_TARGET})
+add_executable(${EXAMPLE_TARGET} "${EXAMPLE_TARGET}.cpp")
+
+target_compile_definitions(${EXAMPLE_TARGET} PUBLIC EXECUTABLE_NAME="${EXAMPLE_TARGET}")
+target_link_libraries(${EXAMPLE_TARGET} PRIVATE agi agi_ext agi_opengl spdlog::spdlog)
+target_include_directories(${EXAMPLE_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${stb_SOURCE_DIR})
 endforeach()

@@ -13,7 +13,7 @@ set(MSDF_ATLAS_USE_VCPKG OFF CACHE BOOL "" FORCE)
 set(MSDFGEN_USE_SKIA OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(src)
-add_subdirectory(lib/glad)
+add_subdirectory(agi-ext)
 
 if (AGI_EXAMPLES)
     add_subdirectory(examples)
@@ -25,10 +25,3 @@ FetchContent_Declare(
     GIT_TAG        master
 )
 FetchContent_MakeAvailable(glm)
-
-FetchContent_Declare(
-    GLFW
-    GIT_REPOSITORY https://github.com/glfw/glfw.git
-    GIT_TAG        3.4
-)
-FetchContent_MakeAvailable(GLFW)

@@ -1,14 +1,11 @@
-file(GLOB_RECURSE SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp")
-add_library(AGI STATIC ${SOURCE_DIR})
+# Global interface for other backends
+file(GLOB SOURCE_DIR "Log.cpp" "RenderFactory.cpp" "Utils.cpp")
+add_library(agi STATIC ${SOURCE_DIR})
 
-target_include_directories(AGI PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_precompile_headers(AGI PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include/agipch.hpp")
+target_include_directories(agi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")
+target_link_libraries(agi PUBLIC glm)
 
-target_include_directories(AGI PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")
-
-target_link_libraries(AGI PUBLIC glm glad glfw)
-
-target_compile_definitions(AGI PUBLIC
+target_compile_definitions(agi PUBLIC
     $<$<PLATFORM_ID:Windows>:AGI_WINDOWS>
     $<$<PLATFORM_ID:Linux>:AGI_LINUX>
     $<$<PLATFORM_ID:Darwin>:AGI_MACOSX>
@@ -20,3 +17,14 @@ target_compile_definitions(AGI PUBLIC
 
     AGI_VERSION="${PROJECT_VERSION}"
 )
+
+# OpenGL API
+add_subdirectory(OpenGL/glad)
+
+file(GLOB_RECURSE OPENGL_SOURCE "OpenGL/**.cpp")
+add_library(agi_opengl STATIC ${OPENGL_SOURCE})
+
+target_include_directories(agi_opengl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_precompile_headers(agi_opengl PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include/agipch.hpp")
+
+target_link_libraries(agi_opengl PRIVATE agi glad)

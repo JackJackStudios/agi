@@ -2,14 +2,18 @@
 #include "OpenGLRenderAPI.hpp"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 namespace AGI {
 
 	void OpenGLContext::Init()
 	{
 		//typedef void* (* GLADloadproc)(const char *name);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		int status;
+		if ((bool)m_Settings.LoaderFunc)
+			status = gladLoadGLLoader((GLADloadproc)m_Settings.LoaderFunc);
+		else 
+			status = gladLoadGL();
+
 		AGI_VERIFY(status, "Failed to initialize Glad!");
 
 		AGI_INFO("OpenGL Info:");

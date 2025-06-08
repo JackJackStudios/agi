@@ -16,10 +16,10 @@ namespace AGI {
     class Log
     {
     public:
-        static void Init(MessageCallbackFn logfunc);
+        static void Init(MessageCallbackFn logfunc) { if (!IsInitialized()) s_LogCallback = logfunc; }
         
-        static void LogToClient(std::string_view message, LogLevel level);
-        static void LogToLibrary(std::string_view message, LogLevel level);
+        static void LogToClient(std::string_view message, LogLevel level) { s_LogCallback(message, level); }
+        static void LogToLibrary(std::string_view message, LogLevel level) { std::cout << "AGI: " << message << std::endl; }
         
         static void GenericLog(std::string_view message, LogLevel level) { if (!IsInitialized()) LogToLibrary(message, level); else LogToClient(message, level); }
 
