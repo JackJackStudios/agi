@@ -1,4 +1,5 @@
 # AGI
+[![CMake on multiple platforms](https://github.com/JackJackStudios/agi/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/JackJackStudios/agi/actions/workflows/cmake-multi-platform.yml)
 
 ## Introduction
 AGI (**A**gnostic **G**raphics **I**interface) is a library that implements a common abstraction layer over OpenGl (Vulkan comming soon!) along with some extra utilities for windowing and text rendering. 
