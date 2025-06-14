@@ -32,9 +32,10 @@ int main(void)
     // Init spdlog for AGI callbacks
     InitLogging();
 
-    // Create GLFW window and the AGI::RenderAPI
+    // Create GLFW window and the AGI::RenderContext
     AGI::Settings settings;
     settings.PreferedAPI = AGI::APIType::Guess;
+    settings.LoaderFunc = AGI::Window::LoaderFunc;
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
@@ -43,13 +44,13 @@ int main(void)
     windowProps.Height = 720;
     windowProps.Title = EXECUTABLE_NAME;
 
-    auto renderAPI = AGI::RenderContext::Create(settings);
-    auto window = AGI::Window::Create(windowProps, renderAPI);
+    auto context = AGI::RenderContext::Create(settings);
+    auto window = AGI::Window::Create(windowProps, context);
 
-    renderAPI->Init();
+    context->Init();
 
     // Create VAO to hold buffers
-    std::shared_ptr<AGI::VertexArray> squareVA = AGI::VertexArray::Create();
+    std::shared_ptr<AGI::VertexArray> squareVA = context->CreateVertexArray();
 
     // This is the data that goes into the VBO
     float squareVertices[3 * 4] = {
@@ -63,31 +64,33 @@ int main(void)
     uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 
     // Create VBO and add to the VAO
-    std::shared_ptr<AGI::VertexBuffer> squareVB = AGI::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
-    squareVB->SetLayout({ 
-        { AGI::ShaderDataType::Float3, "a_Position" } 
-    });
+    AGI::BufferLayout layout = {
+        { AGI::ShaderDataType::Float3, "a_Position" }
+    };
+
+    std::shared_ptr<AGI::VertexBuffer> squareVB = context->CreateVertexBuffer(4, layout);
+    squareVB->SetData(squareVertices, sizeof(squareVertices));
     squareVA->AddVertexBuffer(squareVB);
 
     // Create IBO and add to the VAO
-    std::shared_ptr<AGI::IndexBuffer> squareIB = AGI::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+    std::shared_ptr<AGI::IndexBuffer> squareIB = context->CreateIndexBuffer(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
     squareVA->SetIndexBuffer(squareIB);
 
     // Process shader source, compile and link
-    std::shared_ptr<AGI::Shader> shader = AGI::Shader::Create(AGI::Shader::ProcessSource(shaderSrc));
+    std::shared_ptr<AGI::Shader> shader = context->CreateShader(AGI::Shader::ProcessSource(shaderSrc));
 
     // Main loop now, you know the deal
     while (!window->ShouldClose())
     {
-        renderAPI->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        renderAPI->Clear();
+        context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
+        context->Clear();
         
-        renderAPI->DrawIndexed(squareVA);
+        context->DrawIndexed(squareVA);
 
         window->OnUpdate();
     }
 
-    renderAPI->Shutdown();
+    context->Shutdown();
     window.reset();
     return 0;
 }

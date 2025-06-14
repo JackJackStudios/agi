@@ -2,7 +2,6 @@
 
 #include <AGI/agi.hpp>
 #include <AGI/Window.hpp>
-#include <AGI/ImGuiLayer.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -36,7 +35,7 @@ void InitLogging()
     s_ClientLogger->flush_on(spdlog::level::trace);
 }
 
-std::shared_ptr<AGI::Texture> LoadTexture(const std::filesystem::path& path)
+std::shared_ptr<AGI::Texture> LoadTexture(const std::unique_ptr<AGI::RenderContext>& context, const std::filesystem::path& path)
 {
     int width, height, channels;
 
@@ -50,7 +49,7 @@ std::shared_ptr<AGI::Texture> LoadTexture(const std::filesystem::path& path)
     textureSpec.Height = height;
     textureSpec.Format = AGI::ChannelsToImageFormat(channels);
 
-    std::shared_ptr<AGI::Texture> texture = AGI::Texture::Create(textureSpec);
+    std::shared_ptr<AGI::Texture> texture = context->CreateTexture(textureSpec);
     texture->SetData(data, width * height * channels);
 
     return texture;

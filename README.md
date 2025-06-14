@@ -22,13 +22,13 @@ AGI can be configured as a suite of test or example programs or a set of static 
 To include AGI into a CMake project as static libraries:
 
 1. Add this repository as a submodule
-2. Add a `add_subdirectory(agi)` call to your CMakeLists.txt
-3. Add dependencies to the necessary targets: 
-	* `AGI` for the interface headers, common utilities, and validation
-	* `AGI_opengl` for the OpenGL abstraction
-	* `AGI_vulkan` for the Vulkan abstraction
-	* `nvrhi_window` for Vulkan (enabled when `AGI_USE_WINDOW` is `ON`)
-	* `nvrhi_text` for Vulkan (enabled when `AGI_USE_TEXT` is `ON`)
+2. Enable/disable AGI-ext with setting `AGI_EXTENSIONS`
+3. Add a `add_subdirectory(agi)` call to your CMakeLists.txt
+4. Add dependencies to the necessary targets: 
+	* `agi` for the interface headers, common utilities, and validation
+	* `agi_opengl` for the OpenGL abstraction
+	* `agi_window` for the windowing extension 
+	* `agi_imgui` for the ImGui extension
 
 To build AGI with tests and examples:
 

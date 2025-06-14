@@ -78,7 +78,7 @@ namespace AGI {
 
         static GLenum GetWrappingType(TextureSpecification spec)
         {
-            switch (spec.WrappingType)
+            switch (spec.Wrapping)
             {
                 case WrappingType::None: return GL_CLAMP_TO_EDGE;
                 case WrappingType::ClampBorder: return GL_CLAMP_TO_BORDER;

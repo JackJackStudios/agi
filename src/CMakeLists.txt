@@ -1,5 +1,5 @@
 # Global interface for other backends
-file(GLOB SOURCE_DIR "Log.cpp" "RenderFactory.cpp" "Utils.cpp")
+file(GLOB SOURCE_DIR "Utils.cpp")
 add_library(agi STATIC ${SOURCE_DIR})
 
 target_include_directories(agi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")

@@ -16,7 +16,7 @@ namespace AGI {
 		Headless = 0,
 		Guess,
 		OpenGL,
-		Vulkan, // Coming soon :)
+		//Vulkan, Coming soon :)
 	};
 
 	typedef void* (* LoaderFn)(const char *name);
@@ -30,6 +30,7 @@ namespace AGI {
 	};
 
 	APIType BestAPI();
+	class Window;
 
 	class RenderContext
 	{
@@ -61,7 +62,6 @@ namespace AGI {
 	private:
 		inline static RenderContext* s_CurrentContext;
 
-		friend class Font;
-		friend class Window;
+		friend class ::AGI::Window;
 	};
 }

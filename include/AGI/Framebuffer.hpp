@@ -4,8 +4,6 @@ namespace AGI {
 
 	enum class FramebufferTextureFormat
 	{
-		None = 0,
-
 		// Color
 		RGBA8,
 		RED_INTEGER,

@@ -24,7 +24,7 @@ namespace AGI {
 		bool LinearFiltering = false;
 
 		ImageFormat Format = ImageFormat::RGB;
-		WrappingType WrappingType = WrappingType::Repeat;
+		WrappingType Wrapping = WrappingType::Repeat;
 		uint16_t BytesPerChannel = 8;
 	};
 
