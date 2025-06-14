@@ -1,7 +1,21 @@
 #include "AGI/Window.hpp"
 
+using AGIWindow = AGI::Window;
+
+#if defined(AGI_WINDOWS)
+    #define GLFW_EXPOSE_NATIVE_WIN32
+    #include <GLFW/glfw3native.h>
+#elif defined(AGI_MACOSX)
+    #define GLFW_EXPOSE_NATIVE_COCOA
+    #include <GLFW/glfw3native.h>
+#elif defined(AGI_LINUX)
+    #define GLFW_EXPOSE_NATIVE_X11
+    #define GLFW_EXPOSE_NATIVE_WAYLAND
+    #include <GLFW/glfw3native.h>
+#endif
+
 #define SET_CALLBACK(NAME, ARGS, ...) \
-	glfwSet##NAME##(m_Window, []ARGS{ \
+	glfwSet##NAME(m_Window, []ARGS{ \
 		WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window); \
 		if (data.NAME) data.NAME(__VA_ARGS__); \
 	})
@@ -33,7 +47,7 @@ namespace AGI {
 		AGI_ERROR("({0}): {1}", error, description);
 	}
 
-	Window::Window(const WindowProps& windowProps, const std::unique_ptr<RenderContext>& context)
+	AGIWindow::Window(const WindowProps& windowProps, const std::unique_ptr<RenderContext>& context)
 		: m_Data(windowProps)
 	{
 		AGI_INFO("Creating window \"{}\" ({}, {})", m_Data.Title, m_Data.Width, m_Data.Height);
@@ -63,7 +77,7 @@ namespace AGI {
 		InstallCallbacks();
 	}
 
-	Window::~Window()
+	AGIWindow::~Window()
 	{
 		glfwDestroyWindow(m_Window);
 		--s_GLFWWindowCount;
@@ -74,18 +88,18 @@ namespace AGI {
 		}
 	}
 
-	void Window::OnUpdate()
+	void AGIWindow::OnUpdate()
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
 	}
 
-	bool Window::ShouldClose() const
+	bool AGIWindow::ShouldClose() const
 	{
 		return glfwWindowShouldClose(m_Window);
 	}
 
-	glm::vec2 Window::GetPosition() const
+	glm::vec2 AGIWindow::GetPosition() const
 	{
 		int x, y;
 		glfwGetWindowPos(m_Window, &x, &y);
@@ -93,7 +107,7 @@ namespace AGI {
 		return glm::vec2(x, y);
 	}
 
-	void Window::SetVSync(bool enabled)
+	void AGIWindow::SetVSync(bool enabled)
 	{
 		if (m_Data.VSync != enabled)
 			glfwSwapInterval((int)enabled);
@@ -101,12 +115,12 @@ namespace AGI {
 		m_Data.VSync = enabled;
 	}
 
-	bool Window::IsVSync() const
+	bool AGIWindow::IsVSync() const
 	{
 		return m_Data.VSync;
 	}
 
-	void Window::SetVisable(bool enabled)
+	void AGIWindow::SetVisable(bool enabled)
 	{
 		if (enabled)
 			glfwShowWindow(m_Window);
@@ -114,23 +128,23 @@ namespace AGI {
 			glfwHideWindow(m_Window);
 	}
 
-	void Window::SetTitle(const std::string& title)
+	void AGIWindow::SetTitle(const std::string& title)
 	{
 		glfwSetWindowTitle(m_Window, title.c_str());
 		m_Data.Title = title;
 	}
 
-    bool Window::IsKeyOn(int32_t key) const
+    bool AGIWindow::IsKeyOn(int32_t key) const
     {
 		return glfwGetKey(m_Window, key) == GLFW_PRESS;
     }
 
-    bool Window::IsMouseButtonOn(int32_t button) const
+    bool AGIWindow::IsMouseButtonOn(int32_t button) const
     {
 		return glfwGetMouseButton(m_Window, button) == GLFW_PRESS;
     }
 
-    glm::vec2 Window::GetCursorPos() const
+    glm::vec2 AGIWindow::GetCursorPos() const
     {
 		double xpos, ypos;
 		glfwGetCursorPos(m_Window, &xpos, &ypos);
@@ -138,7 +152,7 @@ namespace AGI {
 		return glm::vec2(xpos, ypos);
     }
 
-    void Window::InstallCallbacks()
+    void AGIWindow::InstallCallbacks()
     {
 		// Just try debugging this :)
 		SET_CALLBACK(WindowPosCallback, (GLFWwindow* window, int xpos, int ypos), { xpos, ypos });
@@ -160,7 +174,7 @@ namespace AGI {
 		SET_CALLBACK(DropCallback, (GLFWwindow* window, int path_count, const char *paths[]), path_count, paths);
     }
 
-    NativeWindow Window::GetNativeWindow() const
+    void* AGIWindow::GetNativeWindow() const
     {
 #if defined(AGI_WINDOWS)
     	return glfwGetWin32Window(m_Window);

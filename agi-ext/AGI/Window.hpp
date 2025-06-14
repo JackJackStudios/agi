@@ -9,24 +9,6 @@
 
 namespace AGI {
 
-#if defined(AGI_WINDOWS)
-    #define GLFW_EXPOSE_NATIVE_WIN32
-    #include <GLFW/glfw3native.h>
-    using NativeWindow = HWND;
- 
-#elif defined(AGI_MACOSX)
-    #define GLFW_EXPOSE_NATIVE_COCOA
-    #include <GLFW/glfw3native.h>
-    using NativeWindow = void*; // NSWindow*
-
-#elif defined(AGI_LINUX)
-    #define GLFW_EXPOSE_NATIVE_X11
-    #define GLFW_EXPOSE_NATIVE_WAYLAND
-    #include <GLFW/glfw3native.h>
-    using NativeWindow = void*; // Will be X11 Window or wl_surface*
-
-#endif
-
 	typedef void(* 	WindowPosFunc) (glm::vec2 pos);
 	typedef void(* 	WindowSizeFunc) (glm::vec2 size);
 	typedef void(* 	WindowCloseFunc) ();
@@ -113,7 +95,7 @@ namespace AGI {
 		bool IsMouseButtonOn(int32_t button) const;
 		glm::vec2 GetCursorPos() const;
 
-		NativeWindow GetNativeWindow() const;
+		void* GetNativeWindow() const;
 		GLFWwindow* GetGlfwWindow() const { return m_Window; }
 
 		// Events
