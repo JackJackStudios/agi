@@ -2,11 +2,11 @@
 
 #include "AGI/RenderContext.hpp"
 
-#include "OpenGL/OpenGLBuffer.hpp"
-#include "OpenGL/OpenGLShader.hpp"
-#include "OpenGL/OpenGLTexture.hpp"
-#include "OpenGL/OpenGLVertexArray.hpp"
-#include "OpenGL/OpenGLFramebuffer.hpp"
+#include "OpenGLBuffer.hpp"
+#include "OpenGLShader.hpp"
+#include "OpenGLTexture.hpp"
+#include "OpenGLVertexArray.hpp"
+#include "OpenGLFramebuffer.hpp"
 
 namespace AGI {
 
