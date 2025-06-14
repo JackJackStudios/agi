@@ -50,7 +50,7 @@ namespace AGI {
 		glfwWindowHint(GLFW_VISIBLE, m_Data.Visible);
 		glfwWindowHint(GLFW_DECORATED, m_Data.Decorated);
 		glfwWindowHint(GLFW_MAXIMIZED, m_Data.Maximise);
-		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(context->m_Settings.PreferedAPI));
+		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(context->GetType()));
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;
 

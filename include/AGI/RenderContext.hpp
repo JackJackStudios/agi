@@ -30,7 +30,6 @@ namespace AGI {
 	};
 
 	APIType BestAPI();
-	class Window;
 
 	class RenderContext
 	{
@@ -61,7 +60,5 @@ namespace AGI {
 		Settings m_Settings;
 	private:
 		inline static RenderContext* s_CurrentContext;
-
-		friend class ::AGI::Window;
 	};
 }
