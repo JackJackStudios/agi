@@ -34,8 +34,6 @@ namespace AGI {
 		virtual int GetHeight() = 0;
 
 		virtual uint32_t GetAttachmentID(uint32_t index = 0) = 0;
-		
-		static std::shared_ptr<Framebuffer> Create(const FramebufferSpecification& spec);
 	};
 
 }

@@ -33,6 +33,5 @@ namespace AGI {
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
 
 		static ShaderSources ProcessSource(const std::string& source);
-		static std::shared_ptr<Shader> Create(const ShaderSources& shaderSources);
 	};
 }
