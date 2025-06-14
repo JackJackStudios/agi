@@ -3,6 +3,7 @@
 #include "agipch.hpp"
 
 #include "AGI/Window.hpp"
+#include <imgui.h>
 
 namespace AGI {
 

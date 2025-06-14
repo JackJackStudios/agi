@@ -13,8 +13,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(GLFW)
 
-file(GLOB_RECURSE EXT_SOURCE "AGI/**.cpp")
-add_library(agi_ext STATIC ${EXT_SOURCE})
+add_library(agi_window STATIC "src/Window.cpp")
+target_include_directories(agi_window PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(agi_window PUBLIC agi glfw)
 
-target_include_directories(agi_ext PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(agi_ext PUBLIC agi glfw ImGui)
+add_library(agi_imgui STATIC "src/ImGuiLayer.cpp")
+target_include_directories(agi_imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(agi_imgui PUBLIC agi ImGui)

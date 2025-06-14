@@ -136,7 +136,7 @@ namespace AGI {
 		void SetDropCallback(DropFunc callback) { m_Data.DropCallback = callback; InstallCallbacks(); }
 
 		static float GetTime() { return glfwGetTime(); }
-		static void* LoaderFunc(const char* name) { return glfwGetProcAddress(name); }
+		static void* LoaderFunc(const char* name) { return (void*)glfwGetProcAddress(name); }
 		static std::unique_ptr<Window> Create(const WindowProps& windowProps, const std::unique_ptr<RenderContext>& context) { return std::make_unique<Window>(windowProps, context); }
 	private:
 		void InstallCallbacks();
