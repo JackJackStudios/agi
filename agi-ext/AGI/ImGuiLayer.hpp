@@ -2,7 +2,7 @@
 
 #include "agipch.hpp"
 
-#include "AGI/Window.hpp"
+#include <AGI/Window.hpp>
 #include <imgui.h>
 
 namespace AGI {
@@ -10,7 +10,7 @@ namespace AGI {
     class ImGuiLayer
     {
     public:
-        ImGuiLayer(std::unique_ptr<Window>& window);
+        ImGuiLayer(std::unique_ptr<Window>& window, bool installCallbacks = true);
         ~ImGuiLayer();
 
         void BeginFrame(bool dockspace = false);

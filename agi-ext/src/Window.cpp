@@ -16,8 +16,8 @@ using AGIWindow = AGI::Window;
 
 #define SET_CALLBACK(NAME, ARGS, ...) \
 	glfwSet##NAME(m_Window, []ARGS{ \
-		WindowProps& data = *(WindowProps*)glfwGetWindowUserPointer(window); \
-		if (data.NAME) data.NAME(__VA_ARGS__); \
+		Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); \
+		if (agiwindow->m_Data.NAME) agiwindow->m_Data.NAME(agiwindow, __VA_ARGS__); \
 	})
 
 namespace AGI {
@@ -70,7 +70,7 @@ namespace AGI {
 
 		glfwMakeContextCurrent(m_Window);
 
-		glfwSetWindowUserPointer(m_Window, &m_Data);
+		glfwSetWindowUserPointer(m_Window, this);
 		SetVSync(m_Data.VSync);
 
 		// Set GLFW callbacks

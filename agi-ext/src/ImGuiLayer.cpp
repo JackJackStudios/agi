@@ -8,7 +8,7 @@
 
 namespace AGI {
 
-    ImGuiLayer::ImGuiLayer(std::unique_ptr<Window>& window)
+    ImGuiLayer::ImGuiLayer(std::unique_ptr<Window>& window, bool installCallbacks)
     {
         // Setup Dear ImGui context
 		ImGui::CreateContext();
@@ -23,7 +23,7 @@ namespace AGI {
 		ImGui::StyleColorsDark();
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), true);
+		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), installCallbacks);
 		ImGui_ImplOpenGL3_Init("#version 330");
     }
 
@@ -36,13 +36,14 @@ namespace AGI {
 
 	void ImGuiLayer::BeginFrame(bool dockspace)
 	{
+        m_Dockspace = dockspace;
+		
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		
 		if (dockspace)
 		{
-            m_Dockspace = true;
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar;
 
 			ImGuiViewport* viewport = ImGui::GetMainViewport();

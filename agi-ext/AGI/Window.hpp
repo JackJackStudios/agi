@@ -9,23 +9,24 @@
 
 namespace AGI {
 
-	typedef void(* 	WindowPosFunc) (glm::vec2 pos);
-	typedef void(* 	WindowSizeFunc) (glm::vec2 size);
-	typedef void(* 	WindowCloseFunc) ();
-	typedef void(* 	WindowRefreshFunc) ();
-	typedef void(* 	WindowFocusFunc) (bool focused);
-	typedef void(* 	WindowIconifyFunc) (bool iconified);
-	typedef void(* 	WindowMaximizeFunc) (bool maximized);
-	typedef void(* 	FramebufferSizeFunc) (glm::vec2 size);
-	typedef void(* 	ContentScaleFunc) (glm::vec2 scale);
-	typedef void(* 	MouseButtonFunc) (int button, int action, int mods);
-	typedef void(* 	CursorPosFunc) (glm::vec2 pos);
-	typedef void(* 	CursorEnterFunc) (bool entered);
-	typedef void(* 	ScrollFunc) (glm::vec2 offset);
-	typedef void(* 	KeyFunc) (int key, int scancode, int action, int mods);
-	typedef void(* 	CharFunc) (unsigned int codepoint);
-	typedef void(* 	CharModsFunc) (unsigned int codepoint, int mods);
-	typedef void(* 	DropFunc) (int path_count, const char *paths[]);
+	class Window;
+	typedef void(* 	WindowPosFunc) (Window* window, glm::vec2 pos);
+	typedef void(* 	WindowSizeFunc) (Window* window, glm::vec2 size);
+	typedef void(* 	WindowCloseFunc) (Window* window);
+	typedef void(* 	WindowRefreshFunc) (Window* window);
+	typedef void(* 	WindowFocusFunc) (Window* window, bool focused);
+	typedef void(* 	WindowIconifyFunc) (Window* window, bool iconified);
+	typedef void(* 	WindowMaximizeFunc) (Window* window, bool maximized);
+	typedef void(* 	FramebufferSizeFunc) (Window* window, glm::vec2 size);
+	typedef void(* 	ContentScaleFunc) (Window* window, glm::vec2 scale);
+	typedef void(* 	MouseButtonFunc) (Window* window, int button, int action, int mods);
+	typedef void(* 	CursorPosFunc) (Window* window, glm::vec2 pos);
+	typedef void(* 	CursorEnterFunc) (Window* window, bool entered);
+	typedef void(* 	ScrollFunc) (Window* window, glm::vec2 offset);
+	typedef void(* 	KeyFunc) (Window* window, int key, int scancode, int action, int mods);
+	typedef void(* 	CharFunc) (Window* window, unsigned int codepoint);
+	typedef void(* 	CharModsFunc) (Window* window, unsigned int codepoint, int mods);
+	typedef void(* 	DropFunc) (Window* window, int path_count, const char *paths[]);
 
 	struct WindowProps
 	{
@@ -81,6 +82,7 @@ namespace AGI {
 
 		inline uint32_t GetWidth() const { return m_Data.Width; }
 		inline uint32_t GetHeight() const { return m_Data.Height; }
+		const WindowProps& GetProperties() const { return m_Data; }
 		glm::vec2 GetPosition() const;
 
 		// Window attributes

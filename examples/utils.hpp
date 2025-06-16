@@ -2,6 +2,7 @@
 
 #include <AGI/agi.hpp>
 #include <AGI/Window.hpp>
+#include <AGI/ImGuiLayer.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

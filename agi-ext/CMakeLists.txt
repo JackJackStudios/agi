@@ -19,4 +19,4 @@ target_link_libraries(agi_window PUBLIC agi glfw)
 
 add_library(agi_imgui STATIC "src/ImGuiLayer.cpp")
 target_include_directories(agi_imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(agi_imgui PUBLIC agi ImGui)
+target_link_libraries(agi_imgui PUBLIC agi agi_window ImGui)
