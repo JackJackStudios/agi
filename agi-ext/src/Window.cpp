@@ -14,13 +14,6 @@ using AGIWindow = AGI::Window;
     #include <GLFW/glfw3native.h>
 #endif
 
-#define SET_CALLBACK(NAME, PARAMS, ...) \
-	glfwSet##NAME(m_Window, [](PARAMS) { \
-		Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); \
-		if (agiwindow->m_Data.NAME) \
-			agiwindow->m_Data.NAME(agiwindow, ##__VA_ARGS__); \
-	})
-
 namespace AGI {
 
 	namespace Utils {
@@ -156,23 +149,23 @@ namespace AGI {
     void AGIWindow::InstallCallbacks()
     {
 		// Just try debugging this :)
-		SET_CALLBACK(WindowPosCallback, (GLFWwindow* window, int xpos, int ypos), { xpos, ypos });
-		SET_CALLBACK(WindowSizeCallback, (GLFWwindow* window, int width, int height), { width, height });
-		SET_CALLBACK(WindowCloseCallback, (GLFWwindow* window));
-		SET_CALLBACK(WindowRefreshCallback, (GLFWwindow* window));
-		SET_CALLBACK(WindowFocusCallback, (GLFWwindow* window, int focused), (bool)focused);
-		SET_CALLBACK(WindowIconifyCallback, (GLFWwindow* window, int iconifed), (bool)iconifed);
-		SET_CALLBACK(WindowMaximizeCallback, (GLFWwindow* window, int maximsed), (bool)maximsed);
-		SET_CALLBACK(FramebufferSizeCallback, (GLFWwindow* window, int width, int height), { width, height });
-		SET_CALLBACK(WindowContentScaleCallback, (GLFWwindow* window, float xscale, float yscale), { xscale, yscale });
-		SET_CALLBACK(MouseButtonCallback, (GLFWwindow* window, int button, int action, int mods), button, action, mods);
-		SET_CALLBACK(CursorPosCallback, (GLFWwindow* window, double xpos, double ypos), { xpos, ypos });
-		SET_CALLBACK(CursorEnterCallback, (GLFWwindow* window, int entered), (bool)entered);
-		SET_CALLBACK(ScrollCallback, (GLFWwindow* window, double xoffset, double yoffset), { xoffset, yoffset });
-		SET_CALLBACK(KeyCallback, (GLFWwindow* window, int key, int scancode, int action, int mods), key, scancode, action, mods);
-		SET_CALLBACK(CharCallback, (GLFWwindow* window, unsigned int codepoint), codepoint);
-		SET_CALLBACK(CharModsCallback, (GLFWwindow* window, unsigned int codepoint, int mods), codepoint, mods);
-		SET_CALLBACK(DropCallback, (GLFWwindow* window, int path_count, const char *paths[]), path_count, paths);
+		glfwSetWindowPosCallback(m_Window,          [](GLFWwindow* window, int xpos, int ypos)                          { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.WindowPosCallback)          agiwindow->m_Data.WindowPosCallback(agiwindow, { xpos, ypos }); });
+		glfwSetWindowSizeCallback(m_Window,         [](GLFWwindow* window, int width, int height)                       { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.WindowSizeCallback)         agiwindow->m_Data.WindowSizeCallback(agiwindow, { width, height }); });
+		glfwSetWindowCloseCallback(m_Window,        [](GLFWwindow* window)                                              { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.WindowCloseCallback)        agiwindow->m_Data.WindowCloseCallback(agiwindow); });
+		glfwSetWindowRefreshCallback(m_Window,      [](GLFWwindow* window)                                              { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.WindowRefreshCallback)      agiwindow->m_Data.WindowRefreshCallback(agiwindow); });
+		glfwSetWindowFocusCallback(m_Window,        [](GLFWwindow* window, int focused)                                 { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.WindowFocusCallback)        agiwindow->m_Data.WindowFocusCallback(agiwindow, (bool)focused); });
+		glfwSetWindowIconifyCallback(m_Window,      [](GLFWwindow* window, int iconifed)                                { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.WindowIconifyCallback)      agiwindow->m_Data.WindowIconifyCallback(agiwindow, (bool)iconifed); });
+		glfwSetWindowMaximizeCallback(m_Window,     [](GLFWwindow* window, int maximsed)                                { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.WindowMaximizeCallback)     agiwindow->m_Data.WindowMaximizeCallback(agiwindow, (bool)maximsed); });
+		glfwSetFramebufferSizeCallback(m_Window,    [](GLFWwindow* window, int width, int height)                       { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.FramebufferSizeCallback)    agiwindow->m_Data.FramebufferSizeCallback(agiwindow, { width, height }); });
+		glfwSetWindowContentScaleCallback(m_Window, [](GLFWwindow* window, float xscale, float yscale)                  { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.WindowContentScaleCallback) agiwindow->m_Data.WindowContentScaleCallback(agiwindow, { xscale, yscale }); });
+		glfwSetMouseButtonCallback(m_Window,        [](GLFWwindow* window, int button, int action, int mods)            { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.MouseButtonCallback)        agiwindow->m_Data.MouseButtonCallback(agiwindow, button, action, mods); });
+		glfwSetCursorPosCallback(m_Window,          [](GLFWwindow* window, double xpos, double ypos)                    { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.CursorPosCallback)          agiwindow->m_Data.CursorPosCallback(agiwindow, { xpos, ypos }); });
+		glfwSetCursorEnterCallback(m_Window,        [](GLFWwindow* window, int entered)                                 { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.CursorEnterCallback)        agiwindow->m_Data.CursorEnterCallback(agiwindow, (bool)entered); });
+		glfwSetScrollCallback(m_Window,             [](GLFWwindow* window, double xoffset, double yoffset)              { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.ScrollCallback)             agiwindow->m_Data.ScrollCallback(agiwindow, { xoffset, yoffset }); });
+		glfwSetKeyCallback(m_Window,                [](GLFWwindow* window, int key, int scancode, int action, int mods) { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.KeyCallback)                agiwindow->m_Data.KeyCallback(agiwindow, key, scancode, action, mods); });
+		glfwSetCharCallback(m_Window,               [](GLFWwindow* window, unsigned int codepoint)                      { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.CharCallback)               agiwindow->m_Data.CharCallback(agiwindow, codepoint); });
+		glfwSetCharModsCallback(m_Window,           [](GLFWwindow* window, unsigned int codepoint, int mods)            { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.CharModsCallback)           agiwindow->m_Data.CharModsCallback(agiwindow, codepoint, mods); });
+		glfwSetDropCallback(m_Window,               [](GLFWwindow* window, int path_count, const char* paths[])         { Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); if (agiwindow->m_Data.DropCallback)               agiwindow->m_Data.DropCallback(agiwindow, path_count, paths); });
     }
 
     void* AGIWindow::GetNativeWindow() const
