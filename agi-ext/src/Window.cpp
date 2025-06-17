@@ -14,10 +14,11 @@ using AGIWindow = AGI::Window;
     #include <GLFW/glfw3native.h>
 #endif
 
-#define SET_CALLBACK(NAME, ARGS, ...) \
-	glfwSet##NAME(m_Window, []ARGS{ \
+#define SET_CALLBACK(NAME, PARAMS, ...) \
+	glfwSet##NAME(m_Window, [](PARAMS) { \
 		Window* agiwindow = (Window*)glfwGetWindowUserPointer(window); \
-		if (agiwindow->m_Data.NAME) agiwindow->m_Data.NAME(agiwindow, __VA_ARGS__); \
+		if (agiwindow->m_Data.NAME) \
+			agiwindow->m_Data.NAME(agiwindow, ##__VA_ARGS__); \
 	})
 
 namespace AGI {
