@@ -10,23 +10,23 @@
 namespace AGI {
 
 	class Window;
-	typedef void(* 	WindowPosFunc) (Window* window, glm::vec2 pos);
-	typedef void(* 	WindowSizeFunc) (Window* window, glm::vec2 size);
-	typedef void(* 	WindowCloseFunc) (Window* window);
-	typedef void(* 	WindowRefreshFunc) (Window* window);
-	typedef void(* 	WindowFocusFunc) (Window* window, bool focused);
-	typedef void(* 	WindowIconifyFunc) (Window* window, bool iconified);
-	typedef void(* 	WindowMaximizeFunc) (Window* window, bool maximized);
-	typedef void(* 	FramebufferSizeFunc) (Window* window, glm::vec2 size);
-	typedef void(* 	ContentScaleFunc) (Window* window, glm::vec2 scale);
-	typedef void(* 	MouseButtonFunc) (Window* window, int button, int action, int mods);
-	typedef void(* 	CursorPosFunc) (Window* window, glm::vec2 pos);
-	typedef void(* 	CursorEnterFunc) (Window* window, bool entered);
-	typedef void(* 	ScrollFunc) (Window* window, glm::vec2 offset);
-	typedef void(* 	KeyFunc) (Window* window, int key, int scancode, int action, int mods);
-	typedef void(* 	CharFunc) (Window* window, unsigned int codepoint);
-	typedef void(* 	CharModsFunc) (Window* window, unsigned int codepoint, int mods);
-	typedef void(* 	DropFunc) (Window* window, int path_count, const char *paths[]);
+	using WindowPosFunc        = std::function<void(Window* window, glm::vec2 pos)>;
+using WindowSizeFunc       = std::function<void(Window* window, glm::vec2 size)>;
+using WindowCloseFunc      = std::function<void(Window* window)>;
+using WindowRefreshFunc    = std::function<void(Window* window)>;
+using WindowFocusFunc      = std::function<void(Window* window, bool focused)>;
+using WindowIconifyFunc    = std::function<void(Window* window, bool iconified)>;
+using WindowMaximizeFunc   = std::function<void(Window* window, bool maximized)>;
+using FramebufferSizeFunc  = std::function<void(Window* window, glm::vec2 size)>;
+using ContentScaleFunc     = std::function<void(Window* window, glm::vec2 scale)>;
+using MouseButtonFunc      = std::function<void(Window* window, int button, int action, int mods)>;
+using CursorPosFunc        = std::function<void(Window* window, glm::vec2 pos)>;
+using CursorEnterFunc      = std::function<void(Window* window, bool entered)>;
+using ScrollFunc           = std::function<void(Window* window, glm::vec2 offset)>;
+using KeyFunc              = std::function<void(Window* window, int key, int scancode, int action, int mods)>;
+using CharFunc             = std::function<void(Window* window, unsigned int codepoint)>;
+using CharModsFunc         = std::function<void(Window* window, unsigned int codepoint, int mods)>;
+using DropFunc             = std::function<void(Window* window, int path_count, const char* paths[])>;
 
 	struct WindowProps
 	{
