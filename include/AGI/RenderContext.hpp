@@ -61,4 +61,10 @@ namespace AGI {
 	private:
 		inline static RenderContext* s_CurrentContext;
 	};
+
+	template<APIType Type>
+	struct Factory
+	{
+		virtual std::unique_ptr<RenderContext> CreateContext() = 0;
+	};
 }
