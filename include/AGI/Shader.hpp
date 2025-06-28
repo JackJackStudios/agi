@@ -13,10 +13,10 @@ namespace AGI {
 
 	using ShaderSources = std::unordered_map<ShaderType, std::string>;
 
-	class Shader
+	class ShaderBase
 	{
 	public:
-		virtual ~Shader() = default;
+		virtual ~ShaderBase() = default;
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
@@ -31,7 +31,9 @@ namespace AGI {
 		virtual void SetFloat4(const std::string& name, const glm::vec4& value) = 0;
 		virtual void SetMat3(const std::string& name, const glm::mat3& matrix) = 0;
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
-
-		static ShaderSources ProcessSource(const std::string& source);
 	};
+
+	ShaderSources ProcessSource(const std::string& source);
+	using Shader = std::shared_ptr<ShaderBase>;
+
 }

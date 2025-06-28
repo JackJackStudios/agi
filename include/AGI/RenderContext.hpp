@@ -38,19 +38,19 @@ namespace AGI {
 		virtual void Shutdown() = 0;
 		
 		// Global commands
-		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
+		virtual void DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount = 0) = 0;
 		virtual void SetClearColour(const glm::vec4& colour) = 0;
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 		virtual void SetTextureAlignment(int align) = 0;
 		virtual void Clear() = 0;
 
 		// Creation functions
-		virtual std::shared_ptr<VertexBuffer> CreateVertexBuffer(uint32_t vertices, const BufferLayout& layout) = 0;
-		virtual std::shared_ptr<IndexBuffer> CreateIndexBuffer(uint32_t* indices, uint32_t size) = 0;
-		virtual std::shared_ptr<Framebuffer> CreateFramebuffer(const FramebufferSpecification& spec) = 0;
-		virtual std::shared_ptr<Shader> CreateShader(const ShaderSources& shaderSources) = 0;
-		virtual std::shared_ptr<Texture> CreateTexture(const TextureSpecification& spec) = 0;
-		virtual std::shared_ptr<VertexArray> CreateVertexArray() = 0;
+		virtual VertexBuffer CreateVertexBuffer(uint32_t vertices, const BufferLayout& layout) = 0;
+		virtual IndexBuffer CreateIndexBuffer(uint32_t* indices, uint32_t size) = 0;
+		virtual Framebuffer CreateFramebuffer(const FramebufferSpecification& spec) = 0;
+		virtual Shader CreateShader(const ShaderSources& shaderSources) = 0;
+		virtual Texture CreateTexture(const TextureSpecification& spec) = 0;
+		virtual VertexArray CreateVertexArray() = 0;
 		
 		APIType GetType() const { return m_Settings.PreferedAPI; }
 

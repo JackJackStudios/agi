@@ -1,4 +1,4 @@
-#include "AGI/ImGuiLayer.hpp"
+#include "AGI/ext/ImGuiLayer.hpp"
 
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -8,7 +8,7 @@
 
 namespace AGI {
 
-    ImGuiLayer::ImGuiLayer(std::unique_ptr<Window>& window, bool installCallbacks)
+    ImGuiLayer::ImGuiLayer(GLFWwindow* window, bool installCallbacks)
     {
         // Setup Dear ImGui context
 		ImGui::CreateContext();
@@ -23,7 +23,7 @@ namespace AGI {
 		ImGui::StyleColorsDark();
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), installCallbacks);
+		ImGui_ImplGlfw_InitForOpenGL(window, installCallbacks);
 		ImGui_ImplOpenGL3_Init("#version 330");
     }
 

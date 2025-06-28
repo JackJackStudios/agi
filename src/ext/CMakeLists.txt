@@ -13,10 +13,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(GLFW)
 
-add_library(agi_window STATIC "src/Window.cpp")
-target_include_directories(agi_window PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(agi_window STATIC "Window.cpp")
+target_include_directories(agi_window PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../../include")
 target_link_libraries(agi_window PUBLIC agi glfw)
 
-add_library(agi_imgui STATIC "src/ImGuiLayer.cpp")
-target_include_directories(agi_imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(agi_imgui PUBLIC agi agi_window ImGui)
+add_library(agi_imgui STATIC "ImGuiLayer.cpp")
+target_include_directories(agi_imgui PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../../include")
+target_link_libraries(agi_imgui PUBLIC agi ImGui glfw)

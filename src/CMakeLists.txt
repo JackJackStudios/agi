@@ -1,9 +1,16 @@
 # Global interface for other backends
+add_subdirectory(OpenGL/glad)
+
 file(GLOB SOURCE_DIR "Utils.cpp")
-add_library(agi STATIC ${SOURCE_DIR})
+file(GLOB_RECURSE OPENGL_SOURCE "OpenGL/**.cpp")
+
+add_library(agi STATIC ${SOURCE_DIR} ${OPENGL_SOURCE})
 
 target_include_directories(agi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")
-target_link_libraries(agi PUBLIC glm)
+target_link_libraries(agi PUBLIC glm glad)
+
+target_include_directories(agi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_precompile_headers(agi PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include/agipch.hpp")
 
 target_compile_definitions(agi PUBLIC
     $<$<PLATFORM_ID:Windows>:AGI_WINDOWS>
@@ -18,13 +25,6 @@ target_compile_definitions(agi PUBLIC
     AGI_VERSION="${PROJECT_VERSION}"
 )
 
-# OpenGL API
-add_subdirectory(OpenGL/glad)
-
-file(GLOB_RECURSE OPENGL_SOURCE "OpenGL/**.cpp")
-add_library(agi_opengl STATIC ${OPENGL_SOURCE})
-
-target_include_directories(agi_opengl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_precompile_headers(agi_opengl PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include/agipch.hpp")
-
-target_link_libraries(agi_opengl PRIVATE agi glad)
+if (AGI_EXTENSIONS)
+    add_subdirectory(ext)
+endif()

@@ -53,7 +53,7 @@ int main(void)
     context->Init();
     
     // Create VAO to hold buffers
-    std::shared_ptr<AGI::VertexArray> squareVA = context->CreateVertexArray();
+    AGI::VertexArray squareVA = context->CreateVertexArray();
 
     // This is the data that goes into the VBO
     float squareVertices[5 * 4] = {
@@ -72,20 +72,20 @@ int main(void)
         { AGI::ShaderDataType::Float2, "a_TexCoord" }
     };
 
-    std::shared_ptr<AGI::VertexBuffer> squareVB = context->CreateVertexBuffer(4, layout);
+    AGI::VertexBuffer squareVB = context->CreateVertexBuffer(4, layout);
     squareVB->SetData(squareVertices, sizeof(squareVertices));
     squareVA->AddVertexBuffer(squareVB);
 
     // Create IBO and add to the VAO
-    std::shared_ptr<AGI::IndexBuffer> squareIB = context->CreateIndexBuffer(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+    AGI::IndexBuffer squareIB = context->CreateIndexBuffer(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
     squareVA->SetIndexBuffer(squareIB);
 
     // Process shader source, compile and link with uniforms
-    std::shared_ptr<AGI::Shader> shader = context->CreateShader(AGI::Shader::ProcessSource(shaderSrc));
+    AGI::Shader shader = context->CreateShader(AGI::ProcessSource(shaderSrc));
     shader->SetInt("u_Texture", 0);
 
     // Load test texture
-    std::shared_ptr<AGI::Texture> texture = LoadTexture(context, "assets/Checkerboard.png");
+    AGI::Texture texture = LoadTexture(context, "assets/Checkerboard.png");
 
     // Main loop now, you know the deal
     while (!window->ShouldClose())

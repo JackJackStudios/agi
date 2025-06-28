@@ -7,13 +7,7 @@ namespace AGI {
 
 	void OpenGLContext::Init()
 	{
-		//typedef void* (* GLADloadproc)(const char *name);
-		int status;
-		if ((bool)m_Settings.LoaderFunc)
-			status = gladLoadGLLoader((GLADloadproc)m_Settings.LoaderFunc);
-		else 
-			status = gladLoadGL();
-
+		int	status = gladLoadGLLoader((GLADloadproc)m_Settings.LoaderFunc);
 		AGI_VERIFY(status, "Failed to initialize Glad!");
 
 		AGI_INFO("OpenGL Info:");
@@ -53,7 +47,7 @@ namespace AGI {
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void OpenGLContext::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount)
+	void OpenGLContext::DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount)
 	{
 		vertexArray->Bind();
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();

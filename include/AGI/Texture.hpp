@@ -28,10 +28,10 @@ namespace AGI {
 		uint16_t BytesPerChannel = 8;
 	};
 
-	class Texture
+	class TextureBase
 	{
 	public:
-		virtual ~Texture() = default;
+		virtual ~TextureBase() = default;
 
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
@@ -42,7 +42,9 @@ namespace AGI {
 
 		virtual void Bind(uint32_t slot = 0) const = 0;
 
-		virtual bool operator==(const Texture& other) const = 0;
+		virtual bool operator==(const std::shared_ptr<TextureBase>& other) const = 0;
 	};
+
+	using Texture = std::shared_ptr<TextureBase>;
 
 }

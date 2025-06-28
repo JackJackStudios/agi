@@ -19,7 +19,7 @@ int main(void)
 
     auto context = AGI::RenderContext::Create(settings);
     auto window = AGI::Window::Create(windowProps, context);
-    AGI::ImGuiLayer* imgui = new AGI::ImGuiLayer(window);
+    auto imgui = AGI::ImGuiLayer::Create(window->GetGlfwWindow());
 
     context->Init();
     
@@ -36,8 +36,7 @@ int main(void)
         window->OnUpdate();
     }
 
-    delete imgui;
-
+    imgui.reset();
     context->Shutdown();
     window.reset();
     return 0;

@@ -136,9 +136,13 @@ namespace AGI {
 		return pixelData;
 	}
 
-    void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
-    {
-		glClearTexImage(m_ColourAttachments[attachmentIndex], 0,
-			Utils::AGITextureTypeToOpenGLType(m_Specifation.Attachments[attachmentIndex]), GL_INT, &value);
-    }
+	void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+
+		const GLint clearValue[4] = { value, 0, 0, 0 };
+		glClearBufferiv(GL_COLOR, attachmentIndex, clearValue);
+	}
+
 }

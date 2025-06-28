@@ -1,4 +1,4 @@
-#include "AGI/Window.hpp"
+#include "AGI/ext/Window.hpp"
 
 using AGIWindow = AGI::Window;
 

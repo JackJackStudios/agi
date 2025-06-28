@@ -146,10 +146,10 @@ namespace AGI {
 		uint32_t m_Stride = 0;
 	};
 
-	class VertexBuffer
+	class VertexBufferBase
 	{
 	public:
-		virtual ~VertexBuffer() = default;
+		virtual ~VertexBufferBase() = default;
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
@@ -162,15 +162,19 @@ namespace AGI {
 		virtual uint32_t GetSize() const = 0;
 	};
 
-	class IndexBuffer
+	using VertexBuffer = std::shared_ptr<VertexBufferBase>;
+
+	class IndexBufferBase
 	{
 	public:
-		virtual ~IndexBuffer() = default;
+		virtual ~IndexBufferBase() = default;
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
 		virtual uint32_t GetCount() const = 0;
 	};
+
+	using IndexBuffer = std::shared_ptr<IndexBufferBase>;
 
 }

@@ -4,7 +4,7 @@
 
 namespace AGI {
 
-	class OpenGLFramebuffer : public Framebuffer
+	class OpenGLFramebuffer : public FramebufferBase
 	{
 	public:
 		OpenGLFramebuffer(const FramebufferSpecification& spec);

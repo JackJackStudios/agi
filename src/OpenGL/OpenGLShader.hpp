@@ -6,7 +6,7 @@
 
 namespace AGI {
 
-	class OpenGLShader : public Shader
+	class OpenGLShader : public ShaderBase
 	{
 	public:
 		OpenGLShader(const ShaderSources& shaderSources);

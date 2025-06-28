@@ -70,7 +70,7 @@ namespace AGI {
 		return ShaderType::None;
 	}
 
-	ShaderSources Shader::ProcessSource(const std::string& source)
+	ShaderSources ProcessSource(const std::string& source)
 	{
 		ShaderSources shaderSources;
 

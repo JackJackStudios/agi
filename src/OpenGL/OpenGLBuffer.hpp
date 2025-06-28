@@ -4,7 +4,7 @@
 
 namespace AGI {
 
-	class OpenGLVertexBuffer : public VertexBuffer
+	class OpenGLVertexBuffer : public VertexBufferBase
 	{
 	public:
 		OpenGLVertexBuffer(uint32_t size);
@@ -26,7 +26,7 @@ namespace AGI {
 		BufferLayout m_Layout;
 	};
 
-	class OpenGLIndexBuffer : public IndexBuffer
+	class OpenGLIndexBuffer : public IndexBufferBase
 	{
 	public:
 		OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
