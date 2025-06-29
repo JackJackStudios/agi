@@ -21,17 +21,14 @@ namespace AGI {
 	std::unique_ptr<RenderContext> RenderContext::Create(const std::unique_ptr<Window>& window)
 	{
 		std::unique_ptr<RenderContext> newapi;
-		newapi->m_Settings = &window->m_Settings;
 
-		ActualAPI(&newapi->m_Settings->PreferedAPI);
-		Log::Init(newapi->m_Settings->MessageFunc);
-
-		switch (newapi->m_Settings->PreferedAPI)
+		switch (window->m_Settings.PreferedAPI)
 		{
 			case APIType::Guess:    AGI_VERIFY(false, "APIType::Guess isn't supposed to reach this function"); return nullptr;
-			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>();
+			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>(); break;
 		}
 
+		newapi->m_Settings = &window->m_Settings;
 		return std::move(newapi);
 	}
     

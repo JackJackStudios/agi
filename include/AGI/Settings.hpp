@@ -6,7 +6,7 @@ namespace AGI {
 	{
 		Guess = 0,
 		OpenGL,
-		//Vulkan, Coming soon :)
+		Vulkan,
 	};
 	
 	class Window;

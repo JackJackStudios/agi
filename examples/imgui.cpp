@@ -18,7 +18,7 @@ int main(void)
     auto window = AGI::Window::Create(settings);
     auto context = AGI::RenderContext::Create(window);
 
-    auto imgui = AGI::ImGuiLayer::Create(window->GetGlfwWindow());
+    auto imgui = AGI::ImGuiLayer::Create(window);
 
     context->Init();
     

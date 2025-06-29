@@ -43,7 +43,10 @@ namespace AGI {
 	AGIWindow::Window(Settings& settings)
 		: m_Settings(settings)
 	{
-		AGI_INFO("Creating window \"{}\" ({}, {})", m_Settings.Window.Title, m_Settings.Window.Title, m_Settings.Window.Title);
+		ActualAPI(&m_Settings.PreferedAPI);
+		Log::Init(m_Settings.MessageFunc);
+
+		AGI_INFO("Creating window \"{}\" ({}, {})", m_Settings.Window.Title, m_Settings.Window.Width, m_Settings.Window.Height);
 
 		if (s_GLFWWindowCount == 0)
 		{
