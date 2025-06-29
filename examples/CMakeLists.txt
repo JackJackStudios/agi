@@ -25,6 +25,6 @@ get_filename_component(EXAMPLE_TARGET ${EXAMPLE} NAME_WE)
 add_executable(${EXAMPLE_TARGET} "${EXAMPLE_TARGET}.cpp")
 
 target_compile_definitions(${EXAMPLE_TARGET} PUBLIC EXECUTABLE_NAME="${EXAMPLE_TARGET}")
-target_link_libraries(${EXAMPLE_TARGET} PRIVATE agi agi_imgui spdlog::spdlog)
+target_link_libraries(${EXAMPLE_TARGET} PRIVATE agi agi_reflection agi_imgui spdlog::spdlog)
 target_include_directories(${EXAMPLE_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${stb_SOURCE_DIR})
 endforeach()

@@ -27,6 +27,8 @@ namespace AGI {
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) override;
 	private:
 		uint32_t m_RendererID;
+
+		friend class Reflection;
 	};
 
 }
