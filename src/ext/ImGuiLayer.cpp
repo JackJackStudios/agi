@@ -1,14 +1,41 @@
 #include "AGI/ext/ImGuiLayer.hpp"
 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
+enum GlfwClientApi
+{
+	GlfwClientApi_Unknown,
+	GlfwClientApi_OpenGL,
+	GlfwClientApi_Vulkan,
+};
+static bool ImGui_ImplGlfw_Init(GLFWwindow* window, bool install_callbacks, GlfwClientApi client_api);
+
 namespace AGI {
 
-    ImGuiLayer::ImGuiLayer(GLFWwindow* window, bool installCallbacks)
+	namespace Utils {
+
+		GlfwClientApi AgiTypeToImGuiType(APIType type)
+		{
+			switch (type)
+			{
+			case APIType::Headless: return GlfwClientApi_Unknown;
+			case APIType::OpenGL: return GlfwClientApi_OpenGL;
+			}
+
+			AGI_VERIFY(type != APIType::Guess, "APIType::Guess should not reach this function");
+
+			AGI_VERIFY(false, "Undefined APIType");
+			return GlfwClientApi_Unknown;
+		}
+
+	}
+
+    ImGuiLayer::ImGuiLayer(const std::unique_ptr<Window>& window, bool installCallbacks)
     {
         // Setup Dear ImGui context
 		ImGui::CreateContext();
@@ -23,7 +50,7 @@ namespace AGI {
 		ImGui::StyleColorsDark();
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window, installCallbacks);
+		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), installCallbacks);
 		ImGui_ImplOpenGL3_Init("#version 330");
     }
 

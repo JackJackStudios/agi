@@ -1,13 +1,13 @@
 # Global interface for other backends
-add_subdirectory(OpenGL/glad)
+add_subdirectory(glad)
 
-file(GLOB SOURCE_DIR "Utils.cpp")
+file(GLOB SOURCE_DIR "Utils.cpp" "Window.cpp")
 file(GLOB_RECURSE OPENGL_SOURCE "OpenGL/**.cpp")
 
 add_library(agi STATIC ${SOURCE_DIR} ${OPENGL_SOURCE})
 
 target_include_directories(agi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")
-target_link_libraries(agi PUBLIC glm glad)
+target_link_libraries(agi PUBLIC glm glad glfw)
 
 target_include_directories(agi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_precompile_headers(agi PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include/agipch.hpp")

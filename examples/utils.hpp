@@ -1,7 +1,6 @@
 #pragma once
 
 #include <AGI/agi.hpp>
-#include <AGI/ext/Window.hpp>
 #include <AGI/ext/ImGuiLayer.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION

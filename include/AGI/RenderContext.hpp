@@ -7,29 +7,12 @@
 #include "VertexArray.hpp"
 #include "Log.hpp"
 
+#include "Settings.hpp"
+#include "Window.hpp"
+
 #include <glm/glm.hpp>
 
 namespace AGI {
-
-	enum class APIType
-	{
-		Headless = 0,
-		Guess,
-		OpenGL,
-		//Vulkan, Coming soon :)
-	};
-
-	typedef void* (* LoaderFn)(const char *name);
-
-	struct Settings
-	{
-		APIType PreferedAPI;
-		MessageCallbackFn MessageFunc;
-		LoaderFn LoaderFunc = nullptr;
-		bool Blending;
-	};
-
-	APIType BestAPI();
 
 	class RenderContext
 	{
@@ -52,12 +35,11 @@ namespace AGI {
 		virtual Texture CreateTexture(const TextureSpecification& spec) = 0;
 		virtual VertexArray CreateVertexArray() = 0;
 		
-		APIType GetType() const { return m_Settings.PreferedAPI; }
+		APIType GetType() const { return m_Settings->PreferedAPI; }
 
-		static std::unique_ptr<RenderContext> Create(Settings settings);
-		static RenderContext* GetCurrentContext() { return s_CurrentContext; }
+		static std::unique_ptr<RenderContext> Create(const std::unique_ptr<Window>& window);
 	protected:
-		Settings m_Settings;
+		Settings* m_Settings;
 	private:
 		inline static RenderContext* s_CurrentContext;
 	};

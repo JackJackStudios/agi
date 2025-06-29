@@ -3,6 +3,8 @@
 
 #include "OpenGL/OpenGLRenderContext.hpp"
 
+#include "AGI/Window.hpp"
+
 namespace AGI {
 
 	APIType BestAPI()
@@ -10,23 +12,27 @@ namespace AGI {
 		return APIType::OpenGL;
 	}
 
-	std::unique_ptr<RenderContext> RenderContext::Create(Settings settings)
+	APIType ActualAPI(APIType* type)
+	{
+		*type = (*type == APIType::Guess ? BestAPI() : *type);
+		return *type;
+	}
+
+	std::unique_ptr<RenderContext> RenderContext::Create(const std::unique_ptr<Window>& window)
 	{
 		std::unique_ptr<RenderContext> newapi;
-		settings.PreferedAPI = settings.PreferedAPI == APIType::Guess ? BestAPI() : settings.PreferedAPI;
+		newapi->m_Settings = &window->m_Settings;
 
-		Log::Init(settings.MessageFunc);
+		ActualAPI(&newapi->m_Settings->PreferedAPI);
+		Log::Init(newapi->m_Settings->MessageFunc);
 
-		switch (settings.PreferedAPI)
+		switch (newapi->m_Settings->PreferedAPI)
 		{
 			case APIType::Headless: AGI_VERIFY(false, "RendererAPI::Headless is currently not supported!"); return nullptr;
 			case APIType::Guess:    AGI_VERIFY(false, "APIType::Guess isn't supposed to reach this function"); return nullptr;
 			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>();
 		}
 
-		s_CurrentContext = newapi.get();
-
-		newapi->m_Settings = settings;
 		return std::move(newapi);
 	}
     

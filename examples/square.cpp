@@ -35,17 +35,15 @@ int main(void)
     // Create GLFW window and the AGI::RenderContext
     AGI::Settings settings;
     settings.PreferedAPI = AGI::APIType::Guess;
-    settings.LoaderFunc = AGI::Window::LoaderFunc;
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
-    AGI::WindowProps windowProps;
-    windowProps.Width = 1280;
-    windowProps.Height = 720;
-    windowProps.Title = EXECUTABLE_NAME;
+    settings.Window.Width = 1280;
+    settings.Window.Height = 720;
+    settings.Window.Title = EXECUTABLE_NAME;
 
-    auto context = AGI::RenderContext::Create(settings);
-    auto window = AGI::Window::Create(windowProps, context);
+    auto window = AGI::Window::Create(settings);
+    auto context = AGI::RenderContext::Create(window);
 
     context->Init();
 
