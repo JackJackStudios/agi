@@ -30,13 +30,4 @@ namespace AGI {
 		virtual VertexArray CreateVertexArray() override { return std::make_shared<OpenGLVertexArray>(); }
 	};
 
-	template<>
-	struct Factory<APIType::OpenGL>
-	{
-		std::unique_ptr<RenderContext> CreateContext()
-		{
-			return std::make_unique<OpenGLContext>();
-		}
-	};
-
 }
