@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AGI/Log.hpp"
+
 namespace AGI {
 
 	enum class ShaderDataType
@@ -135,6 +137,18 @@ namespace AGI {
 				return it->Size;
 		
 			return 0;
+		}
+
+		BufferElement& operator [](int idx)
+		{
+			AGI_VERIFY(idx < m_Elements.size(), "idx out of range for BufferElement");
+			return m_Elements[idx];
+		}
+
+		BufferElement operator [](int idx) const
+		{
+			AGI_VERIFY(idx < m_Elements.size(), "idx out of range for BufferElement");
+			return m_Elements[idx];
 		}
 
 		std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }
