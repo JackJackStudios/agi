@@ -2,6 +2,7 @@
 #include <AGI/agi.hpp>
 
 #include "OpenGL/OpenGLRenderContext.hpp"
+#include "Vulkan/VulkanRenderContext.hpp"
 
 #include "AGI/Window.hpp"
 
@@ -26,6 +27,7 @@ namespace AGI {
 		{
 			case APIType::Guess:    AGI_VERIFY(false, "APIType::Guess isn't supposed to reach this function"); return nullptr;
 			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>(); break;
+			case APIType::Vulkan:   newapi = std::make_unique<VulkanContext>(); break;
 		}
 
 		newapi->m_Settings = &window->m_Settings;

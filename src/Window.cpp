@@ -23,6 +23,7 @@ namespace AGI {
 			switch (type)
 			{
 				case APIType::OpenGL: return GLFW_OPENGL_API;
+				case APIType::Vulkan: return GLFW_NO_API;
 			}
 
 			AGI_VERIFY(type != APIType::Guess, "APIType::Guess should not reach this function");
