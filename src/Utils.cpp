@@ -28,7 +28,6 @@ namespace AGI {
 
 		switch (newapi->m_Settings->PreferedAPI)
 		{
-			case APIType::Headless: AGI_VERIFY(false, "RendererAPI::Headless is currently not supported!"); return nullptr;
 			case APIType::Guess:    AGI_VERIFY(false, "APIType::Guess isn't supposed to reach this function"); return nullptr;
 			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>();
 		}

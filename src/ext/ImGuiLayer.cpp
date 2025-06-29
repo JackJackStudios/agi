@@ -23,7 +23,6 @@ namespace AGI {
 		{
 			switch (type)
 			{
-			case APIType::Headless: return GlfwClientApi_Unknown;
 			case APIType::OpenGL: return GlfwClientApi_OpenGL;
 			}
 

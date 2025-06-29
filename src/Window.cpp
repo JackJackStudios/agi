@@ -22,7 +22,6 @@ namespace AGI {
 		{
 			switch (type)
 			{
-				case APIType::Headless: return GLFW_NO_API;
 				case APIType::OpenGL: return GLFW_OPENGL_API;
 			}
 
