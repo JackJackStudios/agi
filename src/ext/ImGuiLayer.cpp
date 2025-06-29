@@ -25,11 +25,11 @@ namespace AGI {
 			{
 			case APIType::OpenGL: return GlfwClientApi_OpenGL;
 			case APIType::Vulkan: return GlfwClientApi_Vulkan;
+
+			case APIType::Guess: AGI_VERIFY(false, "APIType::Guess should not reach this function"); break;
+			default: AGI_VERIFY(false, "Undefined APIType"); return GlfwClientApi_Unknown; break;
 			}
-
-			AGI_VERIFY(type != APIType::Guess, "APIType::Guess should not reach this function");
-
-			AGI_VERIFY(false, "Undefined APIType");
+			
 			return GlfwClientApi_Unknown;
 		}
 

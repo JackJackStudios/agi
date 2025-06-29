@@ -24,8 +24,10 @@ namespace AGI {
 
 		switch (window->m_Settings.PreferedAPI)
 		{
-			case APIType::Guess:    AGI_VERIFY(false, "APIType::Guess isn't supposed to reach this function"); return nullptr;
-			case APIType::OpenGL:   newapi = std::make_unique<OpenGLContext>(); break;
+		case APIType::OpenGL: newapi = std::make_unique<OpenGLContext>(); break;
+
+		case APIType::Guess: AGI_VERIFY(false, "APIType::Guess isn't supposed to reach this function"); return nullptr;
+		default: AGI_VERIFY(false, "Undefined APIType"); return nullptr;
 		}
 
 		newapi->m_Settings = &window->m_Settings;
@@ -36,7 +38,6 @@ namespace AGI {
 	{
 		switch (channels)
 		{
-            case 0: return ImageFormat::None;
             case 1: return ImageFormat::RED;
             case 2: return ImageFormat::RG;
             case 3: return ImageFormat::RGB;
@@ -44,14 +45,13 @@ namespace AGI {
 		}
 
 		AGI_WARN("Unknown channels count");
-		return ImageFormat::None;
+		return (ImageFormat)0;
 	}
 
 	uint16_t ImageFormatToChannels(ImageFormat format)
 	{
 		switch (format)
 		{
-            case ImageFormat::None: return 0;
             case ImageFormat::RED:  return 1;
             case ImageFormat::RG:   return 2;
             case ImageFormat::RGB:  return 3;

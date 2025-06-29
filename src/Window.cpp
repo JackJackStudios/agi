@@ -22,12 +22,12 @@ namespace AGI {
 		{
 			switch (type)
 			{
-				case APIType::OpenGL: return GLFW_OPENGL_API;
+			case APIType::OpenGL: return GLFW_OPENGL_API; break;
+
+			case APIType::Guess: AGI_VERIFY(false, "APIType::Guess should not reach this function"); break;
+			default: AGI_VERIFY(false, "Undefined APIType"); break;
 			}
 
-			AGI_VERIFY(type != APIType::Guess, "APIType::Guess should not reach this function");
-
-			AGI_VERIFY(false, "Undefined APIType");
 			return 0;
 		}
 

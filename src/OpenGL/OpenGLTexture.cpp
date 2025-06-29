@@ -80,7 +80,6 @@ namespace AGI {
         {
             switch (spec.Wrapping)
             {
-                case WrappingType::None: return GL_CLAMP_TO_EDGE;
                 case WrappingType::ClampBorder: return GL_CLAMP_TO_BORDER;
                 case WrappingType::ClampEdge: return GL_CLAMP_TO_EDGE;
                 case WrappingType::Repeat: return GL_REPEAT;
