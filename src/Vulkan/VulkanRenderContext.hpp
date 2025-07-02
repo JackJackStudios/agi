@@ -1,8 +1,11 @@
 #pragma once
 
 #include "AGI/RenderContext.hpp"
+#include "VulkanUtils.hpp"
 
 #include <vulkan/vulkan.h>
+
+constexpr const char* SDK_VALIDATION_LAYER = "VK_LAYER_KHRONOS_validation";
 
 namespace AGI {
 
@@ -24,6 +27,12 @@ namespace AGI {
 		virtual Shader CreateShader(const ShaderSources& shaderSources) override { return nullptr; }
 		virtual Texture CreateTexture(const TextureSpecification& spec) override { return nullptr; }
 		virtual VertexArray CreateVertexArray() override { return nullptr; }
+	private:
+		std::vector<const char*> GetRequiredExtensions();
+		std::vector<const char*> GetRequiredLayers();
+	private:
+		VkInstance m_Instance;
+		VkDebugUtilsMessengerEXT m_DebugMessenger;
 	};
 
 }
