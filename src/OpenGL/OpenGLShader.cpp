@@ -34,7 +34,8 @@ namespace AGI {
 
 			GLint isCompiled = 0;
 			glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-			if (isCompiled == GL_FALSE) {
+			if (!isCompiled) 
+			{
 				GLint maxLength = 0;
 				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
@@ -49,13 +50,31 @@ namespace AGI {
 			return shader;
 		}
 
+		ShaderDataType OpenGLShaderTypeToAgiShaderType(GLenum type)
+		{
+			switch (type)
+			{
+			case GL_FLOAT:          return ShaderDataType::Float;
+			case GL_FLOAT_VEC2:     return ShaderDataType::Float2;
+			case GL_FLOAT_VEC3:     return ShaderDataType::Float3;
+			case GL_FLOAT_VEC4:     return ShaderDataType::Float4;
+			case GL_FLOAT_MAT3:     return ShaderDataType::Mat3;
+			case GL_FLOAT_MAT4:     return ShaderDataType::Mat4;
+			case GL_INT:            return ShaderDataType::Int;
+			case GL_INT_VEC2:       return ShaderDataType::Int2;
+			case GL_INT_VEC3:       return ShaderDataType::Int3;
+			case GL_INT_VEC4:       return ShaderDataType::Int4;
+			case GL_BOOL:           return ShaderDataType::Bool;
+			}
+
+			AGI_VERIFY(false, "Unknown ShaderDataType");
+			return (ShaderDataType)0;
+		}
+
 	}
 
 	OpenGLShader::OpenGLShader(const ShaderSources& shaderSources)
-	{
-		AGI_VERIFY(shaderSources.size() <= 2, "We only support 2 shaders for now");
-
-		m_RendererID = glCreateProgram();
+	{m_RendererID = glCreateProgram();
 
 		std::vector<GLuint> shaderIDs(shaderSources.size());
 		int shaderIndex = 0;
@@ -97,14 +116,45 @@ namespace AGI {
 		glDeleteProgram(m_RendererID);
 	}
 
-	void OpenGLShader::Bind() const
+	void OpenGLShader::Bind()
 	{
 		glUseProgram(m_RendererID);
 	}
 
-	void OpenGLShader::Unbind() const
+	void OpenGLShader::Unbind()
 	{
 		glUseProgram(0);
+	}
+
+	BufferLayout OpenGLShader::GetLayout() const
+	{
+		GLint maxNameLen = 0;
+		GLint numAttribs = 0;
+		glGetProgramiv(m_RendererID, GL_ACTIVE_ATTRIBUTES, &numAttribs);
+		glGetProgramiv(m_RendererID, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxNameLen);
+
+		std::vector<BufferElement> layout;
+		std::vector<char> nameData(maxNameLen);
+
+		for (int i = 0; i < numAttribs; ++i)
+		{
+			GLint size = 0;
+			GLenum type = 0;
+			GLsizei length = 0;
+
+			glGetActiveAttrib(m_RendererID, i, maxNameLen, &length, &size, &type, nameData.data());
+			std::string name(nameData.data(), length);
+
+			GLint location = glGetAttribLocation(m_RendererID, name.c_str());
+
+			BufferElement element;
+			element.Name = name;
+			element.Type = Utils::OpenGLShaderTypeToAgiShaderType(type);
+			element.Size = ShaderDataTypeSize(element.Type);
+			layout.emplace_back(element);
+		}
+
+		return BufferLayout(layout);
 	}
 
 	bool OpenGLShader::AttributeExists(const std::string& name) const

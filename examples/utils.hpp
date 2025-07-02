@@ -2,7 +2,6 @@
 
 #include <AGI/agi.hpp>
 #include <AGI/ext/ImGuiLayer.hpp>
-#include <AGI/ext/Reflection.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

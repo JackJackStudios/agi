@@ -12,9 +12,10 @@ namespace AGI {
 		OpenGLShader(const ShaderSources& shaderSources);
 		virtual ~OpenGLShader();
 
-		virtual void Bind() const override;
-		virtual void Unbind() const override;
-
+		virtual void Bind() override;
+		virtual void Unbind() override;
+		
+		virtual BufferLayout GetLayout() const override;
 		virtual bool AttributeExists(const std::string& name) const override;
 
 		virtual void SetInt(const std::string& name, int value) override;

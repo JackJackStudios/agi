@@ -18,9 +18,10 @@ namespace AGI {
 	public:
 		virtual ~ShaderBase() = default;
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
 
+		virtual BufferLayout GetLayout() const = 0;
 		virtual bool AttributeExists(const std::string& name) const = 0;
 
 		virtual void SetInt(const std::string& name, int value) = 0;

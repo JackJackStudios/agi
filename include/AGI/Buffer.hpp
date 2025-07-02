@@ -78,32 +78,36 @@ namespace AGI {
 	public:
 		BufferLayout() {}
 
+		BufferLayout(std::vector<BufferElement> elements)
+			: m_Elements(elements)
+		{
+			SetOffsets();
+		}
+
 		BufferLayout(std::initializer_list<BufferElement> elements)
 			: m_Elements(elements)
 		{
-			size_t offset = 0;
-			m_Stride = 0;
+			SetOffsets();
+		}
+
+		void SetOffsets()
+		{
 			for (auto& element : m_Elements)
 			{
-				element.Offset = offset;
-				offset += element.Size;
+				element.Offset = m_Stride;
 				m_Stride += element.Size;
 			}
 		}
 
 		uint32_t GetStride() const { return m_Stride; }
+		size_t GetSize() const { return m_Elements.size(); }
 		const std::vector<BufferElement>& GetElements() const { return m_Elements; }
 
-		void PushBack(const BufferElement& element)
+		void PushBack(BufferElement&& element)
 		{
-			m_Elements.push_back(element);
-		}
-
-		void Erase(const BufferElement& element)
-		{
-			auto it = std::find(m_Elements.begin(), m_Elements.end(), element);
-			if (it != m_Elements.end())
-				m_Elements.erase(it);
+			element.Offset = m_Stride;
+			m_Stride += element.Size;
+			m_Elements.emplace_back(element);
 		}
 
 		bool HasElement(const std::string& name) const
@@ -113,40 +117,25 @@ namespace AGI {
     		});
 		};
 
-		size_t GetElementOffset(const std::string& name) const
+		BufferElement& GetElement(const std::string& name)
 		{
 			auto it = std::find_if(begin(), end(), [&](const BufferElement& e) {
 				return e.Name == name;
 			});
-
-			if (it != end())
-				return it->Offset;
 		
-			return 0;
+			return *it;
 		}
 
-		uint32_t GetElementSize(const std::string& name) const
-		{
-			auto it = std::find_if(begin(), end(), [&](const BufferElement& e) {
-				return e.Name == name;
-			});
-
-			if (it != end())
-				return it->Size;
-		
-			return 0;
-		}
-
-		BufferElement& operator [](int idx)
+		BufferElement& operator[](int idx)
 		{
 			AGI_VERIFY(idx < m_Elements.size(), "idx out of range for BufferElement");
 			return m_Elements[idx];
 		}
 
-		BufferElement operator [](int idx) const
+		BufferElement& operator[](const std::string& name)
 		{
-			AGI_VERIFY(idx < m_Elements.size(), "idx out of range for BufferElement");
-			return m_Elements[idx];
+			AGI_VERIFY(HasElement(name), "Element \"{}\" does not exist", name);
+			return GetElement(name);
 		}
 
 		std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }

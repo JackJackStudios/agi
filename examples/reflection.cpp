@@ -49,23 +49,10 @@ int main(void)
 
     // Process shader source, compile and link
     AGI::Shader shader = context->CreateShader(AGI::ProcessSource(shaderSrc));
-    std::vector<AGI::Attribute> attributes = AGI::Reflection::GetAttributes(shader);
+    AGI::BufferLayout layout = shader->GetLayout();
 
-    for (const auto& attr : attributes)
-    {
-        std::cout << "Attribute" << " name=" << attr.Name
-            << ", size=" << attr.Size
-            << ", location=" << attr.Location << "\n";
-    }
-
-    // Main loop now, you know the deal
-    while (!window->ShouldClose())
-    {
-        context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        context->Clear();
-
-        window->OnUpdate();
-    }
+    for (int i=0; i<layout.GetSize(); i++)
+        AGI_INFO("Attribute #{} \"{}\" (Size: {}) ", i, layout[i].Name, layout[i].Size);
 
     context->Shutdown();
     window.reset();
