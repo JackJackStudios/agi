@@ -35,22 +35,19 @@ namespace AGI {
 
 	}
 
-    ImGuiLayer::ImGuiLayer(const std::unique_ptr<Window>& window, bool installCallbacks)
+    ImGuiLayer::ImGuiLayer(const std::unique_ptr<Window>& window, const ImGuiIO& config)
     {
         // Setup Dear ImGui context
 		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-#ifdef AGI_WINDOWS
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-#endif
+
+		ImGuiIO& io = ImGui::GetIO();
+		io = config;
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), installCallbacks);
+		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 330");
     }
 
@@ -106,14 +103,12 @@ namespace AGI {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        #ifdef AGI_WINDOWS
-            if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-            {
-                ImGui::UpdatePlatformWindows();
-                ImGui::RenderPlatformWindowsDefault();
-                glfwMakeContextCurrent(glfwGetCurrentContext());
-            }
-        #endif
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(glfwGetCurrentContext());
+        }
     }
 
 }

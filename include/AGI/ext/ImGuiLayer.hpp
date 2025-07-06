@@ -10,13 +10,13 @@ namespace AGI {
     class ImGuiLayer
     {
     public:
-        ImGuiLayer(const std::unique_ptr<Window>& window, bool installCallbacks = true);
+        ImGuiLayer(const std::unique_ptr<Window>& window, const ImGuiIO& config);
         ~ImGuiLayer();
 
         void BeginFrame(bool dockspace = false);
         void EndFrame();
 
-        static std::shared_ptr<ImGuiLayer> Create(const std::unique_ptr<Window>& window) { return std::make_shared<ImGuiLayer>(window); }
+        static std::shared_ptr<ImGuiLayer> Create(const std::unique_ptr<Window>& window, const ImGuiIO& config) { return std::make_shared<ImGuiLayer>(window, config); }
     private:
         bool m_Dockspace;
     };
