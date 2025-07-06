@@ -35,13 +35,10 @@ namespace AGI {
 
 	}
 
-    ImGuiLayer::ImGuiLayer(const std::unique_ptr<Window>& window, const ImGuiIO& config)
+    ImGuiLayer::ImGuiLayer(const std::unique_ptr<Window>& window)
     {
         // Setup Dear ImGui context
 		ImGui::CreateContext();
-
-		ImGuiIO& io = ImGui::GetIO();
-		io = config;
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();

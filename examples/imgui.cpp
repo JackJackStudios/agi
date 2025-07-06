@@ -18,13 +18,14 @@ int main(void)
     auto window = AGI::Window::Create(settings);
     auto context = AGI::RenderContext::Create(window);
 
+    context->Init();
+
+    auto imgui = AGI::ImGuiLayer::Create(window);
+
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-    auto imgui = AGI::ImGuiLayer::Create(window, io);
-
-    context->Init();
     
     // Main loop now, you know the deal
     while (!window->ShouldClose())
