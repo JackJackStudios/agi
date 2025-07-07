@@ -3,10 +3,8 @@
 namespace AGI {
 
 	enum class FramebufferTextureFormat
-	{
-		// Color
-		RGBA8,
-		RED_INTEGER,
+	{	
+		RGBA8 = 0, RED_INTEGER, RED_FLOAT,
 	};
 
 	struct FramebufferSpecification

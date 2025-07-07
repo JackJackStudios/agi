@@ -13,6 +13,7 @@ namespace AGI {
 			{
 				case FramebufferTextureFormat::RGBA8: return GL_RGBA8;
 				case FramebufferTextureFormat::RED_INTEGER: return GL_R32I;
+				case FramebufferTextureFormat::RED_FLOAT: return GL_R32F;
 			}
 
 			AGI_VERIFY(false, "Unknown FramebufferTextureFormat")
@@ -25,6 +26,7 @@ namespace AGI {
 			{
 				case FramebufferTextureFormat::RGBA8: return GL_RGBA;
 				case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+				case FramebufferTextureFormat::RED_FLOAT: return GL_RED;
 			}
 
 			AGI_VERIFY(false, "Unknown FramebufferTextureFormat")
