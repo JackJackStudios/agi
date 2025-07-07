@@ -106,24 +106,56 @@ namespace AGI {
 
 		for (const auto& device : devices) 
 		{
-			if (Utils::IsDeviceSuitable(device)) 
+			QueueFamilies indices;
+			if (Utils::IsDeviceSuitable(device, &indices))
 			{
 				physicalDevice = device;
+
+				CreateDevice(physicalDevice, indices);
 				break;
 			}
 		}
 
-		if (physicalDevice == nullptr)
+		if (!physicalDevice)
 		{
-			AGI_ERROR("Cannot find suitable GPU");
+			AGI_ERROR("Cannot find GPUs with sufficient Vulkan support");
 		}
 
 	}
 
 	void VulkanContext::Shutdown()
 	{
+		vkDestroyDevice(m_Device, nullptr);
+
 		Utils::DestroyDebugMessenger(m_Instance, m_DebugMessenger, nullptr);
 		vkDestroyInstance(m_Instance, nullptr);
+	}
+
+	void VulkanContext::CreateDevice(VkPhysicalDevice physicalDevice, const QueueFamilies& wantedFamilies)
+	{
+		float queuePriority = 1.0f;
+
+		VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = (uint32_t)wantedFamilies.GraphicsFamily;
+		queueCreateInfo.pQueuePriorities = &queuePriority;
+        queueCreateInfo.queueCount = 1;
+
+		VkPhysicalDeviceFeatures deviceFeatures{};
+		
+		VkDeviceCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		createInfo.pQueueCreateInfos = &queueCreateInfo;
+		createInfo.queueCreateInfoCount = 1;
+		createInfo.pEnabledFeatures = &deviceFeatures;
+		createInfo.enabledExtensionCount = 0;
+
+		auto validationLayers = GetRequiredLayers();
+		createInfo.enabledLayerCount = validationLayers.size();
+		createInfo.ppEnabledLayerNames = validationLayers.data();
+		vkCreateDevice(physicalDevice, &createInfo, nullptr, &m_Device);
+
+		vkGetDeviceQueue(m_Device, (uint32_t)wantedFamilies.GraphicsFamily, 0, &m_GraphicsQuene);
 	}
 
 	std::vector<const char*> VulkanContext::GetRequiredExtensions()

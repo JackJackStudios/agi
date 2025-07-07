@@ -30,9 +30,13 @@ namespace AGI {
 	private:
 		std::vector<const char*> GetRequiredExtensions();
 		std::vector<const char*> GetRequiredLayers();
+		void CreateDevice(VkPhysicalDevice physicalDevice, const QueueFamilies& wantedFamilies);
 	private:
 		VkInstance m_Instance;
+		VkDevice m_Device;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
+
+		VkQueue m_GraphicsQuene;
 	};
 
 }
