@@ -9,8 +9,12 @@ namespace AGI {
 		None = 0, Vertex, Fragment
 	};
 
-	ShaderType StringToShaderType(const std::string& type);
+	namespace Utils {
 
+		ShaderType StringToShaderType(const std::string& type);
+
+	};
+	
 	using ShaderSources = std::unordered_map<ShaderType, std::string>;
 
 	class ShaderBase

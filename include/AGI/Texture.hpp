@@ -12,8 +12,13 @@ namespace AGI {
 		ClampBorder = 0, ClampEdge, Repeat, MirrorRepeat
 	};
 
-	ImageFormat ChannelsToImageFormat(uint16_t channels);
-	uint16_t ImageFormatToChannels(ImageFormat format);
+	namespace Utils {
+
+		ImageFormat ChannelsToImageFormat(uint16_t channels);
+		uint16_t ImageFormatToChannels(ImageFormat format);
+
+	}
+
 
 	struct TextureSpecification
 	{

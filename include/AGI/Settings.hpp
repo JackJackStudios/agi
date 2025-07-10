@@ -81,6 +81,5 @@ namespace AGI {
 	};
 
 	APIType BestAPI();
-	APIType ActualAPI(APIType* type);
 
 }

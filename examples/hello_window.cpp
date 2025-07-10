@@ -5,8 +5,6 @@ int main(void)
     // Init spdlog for AGI callbacks
     InitLogging();
 
-    // Create GLFW window and the AGI::RenderContext
-
     AGI::Settings settings;
     settings.PreferedAPI = AGI::APIType::Guess;
     settings.MessageFunc = OnAGIMessage;
@@ -25,7 +23,7 @@ int main(void)
     // This does every thread-specific initization and is the actual starting up of AGI
     // Anything after this call using the api should be in the same thread as it
     context->Init();
-
+    
     // Main loop now
     while (!window->ShouldClose())
     {
