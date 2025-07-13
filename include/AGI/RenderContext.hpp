@@ -38,7 +38,6 @@ namespace AGI {
 		virtual VertexArray CreateVertexArray() = 0;
 		
 		APIType GetType() const { return m_Settings->PreferedAPI; }
-		static APIType ActualAPI(APIType* type) { *type = (*type == APIType::Guess ? BestAPI() : *type); return *type; }
 
 		static std::unique_ptr<RenderContext> Create(const std::unique_ptr<Window>& window);
 	protected:

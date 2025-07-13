@@ -4,8 +4,7 @@ namespace AGI {
 
 	enum class APIType
 	{
-		Guess = 0,
-		OpenGL,
+		OpenGL = 0,
 		Vulkan,
 	};
 	

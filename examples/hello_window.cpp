@@ -6,10 +6,11 @@ int main(void)
     InitLogging();
 
     AGI::Settings settings;
-    settings.PreferedAPI = AGI::APIType::Guess;
+    settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
+    AGI::WindowProps windowProps;
     settings.Window.Width = 720;
     settings.Window.Height = 720;
     settings.Window.Title = EXECUTABLE_NAME;

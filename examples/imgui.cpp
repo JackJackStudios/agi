@@ -7,7 +7,7 @@ int main(void)
 
     // Create GLFW window and the AGI::RenderContext
     AGI::Settings settings;
-    settings.PreferedAPI = AGI::APIType::Guess;
+    settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 

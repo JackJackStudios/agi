@@ -23,8 +23,8 @@ namespace AGI {
 			switch (type)
 			{
 			case APIType::OpenGL: return GLFW_OPENGL_API; break;
+			case APIType::Vulkan: return GLFW_NO_API; break;
 
-			case APIType::Guess: AGI_VERIFY(false, "APIType::Guess should not reach this function"); break;
 			default: AGI_VERIFY(false, "Undefined APIType"); break;
 			}
 
@@ -43,7 +43,6 @@ namespace AGI {
 	AGIWindow::Window(Settings& settings)
 		: m_Settings(settings)
 	{
-		RenderContext::ActualAPI(&m_Settings.PreferedAPI);
 		Log::Init(m_Settings.MessageFunc);
 
 		AGI_INFO("Creating window \"{}\" ({}, {})", m_Settings.Window.Title, m_Settings.Window.Width, m_Settings.Window.Height);
@@ -60,7 +59,7 @@ namespace AGI {
 		glfwWindowHint(GLFW_VISIBLE, m_Settings.Window.Visible);
 		glfwWindowHint(GLFW_DECORATED, m_Settings.Window.Decorated);
 		glfwWindowHint(GLFW_MAXIMIZED, m_Settings.Window.Maximise);
-		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(RenderContext::ActualAPI(&settings.PreferedAPI)));
+		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(settings.PreferedAPI));
 		m_Window = glfwCreateWindow((int)m_Settings.Window.Width, (int)m_Settings.Window.Height, m_Settings.Window.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;
 

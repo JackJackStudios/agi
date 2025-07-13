@@ -20,7 +20,6 @@ namespace AGI {
 		{
 		case APIType::OpenGL: newapi = std::make_unique<OpenGLContext>(); break;
 
-		case APIType::Guess: AGI_VERIFY(false, "APIType::Guess isn't supposed to reach this function"); return nullptr;
 		default: AGI_VERIFY(false, "Undefined APIType"); return nullptr;
 		}
 
