@@ -14,7 +14,7 @@ namespace AGI {
 		ShaderType StringToShaderType(const std::string& type);
 
 	};
-	
+
 	using ShaderSources = std::unordered_map<ShaderType, std::string>;
 
 	class ShaderBase
@@ -38,7 +38,12 @@ namespace AGI {
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
 	};
 
-	ShaderSources ProcessSource(const std::string& source);
+	namespace Utils {
+
+		ShaderSources ProcessSource(const std::string& source);
+
+	};
+
 	using Shader = std::shared_ptr<ShaderBase>;
 
 }

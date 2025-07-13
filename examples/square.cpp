@@ -75,7 +75,7 @@ int main(void)
     squareVA->SetIndexBuffer(squareIB);
 
     // Process shader source, compile and link
-    AGI::Shader shader = context->CreateShader(AGI::ProcessSource(shaderSrc));
+    AGI::Shader shader = context->CreateShader(AGI::Utils::ProcessSource(shaderSrc));
 
     // Main loop now, you know the deal
     while (!window->ShouldClose())

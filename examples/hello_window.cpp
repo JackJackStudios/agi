@@ -14,7 +14,7 @@ int main(void)
     settings.Window.Height = 720;
     settings.Window.Title = EXECUTABLE_NAME;
 
-    /// This calles glfwCreateWindow but doesnt call glfwMakeContextCurrent
+    /// This calles glfwCreateWindow but doesn't call glfwMakeContextCurrent
     auto window = AGI::Window::Create(settings);
     
     // This simplify creates the context in memory and nothing else

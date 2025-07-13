@@ -150,7 +150,7 @@ namespace AGI {
 			BufferElement element;
 			element.Name = name;
 			element.Type = Utils::OpenGLShaderTypeToAgiShaderType(type);
-			element.Size = ShaderDataTypeSize(element.Type);
+			element.Size = Utils::ShaderDataTypeSize(element.Type);
 			layout.emplace_back(element);
 		}
 

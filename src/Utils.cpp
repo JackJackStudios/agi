@@ -7,6 +7,11 @@
 
 namespace AGI {
 
+	APIType BestAPI()
+	{
+		return APIType::OpenGL;
+	}
+
 	std::unique_ptr<RenderContext> RenderContext::Create(const std::unique_ptr<Window>& window)
 	{
 		std::unique_ptr<RenderContext> newapi;
@@ -24,11 +29,6 @@ namespace AGI {
 	}
 
 	namespace Utils {
-
-		APIType BestAPI()
-		{
-			return APIType::OpenGL;
-		}
 
 		ImageFormat ChannelsToImageFormat(uint16_t channels)
 		{

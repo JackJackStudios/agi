@@ -48,7 +48,7 @@ int main(void)
     context->Init();
 
     // Process shader source, compile and link
-    AGI::Shader shader = context->CreateShader(AGI::ProcessSource(shaderSrc));
+    AGI::Shader shader = context->CreateShader(AGI::Utils::ProcessSource(shaderSrc));
     AGI::BufferLayout layout = shader->GetLayout();
 
     for (int i=0; i<layout.GetSize(); i++)

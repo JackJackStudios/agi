@@ -79,7 +79,7 @@ int main(void)
     squareVA->SetIndexBuffer(squareIB);
 
     // Process shader source, compile and link with uniforms
-    AGI::Shader shader = context->CreateShader(AGI::ProcessSource(shaderSrc));
+    AGI::Shader shader = context->CreateShader(AGI::Utils::ProcessSource(shaderSrc));
     shader->SetInt("u_Texture", 0);
 
     // Load test texture
