@@ -46,6 +46,19 @@ namespace AGI {
 			return 0;
 		}
 
+		static uint32_t AGITextureTypeSize(FramebufferTextureFormat format)
+		{
+			switch (format)
+			{
+			case FramebufferTextureFormat::RGBA8: return 4;
+			case FramebufferTextureFormat::RED_INTEGER: return 4;
+			case FramebufferTextureFormat::RED_FLOAT: return 4;
+			}
+
+			AGI_VERIFY(false, "Unknown FramebufferTextureFormat")
+				return 0;
+		}
+
 	}
 
 	static const uint32_t s_MaxFramebufferSize = 8192;
@@ -63,6 +76,9 @@ namespace AGI {
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
+		if (m_ReadPixel)
+			free(m_ReadPixel);
+
 		glDeleteFramebuffers(1, &m_RendererID);
 		glDeleteTextures(m_ColourAttachments.size(), m_ColourAttachments.data());
 	}
@@ -149,13 +165,21 @@ namespace AGI {
 		Invalidate();
 	}
 
-	int OpenGLFramebuffer::ReadPixel(uint32_t index, uint32_t x, uint32_t y)
+	void* OpenGLFramebuffer::ReadPixel(uint32_t index, uint32_t x, uint32_t y)
 	{
-		int pixelData;
-		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
-		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+		uint32_t size = Utils::AGITextureTypeSize(m_Specifation.Attachments[index]);
+		if (m_PixelSize != size)
+		{
+			if (m_ReadPixel) free(m_ReadPixel);
+			m_ReadPixel = malloc(size);
+		}
 
-		return pixelData;
+		memset(m_ReadPixel, 0, m_PixelSize);
+
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
+		glReadPixels(x, y, 1, 1, Utils::AGITextureTypeToOpenGLType(m_Specifation.Attachments[index]), Utils::AGITextureTypeToOpenGLDataFormat(m_Specifation.Attachments[index]), m_ReadPixel);
+
+		return m_ReadPixel;
 	}
 
 	void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)

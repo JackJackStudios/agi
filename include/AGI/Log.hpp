@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 namespace AGI {
 
     enum class LogLevel
@@ -8,7 +10,6 @@ namespace AGI {
 		Info = 1 << 1,
 		Warning = 1 << 2,
 		Error = 1 << 3,
-		All = Trace | Info | Warning | Error
 	};
 
 	using MessageCallbackFn = std::function<void(std::string_view, LogLevel)>;

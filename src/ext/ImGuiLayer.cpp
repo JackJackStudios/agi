@@ -24,7 +24,6 @@ namespace AGI {
 			switch (type)
 			{
 			case APIType::OpenGL: return GlfwClientApi_OpenGL;
-			case APIType::Vulkan: return GlfwClientApi_Vulkan;
 
 			default: AGI_VERIFY(false, "Undefined APIType"); return GlfwClientApi_Unknown; break;
 			}

@@ -23,7 +23,6 @@ namespace AGI {
 			switch (type)
 			{
 			case APIType::OpenGL: return GLFW_OPENGL_API; break;
-			case APIType::Vulkan: return GLFW_NO_API; break;
 
 			default: AGI_VERIFY(false, "Undefined APIType"); break;
 			}
