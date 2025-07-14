@@ -60,18 +60,31 @@ static void OnAGIMessage(std::string_view message, AGI::LogLevel level)
 int main()
 {
     AGI::Settings settings;
-    settings.PreferedAPI = AGI::APIType::Guess;
+    settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
+    AGI::WindowProps windowProps;
     settings.Window.Width = 720;
     settings.Window.Height = 720;
-    settings.Window.Title = "agi window";
+    settings.Window.Title = EXECUTABLE_NAME;
 
     auto window = AGI::Window::Create(settings);
     auto context = AGI::RenderContext::Create(window);
 
     context->Init();
+    
+    while (!window->ShouldClose())
+    {
+        context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
+        context->Clear();
+
+        window->OnUpdate();
+    }
+
+    context->Shutdown();
+    window.reset();
+    return 0;
 }
 ```
 ## License
