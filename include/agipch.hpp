@@ -6,6 +6,7 @@
 #include <string>
 #include <format>
 #include <vector>
+#include <cstring>
 
 #if defined(AGI_WINDOWS)
 #define AGI_DEBUGBREAK() __debugbreak()
