@@ -16,7 +16,7 @@ namespace AGI {
         void BeginFrame(bool dockspace = false);
         void EndFrame();
 
-        static std::shared_ptr<ImGuiLayer> Create(const std::unique_ptr<Window>& window) { return std::make_shared<ImGuiLayer>(window); }
+        static std::unique_ptr<ImGuiLayer> Create(const std::unique_ptr<Window>& window) { return std::make_unique<ImGuiLayer>(window); }
     private:
         bool m_Dockspace;
     };
