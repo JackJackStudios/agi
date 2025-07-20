@@ -1,11 +1,7 @@
 #pragma once
 
+#include "Vulkan.hpp"
 #include "AGI/RenderContext.hpp"
-#include "VulkanUtils.hpp"
-
-#include <vulkan/vulkan.h>
-
-constexpr const char* SDK_VALIDATION_LAYER = "VK_LAYER_KHRONOS_validation";
 
 namespace AGI {
 
@@ -28,15 +24,17 @@ namespace AGI {
 		virtual Texture CreateTexture(const TextureSpecification& spec) override { return nullptr; }
 		virtual VertexArray CreateVertexArray() override { return nullptr; }
 	private:
-		std::vector<const char*> GetRequiredExtensions();
-		std::vector<const char*> GetRequiredLayers();
+		bool IsDeviceSuitable(VkPhysicalDevice device, QueueFamilies* foundFamilies);
 		void CreateDevice(VkPhysicalDevice physicalDevice, const QueueFamilies& wantedFamilies);
 	private:
 		VkInstance m_Instance;
-		VkDevice m_Device;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
+		VkDevice m_Device;
+
+		VkSurfaceKHR m_WindowSurface;
 
 		VkQueue m_GraphicsQuene;
+		VkQueue m_PresentQuene;
 	};
 
 }

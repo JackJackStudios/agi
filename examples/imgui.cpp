@@ -21,11 +21,6 @@ int main(void)
     context->Init();
 
     auto imgui = AGI::ImGuiLayer::Create(window);
-
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     
     // Main loop now, you know the deal
     while (!window->ShouldClose())
