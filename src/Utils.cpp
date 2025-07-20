@@ -23,7 +23,8 @@ namespace AGI {
 		default: AGI_VERIFY(false, "Undefined APIType"); return nullptr;
 		}
 
-		newapi->m_Settings = &window->m_Settings;
+		newapi->m_BoundWindow = window.get();
+		newapi->m_Settings = window->m_Settings;
 		return std::move(newapi);
 	}
 

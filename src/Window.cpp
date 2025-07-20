@@ -61,15 +61,19 @@ namespace AGI {
 		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(settings.PreferedAPI));
 		m_Window = glfwCreateWindow((int)m_Settings.Window.Width, (int)m_Settings.Window.Height, m_Settings.Window.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;
-
-		if (m_Settings.PreferedAPI == APIType::OpenGL)
-			glfwMakeContextCurrent(m_Window);
-
+		
 		glfwSetWindowUserPointer(m_Window, this);
-		SetVSync(m_Settings.Window.VSync);
 
 		// Set GLFW callbacks
 		InstallCallbacks();
+	}
+
+	void AGIWindow::Init()
+	{
+		if (m_Settings.PreferedAPI == APIType::OpenGL)
+			glfwMakeContextCurrent(m_Window);
+
+		SetVSync(m_Settings.Window.VSync);
 	}
 
 	AGIWindow::~Window()
