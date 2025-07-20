@@ -14,8 +14,8 @@ namespace AGI {
 		virtual void Unbind() override;
 
 		virtual void Resize(uint32_t width, uint32_t height) override;
-		virtual int ReadPixel(uint32_t index, uint32_t x, uint32_t y) override;
 
+		virtual void* ReadPixel(uint32_t index, uint32_t x, uint32_t y) override;
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
 		virtual int GetWidth() override { return m_Specifation.Width; };
@@ -26,6 +26,8 @@ namespace AGI {
 		void Invalidate();
 	private:
 		uint32_t m_RendererID = 0;
+		void* m_ReadPixel = nullptr;
+		uint32_t m_PixelSize = 0;
 
 		FramebufferSpecification m_Specifation;
 		std::vector<uint32_t> m_ColourAttachments;

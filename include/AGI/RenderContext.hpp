@@ -17,6 +17,8 @@ namespace AGI {
 	class RenderContext
 	{
 	public:
+		virtual ~RenderContext() = default;
+
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
 		
@@ -35,11 +37,12 @@ namespace AGI {
 		virtual Texture CreateTexture(const TextureSpecification& spec) = 0;
 		virtual VertexArray CreateVertexArray() = 0;
 		
-		APIType GetType() const { return m_Settings->PreferedAPI; }
+		APIType GetType() const { return m_BoundWindow->m_Settings.PreferedAPI; }
 
 		static std::unique_ptr<RenderContext> Create(const std::unique_ptr<Window>& window);
 	protected:
-		Settings* m_Settings;
+		Window* m_BoundWindow;
+		Settings m_Settings;
 	private:
 		inline static RenderContext* s_CurrentContext;
 	};

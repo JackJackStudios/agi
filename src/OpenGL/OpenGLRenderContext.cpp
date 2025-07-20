@@ -7,6 +7,8 @@ namespace AGI {
 
 	void OpenGLContext::Init()
 	{
+		m_BoundWindow->Init();
+
 		int	status = gladLoadGLLoader((GLADloadproc)AGI::Window::LoaderFunc);
 		AGI_VERIFY(status, "Failed to initialize Glad!");
 
@@ -15,7 +17,7 @@ namespace AGI {
 		AGI_INFO("  Renderer: {0}", (char*)glGetString(GL_RENDERER));
 		AGI_INFO("  Version: {0}", (char*)glGetString(GL_VERSION));
 
-		if (m_Settings->Blending)
+		if (m_Settings.Blending)
 		{
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

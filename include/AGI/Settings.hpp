@@ -4,9 +4,7 @@ namespace AGI {
 
 	enum class APIType
 	{
-		Guess = 0,
-		OpenGL,
-		Vulkan,
+		OpenGL = 0,
 	};
 	
 	class Window;
@@ -81,6 +79,5 @@ namespace AGI {
 	};
 
 	APIType BestAPI();
-	APIType ActualAPI(APIType* type);
 
 }

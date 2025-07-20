@@ -5,18 +5,17 @@ int main(void)
     // Init spdlog for AGI callbacks
     InitLogging();
 
-    // Create GLFW window and the AGI::RenderContext
-
     AGI::Settings settings;
-    settings.PreferedAPI = AGI::APIType::Guess;
+    settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
+    AGI::WindowProps windowProps;
     settings.Window.Width = 720;
     settings.Window.Height = 720;
     settings.Window.Title = EXECUTABLE_NAME;
 
-    /// This calles glfwCreateWindow but doesnt call glfwMakeContextCurrent
+    /// This calles glfwCreateWindow but doesn't call glfwMakeContextCurrent
     auto window = AGI::Window::Create(settings);
     
     // This simplify creates the context in memory and nothing else
@@ -25,7 +24,7 @@ int main(void)
     // This does every thread-specific initization and is the actual starting up of AGI
     // Anything after this call using the api should be in the same thread as it
     context->Init();
-
+    
     // Main loop now
     while (!window->ShouldClose())
     {

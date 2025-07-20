@@ -80,7 +80,6 @@ namespace AGI {
         {
             switch (spec.Wrapping)
             {
-                case WrappingType::None: return GL_CLAMP_TO_EDGE;
                 case WrappingType::ClampBorder: return GL_CLAMP_TO_BORDER;
                 case WrappingType::ClampEdge: return GL_CLAMP_TO_EDGE;
                 case WrappingType::Repeat: return GL_REPEAT;
@@ -96,7 +95,7 @@ namespace AGI {
     OpenGLTexture::OpenGLTexture(TextureSpecification spec)
         : m_Specification(spec)
     {
-        int channels = ImageFormatToChannels(m_Specification.Format);
+        int channels = Utils::ImageFormatToChannels(m_Specification.Format);
         int bytesPerPixel = channels * (m_Specification.BytesPerChannel / 8);
 
         GLint alignment = 1;
@@ -142,7 +141,7 @@ namespace AGI {
 
     void OpenGLTexture::SetData(void* data, uint32_t size)
     {
-        AGI_VERIFY(size == m_Specification.Width * m_Specification.Height * ImageFormatToChannels(m_Specification.Format), "Data must be entire texture!");
+        AGI_VERIFY(size == m_Specification.Width * m_Specification.Height * Utils::ImageFormatToChannels(m_Specification.Format), "Data must be entire texture!");
 
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Specification.Width, m_Specification.Height, Utils::GetFormat(m_Specification), GL_UNSIGNED_BYTE, data);

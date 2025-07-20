@@ -24,33 +24,25 @@ namespace AGI {
 			switch (type)
 			{
 			case APIType::OpenGL: return GlfwClientApi_OpenGL;
-			case APIType::Vulkan: return GlfwClientApi_Vulkan;
+
+			default: AGI_VERIFY(false, "Undefined APIType"); return GlfwClientApi_Unknown; break;
 			}
-
-			AGI_VERIFY(type != APIType::Guess, "APIType::Guess should not reach this function");
-
-			AGI_VERIFY(false, "Undefined APIType");
+			
 			return GlfwClientApi_Unknown;
 		}
 
 	}
 
-    ImGuiLayer::ImGuiLayer(const std::unique_ptr<Window>& window, bool installCallbacks)
+    ImGuiLayer::ImGuiLayer(const std::unique_ptr<Window>& window)
     {
         // Setup Dear ImGui context
 		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-#ifdef AGI_WINDOWS
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-#endif
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), installCallbacks);
+		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 330");
     }
 
@@ -106,14 +98,12 @@ namespace AGI {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        #ifdef AGI_WINDOWS
-            if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-            {
-                ImGui::UpdatePlatformWindows();
-                ImGui::RenderPlatformWindowsDefault();
-                glfwMakeContextCurrent(glfwGetCurrentContext());
-            }
-        #endif
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(glfwGetCurrentContext());
+        }
     }
 
 }

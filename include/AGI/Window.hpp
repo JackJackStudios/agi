@@ -17,6 +17,7 @@ namespace AGI {
 		Window(Settings& settings);
 		~Window();
 
+		void Init();
 		void OnUpdate();
 
 		inline uint32_t GetWidth() const { return m_Settings.Window.Width; }

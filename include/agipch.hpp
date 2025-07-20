@@ -1,17 +1,12 @@
 #pragma once
 
-#include <iostream>
 #include <memory>
-#include <utility>
-#include <algorithm>
 #include <functional>
 #include <filesystem>
 #include <string>
 #include <format>
-#include <sstream>
 #include <vector>
-#include <unordered_map>
-#include <unordered_set>
+#include <cstring>
 
 #if defined(AGI_WINDOWS)
 #define AGI_DEBUGBREAK() __debugbreak()

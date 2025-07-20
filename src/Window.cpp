@@ -24,11 +24,10 @@ namespace AGI {
 			{
 				case APIType::OpenGL: return GLFW_OPENGL_API;
 				case APIType::Vulkan: return GLFW_NO_API;
+
+				default: AGI_VERIFY(false, "Undefined APIType"); break;
 			}
 
-			AGI_VERIFY(type != APIType::Guess, "APIType::Guess should not reach this function");
-
-			AGI_VERIFY(false, "Undefined APIType");
 			return 0;
 		}
 
@@ -44,7 +43,6 @@ namespace AGI {
 	AGIWindow::Window(Settings& settings)
 		: m_Settings(settings)
 	{
-		ActualAPI(&m_Settings.PreferedAPI);
 		Log::Init(m_Settings.MessageFunc);
 
 		AGI_INFO("Creating window \"{}\" ({}, {})", m_Settings.Window.Title, m_Settings.Window.Width, m_Settings.Window.Height);
@@ -61,18 +59,22 @@ namespace AGI {
 		glfwWindowHint(GLFW_VISIBLE, m_Settings.Window.Visible);
 		glfwWindowHint(GLFW_DECORATED, m_Settings.Window.Decorated);
 		glfwWindowHint(GLFW_MAXIMIZED, m_Settings.Window.Maximise);
-		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(ActualAPI(&settings.PreferedAPI)));
+		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(settings.PreferedAPI));
 		m_Window = glfwCreateWindow((int)m_Settings.Window.Width, (int)m_Settings.Window.Height, m_Settings.Window.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;
-
-		if (settings.PreferedAPI == APIType::OpenGL)
-			glfwMakeContextCurrent(m_Window);
-
+		
 		glfwSetWindowUserPointer(m_Window, this);
-		SetVSync(m_Settings.Window.VSync);
 
 		// Set GLFW callbacks
 		InstallCallbacks();
+	}
+
+	void AGIWindow::Init()
+	{
+		if (m_Settings.PreferedAPI == APIType::OpenGL)
+			glfwMakeContextCurrent(m_Window);
+
+		SetVSync(m_Settings.Window.VSync);
 	}
 
 	AGIWindow::~Window()

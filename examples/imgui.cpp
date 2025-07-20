@@ -7,7 +7,7 @@ int main(void)
 
     // Create GLFW window and the AGI::RenderContext
     AGI::Settings settings;
-    settings.PreferedAPI = AGI::APIType::Guess;
+    settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
@@ -18,9 +18,14 @@ int main(void)
     auto window = AGI::Window::Create(settings);
     auto context = AGI::RenderContext::Create(window);
 
+    context->Init();
+
     auto imgui = AGI::ImGuiLayer::Create(window);
 
-    context->Init();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     
     // Main loop now, you know the deal
     while (!window->ShouldClose())

@@ -47,46 +47,12 @@ int main(void)
 
     context->Init();
 
-    // Create VAO to hold buffers
-    AGI::VertexArray squareVA = context->CreateVertexArray();
-
-    // This is the data that goes into the VBO
-    float squareVertices[3 * 4] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.5f,  0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f
-    };
-
-    // This is the data that goes into the IBO
-    uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-
-    // Create VBO and add to the VAO
-    AGI::BufferLayout layout = {
-        { AGI::ShaderDataType::Float3, "a_Position" }
-    };
-
-    AGI::VertexBuffer squareVB = context->CreateVertexBuffer(4, layout);
-    squareVB->SetData(squareVertices, sizeof(squareVertices));
-    squareVA->AddVertexBuffer(squareVB);
-
-    // Create IBO and add to the VAO
-    AGI::IndexBuffer squareIB = context->CreateIndexBuffer(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-    squareVA->SetIndexBuffer(squareIB);
-
     // Process shader source, compile and link
     AGI::Shader shader = context->CreateShader(AGI::Utils::ProcessSource(shaderSrc));
+    AGI::BufferLayout layout = shader->GetLayout();
 
-    // Main loop now, you know the deal
-    while (!window->ShouldClose())
-    {
-        context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        context->Clear();
-        
-        context->DrawIndexed(squareVA);
-
-        window->OnUpdate();
-    }
+    for (int i=0; i<layout.GetSize(); i++)
+        AGI_INFO("Attribute #{} \"{}\" (Size: {}) ", i, layout[i].Name, layout[i].Size);
 
     context->Shutdown();
     window.reset();

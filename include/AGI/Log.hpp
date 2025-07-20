@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 namespace AGI {
 
     enum class LogLevel
@@ -8,7 +10,6 @@ namespace AGI {
 		Info = 1 << 1,
 		Warning = 1 << 2,
 		Error = 1 << 3,
-		All = Trace | Info | Warning | Error
 	};
 
 	using MessageCallbackFn = std::function<void(std::string_view, LogLevel)>;
@@ -19,7 +20,16 @@ namespace AGI {
         static void Init(MessageCallbackFn logfunc) { if (!IsInitialized()) s_LogCallback = logfunc; }
         
         static void LogToClient(std::string_view message, LogLevel level) { s_LogCallback(message, level); }
-        static void LogToLibrary(std::string_view message, LogLevel level) { std::cout << "AGI: " << message << std::endl; }
+        static void LogToLibrary(std::string_view message, LogLevel level)
+        {
+            switch (level)
+            {
+            case AGI::LogLevel::Trace:   std::cout << "[TRACE] AGI: " << message << std::endl; break;
+            case AGI::LogLevel::Info:    std::cout << "[INFO] AGI: " << message << std::endl; break;
+            case AGI::LogLevel::Warning: std::cout << "[WARN] AGI: " << message << std::endl; break;
+            case AGI::LogLevel::Error:   std::cout << "[ERROR] AGI: " << message << std::endl; break;
+            }
+        }
         
         static void GenericLog(std::string_view message, LogLevel level) { if (!IsInitialized()) LogToLibrary(message, level); else LogToClient(message, level); }
 

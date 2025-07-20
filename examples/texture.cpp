@@ -37,7 +37,7 @@ int main(void)
 
     // Create GLFW window and the AGI::RenderContext
     AGI::Settings settings;
-    settings.PreferedAPI = AGI::APIType::Guess;
+    settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
@@ -79,7 +79,7 @@ int main(void)
     squareVA->SetIndexBuffer(squareIB);
 
     // Process shader source, compile and link with uniforms
-    AGI::Shader shader = context->CreateShader(AGI::ProcessSource(shaderSrc));
+    AGI::Shader shader = context->CreateShader(AGI::Utils::ProcessSource(shaderSrc));
     shader->SetInt("u_Texture", 0);
 
     // Load test texture

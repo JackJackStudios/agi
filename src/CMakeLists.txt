@@ -1,5 +1,5 @@
 # Global interface for other backends
-add_subdirectory(glad)
+add_subdirectory(OpenGL/glad)
 
 file(GLOB SOURCE_DIR "Utils.cpp" "Window.cpp")
 file(GLOB_RECURSE OPENGL_SOURCE "OpenGL/**.cpp")

@@ -4,16 +4,21 @@ namespace AGI {
 
 	enum class ImageFormat
 	{
-		None = 0, RED, RG, RGB, RGBA
+		RED = 0, RG, RGB, RGBA
 	};
 
 	enum class WrappingType
 	{
-		None = 0, ClampBorder, ClampEdge, Repeat, MirrorRepeat
+		ClampBorder = 0, ClampEdge, Repeat, MirrorRepeat
 	};
 
-	ImageFormat ChannelsToImageFormat(uint16_t channels);
-	uint16_t ImageFormatToChannels(ImageFormat format);
+	namespace Utils {
+
+		ImageFormat ChannelsToImageFormat(uint16_t channels);
+		uint16_t ImageFormatToChannels(ImageFormat format);
+
+	}
+
 
 	struct TextureSpecification
 	{
