@@ -55,6 +55,5 @@ int main(void)
         AGI_INFO("Attribute #{} \"{}\" (Size: {}) ", i, layout[i].Name, layout[i].Size);
 
     context->Shutdown();
-    window.reset();
     return 0;
 }

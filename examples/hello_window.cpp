@@ -35,6 +35,5 @@ int main(void)
     }
 
     context->Shutdown();
-    window.reset();
     return 0;
 }

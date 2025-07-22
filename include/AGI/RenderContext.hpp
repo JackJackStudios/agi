@@ -37,7 +37,8 @@ namespace AGI {
 		virtual Texture CreateTexture(const TextureSpecification& spec) = 0;
 		virtual VertexArray CreateVertexArray() = 0;
 		
-		APIType GetType() const { return m_BoundWindow->m_Settings.PreferedAPI; }
+		APIType GetType() const { return m_Settings.PreferedAPI; }
+		Window* GetBoundWindow() const { return m_BoundWindow; }
 
 		static std::unique_ptr<RenderContext> Create(const std::unique_ptr<Window>& window);
 	protected:
