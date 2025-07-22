@@ -7,6 +7,9 @@ void WindowLoop(AGI::RenderContext* context)
     
     while (!window->ShouldClose())
     {
+        context->SetClearColour({ 1.0f, 0.0f, 0.0f, 1 });
+        context->Clear();
+        
         window->OnUpdate();
     }
 

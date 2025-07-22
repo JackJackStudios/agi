@@ -1,5 +1,7 @@
 #include "AGI/Window.hpp"
 
+#include <atomic>
+
 using AGIWindow = AGI::Window;
 
 #if defined(AGI_WINDOWS)
