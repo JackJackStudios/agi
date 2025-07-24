@@ -55,5 +55,7 @@ int main(void)
         AGI_INFO("Attribute #{} \"{}\" (Size: {}) ", i, layout[i].Name, layout[i].Size);
 
     context->Shutdown();
+    delete context;
+    
     return 0;
 }

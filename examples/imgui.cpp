@@ -41,6 +41,9 @@ int main(void)
     }
 
     imgui.reset();
+
     context->Shutdown();
+    delete context;
+    
     return 0;
 }

@@ -33,9 +33,12 @@ int main(void)
     auto window2 = AGI::Window::Create(settings);
     auto context2 = AGI::RenderContext::Create(window2);
 
-    std::thread thread(WindowLoop, context2.get());
-    WindowLoop(context1.get());
+    std::thread thread(WindowLoop, context2);
+    WindowLoop(context1);
 
     thread.join();
+
+    delete context1;
+    delete context2;
     return 0;
 }

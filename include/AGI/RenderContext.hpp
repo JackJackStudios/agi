@@ -17,7 +17,7 @@ namespace AGI {
 	class RenderContext
 	{
 	public:
-		virtual ~RenderContext() = default;
+		virtual ~RenderContext();
 
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
@@ -40,7 +40,7 @@ namespace AGI {
 		APIType GetType() const { return m_Settings.PreferedAPI; }
 		Window* GetBoundWindow() const { return m_BoundWindow; }
 
-		static std::unique_ptr<RenderContext> Create(const std::unique_ptr<Window>& window);
+		static RenderContext* Create(Window* window);
 	protected:
 		Window* m_BoundWindow;
 		Settings m_Settings;

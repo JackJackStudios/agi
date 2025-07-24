@@ -32,18 +32,21 @@ namespace AGI {
 		bool Decorated = true;
 		bool Maximise = false;
 
-		WindowPosFunc WindowPosCallback = nullptr;
-		WindowSizeFunc WindowSizeCallback = nullptr;
-		WindowCloseFunc WindowCloseCallback = nullptr;
-		WindowFocusFunc WindowFocusCallback = nullptr;
-		WindowMaximizeFunc WindowMaximizeCallback = nullptr;
-		MouseButtonFunc MouseButtonCallback = nullptr;
-		CursorPosFunc CursorPosCallback = nullptr;
-		CursorEnterFunc CursorEnterCallback = nullptr;
-		ScrollFunc ScrollCallback = nullptr;
-		KeyFunc KeyCallback = nullptr;
-		CharFunc CharCallback = nullptr;
-		DropFunc DropCallback = nullptr;
+		struct
+		{
+			WindowPosFunc WindowPosCallback = nullptr;
+			WindowSizeFunc WindowSizeCallback = nullptr;
+			WindowCloseFunc WindowCloseCallback = nullptr;
+			WindowFocusFunc WindowFocusCallback = nullptr;
+			WindowMaximizeFunc WindowMaximizeCallback = nullptr;
+			MouseButtonFunc MouseButtonCallback = nullptr;
+			CursorPosFunc CursorPosCallback = nullptr;
+			CursorEnterFunc CursorEnterCallback = nullptr;
+			ScrollFunc ScrollCallback = nullptr;
+			KeyFunc KeyCallback = nullptr;
+			CharFunc CharCallback = nullptr;
+			DropFunc DropCallback = nullptr;
+		} Events;
 	};
 
 	struct Settings

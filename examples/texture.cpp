@@ -98,5 +98,6 @@ int main(void)
     }
 
     context->Shutdown();
+    delete context;
     return 0;
 }

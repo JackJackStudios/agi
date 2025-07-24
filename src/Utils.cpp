@@ -12,20 +12,25 @@ namespace AGI {
 		return APIType::OpenGL;
 	}
 
-	std::unique_ptr<RenderContext> RenderContext::Create(const std::unique_ptr<Window>& window)
+	RenderContext* RenderContext::Create(Window* window)
 	{
-		std::unique_ptr<RenderContext> newapi;
+		RenderContext* newapi = nullptr;
 
 		switch (window->m_Settings.PreferedAPI)
 		{
-		case APIType::OpenGL: newapi = std::make_unique<OpenGLContext>(); break;
+		case APIType::OpenGL: newapi = new OpenGLContext(); break;
 
 		default: AGI_VERIFY(false, "Undefined APIType"); return nullptr;
 		}
 
-		newapi->m_BoundWindow = window.get();
+		newapi->m_BoundWindow = window;
 		newapi->m_Settings = window->m_Settings;
 		return std::move(newapi);
+	}
+
+	RenderContext::~RenderContext()
+	{
+		delete m_BoundWindow;
 	}
 
 	namespace Utils {

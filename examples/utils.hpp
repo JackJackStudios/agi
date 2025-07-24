@@ -35,7 +35,7 @@ void InitLogging()
     s_ClientLogger->flush_on(spdlog::level::trace);
 }
 
-AGI::Texture LoadTexture(const std::unique_ptr<AGI::RenderContext>& context, const std::filesystem::path& path)
+AGI::Texture LoadTexture(AGI::RenderContext* context, const std::filesystem::path& path)
 {
     int width, height, channels;
 
