@@ -26,7 +26,7 @@ namespace AGI {
 		glm::vec2 GetPosition() const;
 
 		// Window attributes
-		bool ShouldClose() const;
+		bool ShouldClose(bool closing = false) const;
 		bool IsVSync() const;
 
 		void SetVSync(bool enabled);

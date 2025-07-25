@@ -107,8 +107,9 @@ namespace AGI {
 		glfwPollEvents();
 	}
 
-	bool AGIWindow::ShouldClose() const
+	bool AGIWindow::ShouldClose(bool closing) const
 	{
+		if (closing) glfwSetWindowShouldClose(m_Window, 1);
 		return glfwWindowShouldClose(m_Window);
 	}
 
