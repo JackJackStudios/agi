@@ -41,18 +41,18 @@ namespace AGI {
 		GLFWwindow* GetGlfwWindow() const { return m_Window; }
 
 		// Events
-		void SetWindowPosCallback(WindowPosFunc callback)           { m_Settings.Window.Events.WindowPosCallback = callback;      InstallCallbacks(); }
-		void SetWindowSizeCallback(WindowSizeFunc callback)         { m_Settings.Window.Events.WindowSizeCallback = callback;     InstallCallbacks(); }
-		void SetWindowCloseCallback(WindowCloseFunc callback)       { m_Settings.Window.Events.WindowCloseCallback = callback;    InstallCallbacks(); }
-		void SetWindowFocusCallback(WindowFocusFunc callback)       { m_Settings.Window.Events.WindowFocusCallback = callback;    InstallCallbacks(); }
-		void SetWindowMaximizeCallback(WindowMaximizeFunc callback) { m_Settings.Window.Events.WindowMaximizeCallback = callback; InstallCallbacks(); }
-		void SetMouseButtonCallback(MouseButtonFunc callback)       { m_Settings.Window.Events.MouseButtonCallback = callback;    InstallCallbacks(); }
-		void SetCursorPosCallback(CursorPosFunc callback)           { m_Settings.Window.Events.CursorPosCallback = callback;      InstallCallbacks(); }
-		void SetCursorEnterCallback(CursorEnterFunc callback)       { m_Settings.Window.Events.CursorEnterCallback = callback;    InstallCallbacks(); }
-		void SetScrollCallback(ScrollFunc callback)                 { m_Settings.Window.Events.ScrollCallback = callback;         InstallCallbacks(); }
-		void SetKeyCallback(KeyFunc callback)                       { m_Settings.Window.Events.KeyCallback = callback;            InstallCallbacks(); }
-		void SetCharCallback(CharFunc callback)                     { m_Settings.Window.Events.CharCallback = callback;           InstallCallbacks(); }
-		void SetDropCallback(DropFunc callback)                     { m_Settings.Window.Events.DropCallback = callback;           InstallCallbacks(); }
+		void SetWindowPosCallback(WindowPosFunc callback)           { m_Events.WindowPosCallback = callback;      InstallCallbacks(); }
+		void SetWindowSizeCallback(WindowSizeFunc callback)         { m_Events.WindowSizeCallback = callback;     InstallCallbacks(); }
+		void SetWindowCloseCallback(WindowCloseFunc callback)       { m_Events.WindowCloseCallback = callback;    InstallCallbacks(); }
+		void SetWindowFocusCallback(WindowFocusFunc callback)       { m_Events.WindowFocusCallback = callback;    InstallCallbacks(); }
+		void SetWindowMaximizeCallback(WindowMaximizeFunc callback) { m_Events.WindowMaximizeCallback = callback; InstallCallbacks(); }
+		void SetMouseButtonCallback(MouseButtonFunc callback)       { m_Events.MouseButtonCallback = callback;    InstallCallbacks(); }
+		void SetCursorPosCallback(CursorPosFunc callback)           { m_Events.CursorPosCallback = callback;      InstallCallbacks(); }
+		void SetCursorEnterCallback(CursorEnterFunc callback)       { m_Events.CursorEnterCallback = callback;    InstallCallbacks(); }
+		void SetScrollCallback(ScrollFunc callback)                 { m_Events.ScrollCallback = callback;         InstallCallbacks(); }
+		void SetKeyCallback(KeyFunc callback)                       { m_Events.KeyCallback = callback;            InstallCallbacks(); }
+		void SetCharCallback(CharFunc callback)                     { m_Events.CharCallback = callback;           InstallCallbacks(); }
+		void SetDropCallback(DropFunc callback)                     { m_Events.DropCallback = callback;           InstallCallbacks(); }
 
 		static float GetTime() { return glfwGetTime(); }
 		static void* LoaderFunc(const char* name) { return (void*)glfwGetProcAddress(name); }
@@ -63,8 +63,23 @@ namespace AGI {
 		GLFWwindow* m_Window;
 		Settings m_Settings;
 
-		int m_WindowIndex = -1;
+		struct
+		{
+			WindowPosFunc WindowPosCallback = nullptr;
+			WindowSizeFunc WindowSizeCallback = nullptr;
+			WindowCloseFunc WindowCloseCallback = nullptr;
+			WindowFocusFunc WindowFocusCallback = nullptr;
+			WindowMaximizeFunc WindowMaximizeCallback = nullptr;
+			MouseButtonFunc MouseButtonCallback = nullptr;
+			CursorPosFunc CursorPosCallback = nullptr;
+			CursorEnterFunc CursorEnterCallback = nullptr;
+			ScrollFunc ScrollCallback = nullptr;
+			KeyFunc KeyCallback = nullptr;
+			CharFunc CharCallback = nullptr;
+			DropFunc DropCallback = nullptr;
+		} m_Events;
 
+		int m_WindowIndex = -1;
 		friend class RenderContext;
 	};
 
