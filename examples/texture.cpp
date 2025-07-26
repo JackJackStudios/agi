@@ -41,11 +41,12 @@ int main(void)
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
-    settings.Window.Width = 720;
-    settings.Window.Height = 720;
-    settings.Window.Title = EXECUTABLE_NAME;
+    AGI::WindowProps windowProps;
+    windowProps.Width = 720;
+    windowProps.Height = 720;
+    windowProps.Title = EXECUTABLE_NAME;
 
-    auto window = AGI::Window::Create(settings);
+    auto window = AGI::Window::Create(settings, windowProps);
     auto context = AGI::RenderContext::Create(window);
 
     context->Init();

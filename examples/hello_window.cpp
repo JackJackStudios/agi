@@ -11,12 +11,12 @@ int main(void)
     settings.Blending = true;
 
     AGI::WindowProps windowProps;
-    settings.Window.Width = 720;
-    settings.Window.Height = 720;
-    settings.Window.Title = EXECUTABLE_NAME;
+    windowProps.Width = 720;
+    windowProps.Height = 720;
+    windowProps.Title = EXECUTABLE_NAME;
 
     /// This calles glfwCreateWindow but doesn't call glfwMakeContextCurrent
-    auto window = AGI::Window::Create(settings);
+    auto window = AGI::Window::Create(settings, windowProps);
     
     // This simplify creates the context in memory and nothing else
     auto context = AGI::RenderContext::Create(window);

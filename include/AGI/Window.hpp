@@ -14,15 +14,15 @@ namespace AGI {
 	class Window
 	{
 	public:
-		Window(Settings& settings);
+		Window(Settings& settings, WindowProps& props);
 
 		void Init();
 		void OnUpdate();
 		void Shutdown();
 
-		inline uint32_t GetWidth() const { return m_Settings.Window.Width; }
-		inline uint32_t GetHeight() const { return m_Settings.Window.Height; }
-		const WindowProps& GetProperties() const { return m_Settings.Window; }
+		inline uint32_t GetWidth() const { return m_Properties.Width; }
+		inline uint32_t GetHeight() const { return m_Properties.Height; }
+		const WindowProps& GetProperties() const { return m_Properties; }
 		glm::vec2 GetPosition() const;
 
 		// Window attributes
@@ -56,12 +56,14 @@ namespace AGI {
 
 		static float GetTime() { return glfwGetTime(); }
 		static void* LoaderFunc(const char* name) { return (void*)glfwGetProcAddress(name); }
-		static Window* Create(Settings& settings) { return new Window(settings); }
+		static Window* Create(Settings& settings, WindowProps& props) { return new Window(settings, props); }
 	private:
 		void InstallCallbacks();
 	private:
 		GLFWwindow* m_Window;
+
 		Settings m_Settings;
+		WindowProps m_Properties;
 
 		struct
 		{

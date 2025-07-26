@@ -20,17 +20,19 @@ int main(void)
 {
     AGI::Settings settings;
     settings.PreferedAPI = AGI::BestAPI();
+    settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
-    settings.Window.Width = 400;
-    settings.Window.Height = 300;
+    AGI::WindowProps windowProps;
+    windowProps.Width = 400;
+    windowProps.Height = 300;
+    windowProps.Title = "window1";
 
-    settings.Window.Title = "window1";
-    auto window1 = AGI::Window::Create(settings);
+    auto window1 = AGI::Window::Create(settings, windowProps);
     auto context1 = AGI::RenderContext::Create(window1);
 
-    settings.Window.Title = "window2";
-    auto window2 = AGI::Window::Create(settings);
+    windowProps.Title = "window2";
+    auto window2 = AGI::Window::Create(settings, windowProps);
     auto context2 = AGI::RenderContext::Create(window2);
 
     std::thread thread(WindowLoop, context2);

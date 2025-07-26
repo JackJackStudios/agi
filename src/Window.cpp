@@ -43,8 +43,8 @@ namespace AGI {
 	static std::atomic<bool> s_GLFWinit = false;
 
 	// Main Thread
-	AGIWindow::Window(Settings& settings)
-		: m_Settings(settings)
+	AGIWindow::Window(Settings& settings, WindowProps& props)
+		: m_Settings(settings), m_Properties(props)
 	{
 		Log::Init(m_Settings.MessageFunc);
 
@@ -63,14 +63,14 @@ namespace AGI {
 		if (m_WindowIndex != -1)
 			return;
 
-		AGI_INFO("Creating window \"{}\" ({}, {})", m_Settings.Window.Title, m_Settings.Window.Width, m_Settings.Window.Height);
+		AGI_INFO("Creating window \"{}\" ({}, {})", m_Properties.Title, m_Properties.Width, m_Properties.Height);
 
-		glfwWindowHint(GLFW_RESIZABLE, m_Settings.Window.Resize);
-		glfwWindowHint(GLFW_VISIBLE, m_Settings.Window.Visible);
-		glfwWindowHint(GLFW_DECORATED, m_Settings.Window.Decorated);
-		glfwWindowHint(GLFW_MAXIMIZED, m_Settings.Window.Maximise);
+		glfwWindowHint(GLFW_RESIZABLE, m_Properties.Resize);
+		glfwWindowHint(GLFW_VISIBLE, m_Properties.Visible);
+		glfwWindowHint(GLFW_DECORATED, m_Properties.Decorated);
+		glfwWindowHint(GLFW_MAXIMIZED, m_Properties.Maximise);
 		glfwWindowHint(GLFW_CLIENT_API, Utils::AgiApiTypeToGlfwApiType(m_Settings.PreferedAPI));
-		m_Window = glfwCreateWindow((int)m_Settings.Window.Width, (int)m_Settings.Window.Height, m_Settings.Window.Title.c_str(), nullptr, nullptr);
+		m_Window = glfwCreateWindow((int)m_Properties.Width, (int)m_Properties.Height, m_Properties.Title.c_str(), nullptr, nullptr);
 		s_WindowCount++;
 
 		m_WindowIndex = s_WindowCount-1;
@@ -80,7 +80,7 @@ namespace AGI {
 		if (m_Settings.PreferedAPI == APIType::OpenGL)
 			glfwMakeContextCurrent(m_Window);
 
-		SetVSync(m_Settings.Window.VSync);
+		SetVSync(m_Properties.VSync);
 		
 		// Set GLFW callbacks
 		InstallCallbacks();
@@ -123,15 +123,15 @@ namespace AGI {
 
 	void AGIWindow::SetVSync(bool enabled)
 	{
-		if (m_Settings.Window.VSync != enabled)
+		if (m_Properties.VSync != enabled)
 			glfwSwapInterval((int)enabled);
 
-		m_Settings.Window.VSync = enabled;
+		m_Properties.VSync = enabled;
 	}
 
 	bool AGIWindow::IsVSync() const
 	{
-		return m_Settings.Window.VSync;
+		return m_Properties.VSync;
 	}
 
 	void AGIWindow::SetVisable(bool enabled)
@@ -145,7 +145,7 @@ namespace AGI {
 	void AGIWindow::SetTitle(const std::string& title)
 	{
 		glfwSetWindowTitle(m_Window, title.c_str());
-		m_Settings.Window.Title = title;
+		m_Properties.Title = title;
 	}
 
     bool AGIWindow::IsKeyOn(int32_t key) const

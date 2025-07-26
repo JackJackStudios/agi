@@ -37,7 +37,7 @@ namespace AGI {
 	{
 		APIType PreferedAPI;
 		MessageCallbackFn MessageFunc;
-		WindowProps Window;
+		
 		bool Blending;
 	};
 
