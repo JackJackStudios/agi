@@ -165,6 +165,15 @@ namespace AGI {
 
 		return glm::vec2(xpos, ypos);
     }
+	
+	float AGIWindow::GetDelta()
+	{
+		float time = GetTime();
+		float timestep = time - m_LastFrameTime;
+		m_LastFrameTime = time;
+		
+		return timestep;
+	}
 
     void AGIWindow::InstallCallbacks()
     {

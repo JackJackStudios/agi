@@ -9,7 +9,7 @@ namespace AGI {
 	{
 		m_BoundWindow->Init();
 
-		int	status = gladLoadGLLoader((GLADloadproc)AGI::Window::LoaderFunc);
+		int	status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		AGI_VERIFY(status, "Failed to initialize Glad!");
 
 		AGI_INFO("OpenGL Info:");

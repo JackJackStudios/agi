@@ -16,13 +16,15 @@ namespace AGI {
 	public:
 		Window(Settings& settings, WindowProps& props);
 
+		float GetTime() { return glfwGetTime(); }
+		float GetDelta();
+
 		void Init();
 		void OnUpdate();
 		void Shutdown();
 
 		inline uint32_t GetWidth() const { return m_Properties.Width; }
 		inline uint32_t GetHeight() const { return m_Properties.Height; }
-		const WindowProps& GetProperties() const { return m_Properties; }
 		glm::vec2 GetPosition() const;
 
 		// Window attributes
@@ -54,8 +56,6 @@ namespace AGI {
 		void SetCharCallback(CharFunc callback)                     { m_Events.CharCallback = callback;           InstallCallbacks(); }
 		void SetDropCallback(DropFunc callback)                     { m_Events.DropCallback = callback;           InstallCallbacks(); }
 
-		static float GetTime() { return glfwGetTime(); }
-		static void* LoaderFunc(const char* name) { return (void*)glfwGetProcAddress(name); }
 		static Window* Create(Settings& settings, WindowProps& props) { return new Window(settings, props); }
 	private:
 		void InstallCallbacks();
@@ -82,6 +82,7 @@ namespace AGI {
 		} m_Events;
 
 		int m_WindowIndex = -1;
+		float m_LastFrameTime = 0.0f;
 		friend class RenderContext;
 	};
 
