@@ -65,11 +65,11 @@ int main()
     settings.Blending = true;
 
     AGI::WindowProps windowProps;
-    settings.Window.Width = 720;
-    settings.Window.Height = 720;
-    settings.Window.Title = EXECUTABLE_NAME;
+    windowProps.Width = 720;
+    windowProps.Height = 720;
+    windowProps.Title = EXECUTABLE_NAME;
 
-    auto window = AGI::Window::Create(settings);
+    auto window = AGI::Window::Create(settings, windowProps);
     auto context = AGI::RenderContext::Create(window);
 
     context->Init();
@@ -83,7 +83,8 @@ int main()
     }
 
     context->Shutdown();
-    window.reset();
+    delete context;
+    
     return 0;
 }
 ```
