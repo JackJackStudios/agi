@@ -7,58 +7,42 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
-enum GlfwClientApi
-{
-	GlfwClientApi_Unknown,
-	GlfwClientApi_OpenGL,
-	GlfwClientApi_Vulkan,
-};
-static bool ImGui_ImplGlfw_Init(GLFWwindow* window, bool install_callbacks, GlfwClientApi client_api);
-
 namespace AGI {
 
-	namespace Utils {
-
-		GlfwClientApi AgiTypeToImGuiType(APIType type)
-		{
-			switch (type)
-			{
-			case APIType::OpenGL: return GlfwClientApi_OpenGL;
-
-			default: AGI_VERIFY(false, "Undefined APIType"); return GlfwClientApi_Unknown; break;
-			}
-			
-			return GlfwClientApi_Unknown;
-		}
-
-	}
-
     ImGuiLayer::ImGuiLayer(Window* window)
+		: m_Window(window->GetGlfwWindow())
     {
+		IMGUI_CHECKVERSION();
+
         // Setup Dear ImGui context
-		ImGui::CreateContext();
+		m_Context = ImGui::CreateContext();
+    	ImGui::SetCurrentContext(m_Context);
+
 		ImGui::StyleColorsDark();
 
-		ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), true);
+		ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
 		ImGui_ImplOpenGL3_Init("#version 330");
     }
 
     ImGuiLayer::~ImGuiLayer()
     {
+		ImGui::SetCurrentContext(m_Context);
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
-
-		ImGui::DestroyContext();
+		ImGui::DestroyContext(m_Context);
     }
 
 	void ImGuiLayer::BeginFrame(bool dockspace)
 	{
-        m_Dockspace = dockspace;
-		
+		ImGui::SetCurrentContext(m_Context);
+		glfwMakeContextCurrent(m_Window);
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		
+        m_Dockspace = dockspace;
 		if (dockspace)
 		{
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar
@@ -84,11 +68,10 @@ namespace AGI {
 
     void ImGuiLayer::EndFrame()
     {
-		if (m_Dockspace)
-			ImGui::End();
+		if (m_Dockspace) ImGui::End();
 		
         int width, height;
-        glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+        glfwGetWindowSize(m_Window, &width, &height);
 		
 		ImGuiIO& io = ImGui::GetIO();
         io.DisplaySize = ImVec2((float)width, (float)height);
@@ -100,7 +83,7 @@ namespace AGI {
         {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(glfwGetCurrentContext());
+        	glfwMakeContextCurrent(m_Window);
         }
     }
 

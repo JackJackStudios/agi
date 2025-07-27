@@ -25,7 +25,7 @@ namespace AGI {
 
 		newapi->m_BoundWindow = window;
 		newapi->m_Settings = window->m_Settings;
-		return std::move(newapi);
+		return newapi;
 	}
 
 	RenderContext::~RenderContext()

@@ -4,12 +4,12 @@ void WindowLoop(AGI::RenderContext* context)
 {
     auto window = context->GetBoundWindow();
     context->Init();
-    
+
     while (!window->ShouldClose())
     {
-        context->SetClearColour({ 1.0f, 0.0f, 0.0f, 1 });
+        context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
         context->Clear();
-        
+
         window->OnUpdate();
     }
 
@@ -18,6 +18,8 @@ void WindowLoop(AGI::RenderContext* context)
 
 int main(void)
 {
+    InitLogging();
+
     AGI::Settings settings;
     settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
@@ -26,8 +28,8 @@ int main(void)
     AGI::WindowProps windowProps;
     windowProps.Width = 400;
     windowProps.Height = 300;
-    windowProps.Title = "window1";
 
+    windowProps.Title = "window1";
     auto window1 = AGI::Window::Create(settings, windowProps);
     auto context1 = AGI::RenderContext::Create(window1);
 

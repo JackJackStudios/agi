@@ -1827,7 +1827,7 @@ int gladLoadGLLoader(GLADloadproc load) {
 	load_GL_VERSION_4_5(load);
 	load_GL_VERSION_4_6(load);
 
-	if (!find_extensionsGL()) return 0;
+	//if (!find_extensionsGL()) return 0;
 	return GLVersion.major != 0 || GLVersion.minor != 0;
 }
 

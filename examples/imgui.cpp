@@ -15,6 +15,8 @@ int main(void)
     windowProps.Width = 720;
     windowProps.Height = 720;
     windowProps.Title = EXECUTABLE_NAME;
+    
+    windowProps.Maximise = true;
 
     auto window = AGI::Window::Create(settings, windowProps);
     auto context = AGI::RenderContext::Create(window);
@@ -26,7 +28,6 @@ int main(void)
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     
     // Main loop now, you know the deal
     while (!window->ShouldClose())
