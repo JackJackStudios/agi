@@ -1,9 +1,16 @@
 #pragma once
 
-#include "Vulkan.hpp"
 #include "AGI/RenderContext.hpp"
 
+#include "Vulkan.hpp"
+
 namespace AGI {
+
+	enum class QueueType
+	{
+		Graphics = VK_QUEUE_GRAPHICS_BIT,
+		Compute = VK_QUEUE_COMPUTE_BIT,
+	};
 
 	class VulkanContext : public RenderContext
 	{
@@ -24,17 +31,15 @@ namespace AGI {
 		virtual Texture CreateTexture(const TextureSpecification& spec) override { return nullptr; }
 		virtual VertexArray CreateVertexArray() override { return nullptr; }
 	private:
-		bool IsDeviceSuitable(VkPhysicalDevice device, QueueFamilies* foundFamilies);
-		void CreateDevice(VkPhysicalDevice physicalDevice, const QueueFamilies& wantedFamilies);
+		bool FindDevice(VkPhysicalDevice* device);
 	private:
 		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
+		
+		VkSurfaceKHR m_WindowSurface;
 		VkDevice m_Device;
 
-		VkSurfaceKHR m_WindowSurface;
-
-		VkQueue m_GraphicsQuene;
-		VkQueue m_PresentQuene;
+		std::unordered_map<QueueType, VkQueue> m_Queues;
 	};
 
 }
