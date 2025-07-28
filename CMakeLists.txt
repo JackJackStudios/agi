@@ -34,10 +34,3 @@ FetchContent_Declare(
     GIT_TAG        3.4
 )
 FetchContent_MakeAvailable(GLFW)
-
-FetchContent_Declare(
-    magic_enum
-    GIT_REPOSITORY https://github.com/Neargye/magic_enum.git
-    GIT_TAG        master
-)
-FetchContent_MakeAvailable(magic_enum)

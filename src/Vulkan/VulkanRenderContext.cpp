@@ -1,211 +1,129 @@
 #include "agipch.hpp"
 #include "VulkanRenderContext.hpp"
 
-#include <magic_enum/magic_enum.hpp>
+static VKAPI_ATTR VkBool32 VKAPI_CALL vk_debug_callback(
+	VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+	VkDebugUtilsMessageTypeFlagsEXT messageType,
+	const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+	void* pUserData) {
+
+	switch (messageSeverity)
+	{
+	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+		AGI::Log::GenericLog(pCallbackData->pMessage, AGI::LogLevel::Trace);
+		break;
+	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+		AGI::Log::GenericLog(pCallbackData->pMessage, AGI::LogLevel::Info);
+		break;
+	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+		AGI::Log::GenericLog(pCallbackData->pMessage, AGI::LogLevel::Warning);
+		break;
+	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+		AGI::Log::GenericLog(pCallbackData->pMessage, AGI::LogLevel::Error);
+		break;
+	}
+
+	return VK_FALSE;
+}
 
 namespace AGI {
 
 	void VulkanContext::Init()
 	{
-		////////////////////////////////////
-		//////////    INSTANCE     /////////
-		////////////////////////////////////
+		VkApplicationInfo app_info = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
+		app_info.apiVersion = VK_API_VERSION_1_2;
+		app_info.pApplicationName = m_BoundWindow->GetProperties().Title.c_str();
+		app_info.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
+		app_info.engineVersion = VK_MAKE_API_VERSION(0, 0, 3, 0);
+		app_info.pEngineName = "AGI";
 
-		VkApplicationInfo appInfo{};
-		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = "AGI Vulkan Instance";
-		appInfo.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
-		appInfo.engineVersion = VK_MAKE_API_VERSION(0, 0, 3, 0);
-		appInfo.apiVersion = VK_API_VERSION_1_0;
-		appInfo.pEngineName = "AGI";
+		VkInstanceCreateInfo create_info = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
+		create_info.pApplicationInfo = &app_info;
+		
+		std::vector<const char*> required_extensions;
+		std::vector<const char*> required_validation;
+		
+		// Get extensions required by glfw
+		m_BoundWindow->GetVulkanExtensions(&required_extensions);
 
-		auto validationLayers = GetRequiredExtensions(Extension::Validation);
-		auto extensions = GetRequiredExtensions(Extension::Instance);
 
-		VkInstanceCreateInfo instanceInfo{};
-		instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-		instanceInfo.pApplicationInfo = &appInfo;
-		instanceInfo.enabledLayerCount = validationLayers.size();
-		instanceInfo.ppEnabledLayerNames = validationLayers.data();
-		instanceInfo.enabledExtensionCount = extensions.size();
-		instanceInfo.ppEnabledExtensionNames = extensions.data();
-		vkCreateInstance(&instanceInfo, nullptr, &m_Instance);
+		// If in debug mode enable validation stuff.
+#ifdef AGI_DEBUG
+		AGI_TRACE("Vulkan validation is enabled.");
 
-		////////////////////////////////////
-		/////////  DEBUG MESSENGER  ////////
-		////////////////////////////////////
+		required_extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		
+		//required_validation.emplace_back("VK_LAYER_LUNARG_api_dump");
+		required_validation.emplace_back("VK_LAYER_KHRONOS_validation");
 
-		VkDebugUtilsMessengerCreateInfoEXT createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-		createInfo.pfnUserCallback = DebugCallback;
-		vkCreateDebugMessenger(m_Instance, &createInfo, nullptr, &m_DebugMessenger);
+		auto available_layers = Enumerate<VkLayerProperties, vkEnumerateInstanceLayerProperties>();
 
-		glfwCreateWindowSurface(m_Instance, m_BoundWindow->GetGlfwWindow(), nullptr, &m_WindowSurface);
-
-		VkPhysicalDevice chosenDevice;
-		if (!FindDevice(&chosenDevice))
+		// Verify that layers exists
+		for (const auto& required_layer : required_validation)
 		{
-			AGI_ERROR("Failed to find a physical device that supports Vulkan");
-		}
-
-		uint32_t queueFamilyCount = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(chosenDevice, &queueFamilyCount, nullptr);
-
-		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-		vkGetPhysicalDeviceQueueFamilyProperties(chosenDevice, &queueFamilyCount, queueFamilies.data());
-
-		std::unordered_map<QueueType, uint32_t> foundQueues;
-		for (int i = 0; i < queueFamilyCount; i++)
-		{
-			constexpr auto allQueues = magic_enum::enum_values<QueueType>();
-			for (const auto& queue : allQueues)
+			bool found = false;
+			for (const auto& available_layer : available_layers)
 			{
-				if (queueFamilies[i].queueFlags & (VkQueueFlags)queue)
+				if (strcmp(required_layer, available_layer.layerName) == 0)
 				{
-					foundQueues[queue] = i;
+					found = true;
+					break;
 				}
 			}
+
+			if (!found) 
+			{
+				AGI_ERROR("Required validation layer is missing: {}", required_layer);
+			}
+		}
+#endif
+
+		create_info.enabledExtensionCount = required_extensions.size();
+		create_info.ppEnabledExtensionNames = required_extensions.data();
+		create_info.enabledLayerCount = required_validation.size();
+		create_info.ppEnabledLayerNames = required_validation.data();
+
+		VK_CHECK(vkCreateInstance, &create_info, m_Allocator, &m_Instance);
+
+		// NOTE: Whetever this should be filtered out of release build
+		//       is the user's decision.
+		AGI_TRACE("Vulkan extensions: ");
+		for (int i = 0; i < required_extensions.size(); ++i)
+			AGI_TRACE("    {}", required_extensions[i]);
+
+#ifdef AGI_DEBUG
+		// Create debugging
+		uint32_t log_severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
+			                    VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+			                    VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |  
+		                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
+
+		VkDebugUtilsMessengerCreateInfoEXT debug_create_info = { VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
+		debug_create_info.messageSeverity = log_severity;
+		debug_create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+		debug_create_info.pfnUserCallback = vk_debug_callback;
+
+		VK_CHECK(vkCreateDebugMessenger, m_Instance, &debug_create_info, m_Allocator, &m_Debugger);
+#endif
+		if (glfwCreateWindowSurface(m_Instance, m_BoundWindow->GetGlfwWindow(), m_Allocator, &m_WindowSurface) != VK_SUCCESS)
+		{
+			AGI_ERROR("Failed to create glfw surface");
 		}
 
-		std::vector<VkDeviceQueueCreateInfo> createInfos;
-		for (const auto& [type, index] : foundQueues)
+		if (!CreateDevice())
 		{
-			float queuePriority = 1.0f;
-
-			VkDeviceQueueCreateInfo queueCreateInfo{};
-			queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			queueCreateInfo.queueFamilyIndex = index;
-			queueCreateInfo.queueCount = 1;
-			queueCreateInfo.pQueuePriorities = &queuePriority;
-
-			createInfos.emplace_back(queueCreateInfo);
-		}
-
-		VkPhysicalDeviceFeatures deviceFeatures{};
-
-		VkDeviceCreateInfo deviceInfo{};
-		deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		deviceInfo.queueCreateInfoCount = createInfos.size();
-		deviceInfo.pQueueCreateInfos = createInfos.data();
-		deviceInfo.pEnabledFeatures = &deviceFeatures;
-
-		auto validationLayers = GetRequiredExtensions(Extension::Validation);
-		deviceInfo.enabledLayerCount = validationLayers.size();
-		deviceInfo.ppEnabledLayerNames = validationLayers.data();
-
-		vkCreateDevice(chosenDevice, &deviceInfo, nullptr, &m_Device);
-
-		for (const auto& [type, index] : foundQueues)
-		{
-			m_Queues[type] = {};
-			vkGetDeviceQueue(m_Device, index, 0, &m_Queues[type]);
+			AGI_ERROR("Failed to create Vulkan logical device");
 		}
 	}
 
 	void VulkanContext::Shutdown()
 	{
-		vkDestroyDevice(m_Device, nullptr);
-		vkDestroySurfaceKHR(m_Instance, m_WindowSurface, nullptr);
-
-		vkDestroyDebugMessenger(m_Instance, m_DebugMessenger, nullptr);
-		vkDestroyInstance(m_Instance, nullptr);
-	}
-
-
-	bool VulkanContext::FindDevice(VkPhysicalDevice* device)
-	{
-		uint32_t deviceCount;
-		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, NULL);
-
-		if (deviceCount == 0)
-			return false;
-
-		std::vector<VkPhysicalDevice> devices(deviceCount);
-		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
-
-		for (int i = 0; i < deviceCount; i++)
-		{
-			/*
-			VkPhysicalDeviceProperties properties;
-			VkPhysicalDeviceFeatures features;
-			VkPhysicalDeviceMemoryProperties memProperties;
-			vkGetPhysicalDeviceProperties(devices[i], &properties);
-			vkGetPhysicalDeviceFeatures(devices[i], &features);
-			vkGetPhysicalDeviceMemoryProperties(devices[i], &memProperties);
-			*/
-
-			uint32_t queueFamilyCount;
-			vkGetPhysicalDeviceQueueFamilyProperties(devices[i], &queueFamilyCount, NULL);
-			std::vector<VkQueueFamilyProperties> queuesFamilies(queueFamilyCount);
-			vkGetPhysicalDeviceQueueFamilyProperties(devices[i], &queueFamilyCount, queuesFamilies.data());
-
-			bool allQueuesFound = true;
-			auto requiredQueues = GetRequiredExtensions(Extension::Queues);
-
-			for (const auto& queue : requiredQueues)
-			{
-				bool found = false;
-				for (uint32_t j = 0; j < queueFamilyCount; j++)
-				{
-					if ((queuesFamilies[j].queueFlags & (VkQueueFlags)magic_enum::enum_cast<QueueType>(queue).value()) != 0)
-					{
-						found = true;
-						break;
-					}
-				}
-				if (!found)
-				{
-					allQueuesFound = false;
-					break;
-				}
-			}
-
-			if (!allQueuesFound)
-				continue;
-
-
-			bool extensionsSupported = true;
-
-			uint32_t extensionCount;
-			vkEnumerateDeviceExtensionProperties(devices[i], NULL, &extensionCount, NULL);
-			std::vector<VkExtensionProperties> deviceExt(extensionCount);
-			vkEnumerateDeviceExtensionProperties(devices[i], NULL, &extensionCount, deviceExt.data());
-
-			auto requiredDeviceExt = GetRequiredExtensions(Extension::Device);
-			for (const auto& ext : requiredDeviceExt)
-			{
-				bool found = false;
-				for (uint32_t k = 0; k < extensionCount; k++)
-					if (strcmp(ext, deviceExt[k].extensionName) == 0)
-					{
-						found = true;
-						break;
-					}
-
-				if (!found)
-				{
-					extensionsSupported = false;
-					break;
-				}
-			}
-
-			if (!extensionsSupported)
-				continue;
-
-			uint32_t swapchainFormatCount, swapchainPresentModeCount;
-			vkGetPhysicalDeviceSurfaceFormatsKHR(devices[i], m_WindowSurface, &swapchainFormatCount, NULL);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(devices[i], m_WindowSurface, &swapchainPresentModeCount, NULL);
-
-			if (swapchainFormatCount == 0 || swapchainPresentModeCount == 0)
-				continue;
-
-			*device = devices[i];
-			return true;
-		}
-
-		return false;
+		DestroyDevice();
+		vkDestroySurfaceKHR(m_Instance, m_WindowSurface, m_Allocator);
+#ifdef AGI_DEBUG
+		vkDestroyDebugMessenger(m_Instance, m_Debugger, m_Allocator);
+#endif
+		vkDestroyInstance(m_Instance, m_Allocator);
 	}
 
 	void VulkanContext::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

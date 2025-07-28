@@ -60,6 +60,8 @@ namespace AGI {
 		void SetCharModsCallback(CharModsFunc callback) { m_Settings.Window.CharModsCallback = callback; InstallCallbacks(); }
 		void SetDropCallback(DropFunc callback) { m_Settings.Window.DropCallback = callback; InstallCallbacks(); }
 
+		void GetVulkanExtensions(std::vector<const char*>* requiredExtensions);
+
 		static float GetTime() { return glfwGetTime(); }
 		static void* LoaderFunc(const char* name) { return (void*)glfwGetProcAddress(name); }
 		static std::unique_ptr<Window> Create(Settings& settings) { return std::make_unique<Window>(settings); }

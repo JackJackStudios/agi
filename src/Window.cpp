@@ -136,6 +136,17 @@ namespace AGI {
 		m_Settings.Window.Title = title;
 	}
 
+	void AGIWindow::GetVulkanExtensions(std::vector<const char*>* requiredExtensions)
+	{
+		uint32_t extensionCount;
+		const char** extensions = glfwGetRequiredInstanceExtensions(&extensionCount);
+
+		for (int i = 0; i < extensionCount; i++)
+		{
+			requiredExtensions->emplace_back(extensions[i]);
+		}
+	}
+
     bool AGIWindow::IsKeyOn(int32_t key) const
     {
 		return glfwGetKey(m_Window, key) == GLFW_PRESS;
