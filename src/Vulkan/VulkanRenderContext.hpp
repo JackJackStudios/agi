@@ -77,6 +77,10 @@ namespace AGI {
 
 			QueueIndexes QueueInfo;
 			SwapchainSupport SwapchainInfo;
+
+			VkQueue GraphicsQueue;
+			VkQueue PresentQueue;
+			VkQueue TransferQueue;
 		} m_Device;
 	};
 

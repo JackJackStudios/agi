@@ -18,12 +18,55 @@ namespace AGI {
 			return false;
 		}
 
+		bool present_shares_graphics_queue = m_Device.QueueInfo.GraphicsIndex == m_Device.QueueInfo.PresentIndex;
+		bool transfer_shares_graphics_queue = m_Device.QueueInfo.GraphicsIndex == m_Device.QueueInfo.TransferIndex;
+		
+		uint32_t index_count = 1;
+		if (!present_shares_graphics_queue) index_count++;
+		if (!transfer_shares_graphics_queue) index_count++;
+
+		float queue_priority = 1.0f;	
+		std::vector<uint32_t> indices(index_count);
+
+		uint8_t index = 0;
+		indices[index++] = m_Device.QueueInfo.GraphicsIndex;
+		if (!present_shares_graphics_queue) indices[index++] = m_Device.QueueInfo.PresentIndex;
+		if (!transfer_shares_graphics_queue) indices[index++] = m_Device.QueueInfo.TransferIndex;
+
+		std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
+		queue_create_infos.reserve(index_count);
+
+		float queuePriorities = 1.0f;
+		for (int i = 0; i < index_count; ++i)
+		{
+			VkDeviceQueueCreateInfo createinfo = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+			createinfo.queueFamilyIndex = indices[i];
+			createinfo.pQueuePriorities = &queuePriorities;
+			createinfo.queueCount = 1;
+
+			queue_create_infos.emplace_back(createinfo);
+		}
+
+		VkPhysicalDeviceFeatures device_features = {};
+
+		VkDeviceCreateInfo device_create_info = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
+		device_create_info.queueCreateInfoCount = queue_create_infos.size();
+		device_create_info.pQueueCreateInfos = queue_create_infos.data();
+		device_create_info.enabledExtensionCount = requirements.Extensions.size();
+		device_create_info.ppEnabledExtensionNames = requirements.Extensions.data();
+		device_create_info.pEnabledFeatures = &device_features;
+
+		VK_CHECK(vkCreateDevice, m_Device.Physical, &device_create_info, m_Allocator, &m_Device.Logical);
+
+		vkGetDeviceQueue(m_Device.Logical, m_Device.QueueInfo.GraphicsIndex, 0, &m_Device.GraphicsQueue);
+		vkGetDeviceQueue(m_Device.Logical, m_Device.QueueInfo.PresentIndex, 0, &m_Device.PresentQueue);
+		vkGetDeviceQueue(m_Device.Logical, m_Device.QueueInfo.TransferIndex, 0, &m_Device.TransferQueue);
 		return true;
 	}
 
 	void VulkanContext::DestroyDevice()
 	{
-
+		vkDestroyDevice(m_Device.Logical, m_Allocator);
 	}
 
 	bool VulkanContext::MatchPhysicalDevice(VkPhysicalDevice* chosen_device, DeviceRequirements& requirements)
