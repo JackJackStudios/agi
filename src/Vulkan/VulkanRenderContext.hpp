@@ -16,6 +16,22 @@ namespace AGI {
 		std::vector<const char*> Extensions;
 	};
 
+	struct QueueIndexes
+	{
+		// -1 = not supported.
+		uint32_t GraphicsIndex = -1;
+		uint32_t PresentIndex = -1;
+		uint32_t ComputeIndex = -1;
+		uint32_t TransferIndex = -1;
+	};
+
+	struct SwapchainSupport
+	{
+		VkSurfaceCapabilitiesKHR Capabilities;
+		std::vector<VkSurfaceFormatKHR> Formats;
+		std::vector<VkPresentModeKHR> PresentModes;
+	};
+
 	class VulkanContext : public RenderContext
 	{
 	public:
@@ -35,7 +51,14 @@ namespace AGI {
 		virtual Texture CreateTexture(const TextureSpecification& spec) override { return nullptr; }
 		virtual VertexArray CreateVertexArray() override { return nullptr; }
 	private:
-		bool MatchPhysicalDevice(VkPhysicalDevice* device, DeviceRequirements& requirements);
+		bool MatchPhysicalDevice(VkPhysicalDevice* chosen_device, DeviceRequirements& requirements);
+		void QuerySwapchainSupport(VkPhysicalDevice device, SwapchainSupport* swapchain_info);
+		bool DeviceMeetsRequirements(
+			VkPhysicalDevice device,
+			QueueIndexes* queue_info,
+			SwapchainSupport* swapchain_support,
+			const DeviceRequirements* requirements);
+
 		bool CreateDevice();
 		void DestroyDevice();
 	private:
@@ -49,8 +72,11 @@ namespace AGI {
 
 		struct VulkanDevice
 		{
-			VkPhysicalDevice Physical;
+			VkPhysicalDevice Physical = nullptr;
 			VkDevice Logical;
+
+			QueueIndexes QueueInfo;
+			SwapchainSupport SwapchainInfo;
 		} m_Device;
 	};
 

@@ -26,6 +26,18 @@ std::vector<T> Enumerate()
     return result;
 }
 
+template<typename T, typename F, typename... Args>
+std::vector<T> EnumerateParent(F&& vkEnumFunction, Args&&... args)
+{
+    uint32_t count = 0;
+    vkEnumFunction(std::forward<Args>(args)..., &count, nullptr);
+
+    std::vector<T> result(count);
+    vkEnumFunction(std::forward<Args>(args)..., &count, result.data());
+    return result;
+}
+
+
 static VkResult vkCreateDebugMessenger(
 	VkInstance instance,
 	const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
@@ -49,4 +61,27 @@ static void vkDestroyDebugMessenger(
 		return;
 
 	func(instance, debugMessenger, pAllocator);
+}
+
+static const char* DeviceTypeToString(VkPhysicalDeviceType type)
+{
+	switch (type)
+	{
+	default:
+	case VK_PHYSICAL_DEVICE_TYPE_OTHER:
+		return "Unknown";
+		break;
+	case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+		return "Integrated";
+		break;
+	case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+		return "Descrete";
+		break;
+	case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+		return "Virtual";
+		break;
+	case VK_PHYSICAL_DEVICE_TYPE_CPU:
+		return "CPU";
+		break;
+	}
 }

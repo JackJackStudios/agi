@@ -41,8 +41,8 @@ namespace AGI {
     #define AGI_TRACE(...) ::AGI::Log::GenericLog(std::format(__VA_ARGS__), ::AGI::LogLevel::Trace)
     #define AGI_INFO(...)  ::AGI::Log::GenericLog(std::format(__VA_ARGS__), ::AGI::LogLevel::Info)
     #define AGI_WARN(...)  ::AGI::Log::GenericLog(std::format(__VA_ARGS__), ::AGI::LogLevel::Warning)  
-    #define AGI_ERROR(...) ::AGI::Log::GenericLog(std::format(__VA_ARGS__), ::AGI::LogLevel::Error); AGI_DEBUGBREAK()
+    #define AGI_ERROR(...) ::AGI::Log::GenericLog(std::format(__VA_ARGS__), ::AGI::LogLevel::Error)
     
-    #define AGI_VERIFY(x, ...) { if(!(x)) { AGI_ERROR(__VA_ARGS__); } }
+    #define AGI_VERIFY(x, ...) { if(!(x)) { AGI_ERROR(__VA_ARGS__); AGI_DEBUGBREAK(); } }
 
 }

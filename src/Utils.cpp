@@ -10,7 +10,7 @@ namespace AGI {
 
 	APIType BestAPI()
 	{
-		return APIType::OpenGL;
+		return glfwVulkanSupported() ? APIType::Vulkan : APIType::OpenGL;
 	}
 
 	std::unique_ptr<RenderContext> RenderContext::Create(const std::unique_ptr<Window>& window)

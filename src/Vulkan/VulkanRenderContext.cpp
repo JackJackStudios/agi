@@ -106,14 +106,10 @@ namespace AGI {
 		VK_CHECK(vkCreateDebugMessenger, m_Instance, &debug_create_info, m_Allocator, &m_Debugger);
 #endif
 		if (glfwCreateWindowSurface(m_Instance, m_BoundWindow->GetGlfwWindow(), m_Allocator, &m_WindowSurface) != VK_SUCCESS)
-		{
-			AGI_ERROR("Failed to create glfw surface");
-		}
+			AGI_ERROR("Failed to create Vulkan surface");
 
 		if (!CreateDevice())
-		{
 			AGI_ERROR("Failed to create Vulkan logical device");
-		}
 	}
 
 	void VulkanContext::Shutdown()
