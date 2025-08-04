@@ -132,6 +132,7 @@ namespace AGI {
         }
 
         glBindTexture(GL_TEXTURE_2D, 0);
+        if (spec.Datasize != 0) SetData(spec.Data, spec.Datasize);
     }
     
     OpenGLTexture::~OpenGLTexture()

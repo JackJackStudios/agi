@@ -17,8 +17,7 @@ namespace AGI {
 		ImageFormat ChannelsToImageFormat(uint16_t channels);
 		uint16_t ImageFormatToChannels(ImageFormat format);
 
-	}
-
+	};
 
 	struct TextureSpecification
 	{
@@ -31,6 +30,9 @@ namespace AGI {
 		ImageFormat Format = ImageFormat::RGB;
 		WrappingType Wrapping = WrappingType::Repeat;
 		uint16_t BytesPerChannel = 8;
+
+		uint8_t* Data = nullptr;
+		uint32_t Datasize = 0;
 	};
 
 	class TextureBase
