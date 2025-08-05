@@ -42,7 +42,6 @@ namespace AGI {
 		bool Normalized;
 
 		BufferElement() = default;
-
 		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
 			: Name(name), Type(type), Size(Utils::ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
 		{
@@ -80,8 +79,7 @@ namespace AGI {
 	class BufferLayout
 	{
 	public:
-		BufferLayout() {}
-
+		BufferLayout() = default;
 		BufferLayout(std::vector<BufferElement> elements)
 			: m_Elements(elements)
 		{
@@ -128,6 +126,12 @@ namespace AGI {
 			});
 		
 			return *it;
+		}
+
+		void Resize(size_t size)
+		{
+			m_Elements.resize(size);
+			SetOffsets();
 		}
 
 		BufferElement& operator[](int idx)

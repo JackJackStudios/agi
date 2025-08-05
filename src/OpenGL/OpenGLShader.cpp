@@ -43,7 +43,7 @@ namespace AGI {
 				glGetShaderInfoLog(shader, maxLength, &maxLength, infoLog.data());
 				glDeleteShader(shader);
 
-				AGI_ERROR("{0}", infoLog.data());
+				AGI_ERROR("{}", infoLog.data());
 				AGI_VERIFY(false, "Shader compilation failure!");
 			}
 
@@ -74,7 +74,8 @@ namespace AGI {
 	}
 
 	OpenGLShader::OpenGLShader(const ShaderSources& shaderSources)
-	{m_RendererID = glCreateProgram();
+	{
+		m_RendererID = glCreateProgram();
 
 		std::vector<GLuint> shaderIDs(shaderSources.size());
 		int shaderIndex = 0;
@@ -133,8 +134,8 @@ namespace AGI {
 		glGetProgramiv(m_RendererID, GL_ACTIVE_ATTRIBUTES, &numAttribs);
 		glGetProgramiv(m_RendererID, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxNameLen);
 
-		std::vector<BufferElement> layout;
-		std::vector<char> nameData(maxNameLen);
+		BufferLayout layout;
+		layout.Resize(numAttribs);
 
 		for (int i = 0; i < numAttribs; ++i)
 		{
@@ -142,19 +143,17 @@ namespace AGI {
 			GLenum type = 0;
 			GLsizei length = 0;
 
+			std::vector<char> nameData(maxNameLen);
 			glGetActiveAttrib(m_RendererID, i, maxNameLen, &length, &size, &type, nameData.data());
-			std::string name(nameData.data(), length);
+			GLint location = glGetAttribLocation(m_RendererID, nameData.data());
 
-			GLint location = glGetAttribLocation(m_RendererID, name.c_str());
-
-			BufferElement element;
-			element.Name = name;
-			element.Type = Utils::OpenGLShaderTypeToAgiShaderType(type);
-			element.Size = Utils::ShaderDataTypeSize(element.Type);
-			layout.emplace_back(element);
+			layout[location].Name = std::string(nameData.data(), length);
+			layout[location].Type = Utils::OpenGLShaderTypeToAgiShaderType(type);
+			layout[location].Size = Utils::ShaderDataTypeSize(layout[location].Type);
 		}
 
-		return BufferLayout(layout);
+		layout.SetOffsets();
+		return layout;
 	}
 
 	bool OpenGLShader::AttributeExists(const std::string& name) const
