@@ -15,25 +15,20 @@ namespace AGI {
 	{
 	public:
 		Window(Settings& settings, WindowProps& props);
-
-		float GetTime() { return glfwGetTime(); }
-		float GetDelta();
+		void Shutdown();
 
 		void Init();
 		void OnUpdate();
-		void Shutdown();
 
-		inline uint32_t GetWidth() const { return m_Properties.Width; }
-		inline uint32_t GetHeight() const { return m_Properties.Height; }
+		const glm::ivec2 GetSize() const { return m_Properties.Size; }
+		std::string GetTitle() const { return m_Properties.Title; }
 		glm::vec2 GetPosition() const;
 
 		// Window attributes
 		bool ShouldClose(bool closing = false) const;
-		bool IsVSync() const;
-
-		void SetVSync(bool enabled);
 		void SetVisable(bool enabled);
 		void SetTitle(const std::string& title);
+		void CenterScreen();
 
 		bool IsKeyOn(int32_t key) const;
 		bool IsMouseButtonOn(int32_t button) const;
@@ -50,17 +45,19 @@ namespace AGI {
 		void SetWindowMaximizeCallback(WindowMaximizeFunc callback) { m_Events.WindowMaximizeCallback = callback; InstallCallbacks(); }
 		void SetMouseButtonCallback(MouseButtonFunc callback)       { m_Events.MouseButtonCallback = callback;    InstallCallbacks(); }
 		void SetCursorPosCallback(CursorPosFunc callback)           { m_Events.CursorPosCallback = callback;      InstallCallbacks(); }
-		void SetCursorEnterCallback(CursorEnterFunc callback)       { m_Events.CursorEnterCallback = callback;    InstallCallbacks(); }
 		void SetScrollCallback(ScrollFunc callback)                 { m_Events.ScrollCallback = callback;         InstallCallbacks(); }
 		void SetKeyCallback(KeyFunc callback)                       { m_Events.KeyCallback = callback;            InstallCallbacks(); }
 		void SetCharCallback(CharFunc callback)                     { m_Events.CharCallback = callback;           InstallCallbacks(); }
 		void SetDropCallback(DropFunc callback)                     { m_Events.DropCallback = callback;           InstallCallbacks(); }
 
+		float GetDelta();
+		float GetTime() { return glfwGetTime(); }
 		static Window* Create(Settings& settings, WindowProps& props) { return new Window(settings, props); }
 	private:
 		void InstallCallbacks();
 	private:
 		GLFWwindow* m_Window;
+		GLFWmonitor* m_Monitor;
 
 		Settings m_Settings;
 		WindowProps m_Properties;
@@ -74,7 +71,6 @@ namespace AGI {
 			WindowMaximizeFunc WindowMaximizeCallback = nullptr;
 			MouseButtonFunc MouseButtonCallback = nullptr;
 			CursorPosFunc CursorPosCallback = nullptr;
-			CursorEnterFunc CursorEnterCallback = nullptr;
 			ScrollFunc ScrollCallback = nullptr;
 			KeyFunc KeyCallback = nullptr;
 			CharFunc CharCallback = nullptr;

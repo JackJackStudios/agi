@@ -9,11 +9,11 @@ int main(void)
     settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
+    settings.VSync = true;
 
     AGI::WindowProps windowProps;
-    windowProps.Width = 720;
-    windowProps.Height = 720;
     windowProps.Title = EXECUTABLE_NAME;
+    windowProps.Size = { 720, 720 };
 
     /// This calles glfwCreateWindow but doesn't call glfwMakeContextCurrent
     auto window = AGI::Window::Create(settings, windowProps);

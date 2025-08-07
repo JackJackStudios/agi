@@ -24,10 +24,10 @@ int main(void)
     settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
+    settings.VSync = true;
 
     AGI::WindowProps windowProps;
-    windowProps.Width = 400;
-    windowProps.Height = 300;
+    windowProps.Size = { 400, 300 };
 
     windowProps.Title = "window1";
     auto window1 = AGI::Window::Create(settings, windowProps);

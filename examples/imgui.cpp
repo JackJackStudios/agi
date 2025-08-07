@@ -10,13 +10,12 @@ int main(void)
     settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
+    settings.VSync = true;
 
     AGI::WindowProps windowProps;
-    windowProps.Width = 720;
-    windowProps.Height = 720;
+    windowProps.Size = { 720, 720 };
     windowProps.Title = EXECUTABLE_NAME;
-    
-    windowProps.Maximise = true;
+    windowProps.Mode = AGI::WindowMode::Maximized;
 
     auto window = AGI::Window::Create(settings, windowProps);
     auto context = AGI::RenderContext::Create(window);
