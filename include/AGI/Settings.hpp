@@ -32,6 +32,7 @@ namespace AGI {
 		bool Visible = true;
 		bool Resizable = true;
 		bool Borderless = false;
+		bool VSync = true;
 		WindowMode Mode = WindowMode::Windowed;
 	};
 
@@ -41,7 +42,6 @@ namespace AGI {
 		MessageCallbackFn MessageFunc;
 		
 		bool Blending;
-		bool VSync;
 	};
 
 	APIType BestAPI();

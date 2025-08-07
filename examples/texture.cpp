@@ -40,7 +40,6 @@ int main(void)
     settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
-    settings.VSync = true;
 
     AGI::WindowProps windowProps;
     windowProps.Title = EXECUTABLE_NAME;

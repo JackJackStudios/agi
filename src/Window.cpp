@@ -115,7 +115,7 @@ namespace AGI {
 		if (m_Settings.PreferedAPI == APIType::OpenGL)
 			glfwMakeContextCurrent(m_Window);
 		
-		glfwSwapInterval((int)m_Settings.VSync);
+		glfwSwapInterval((int)m_Properties.VSync);
 
 		// Set GLFW callbacks
 		InstallCallbacks();
