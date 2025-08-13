@@ -46,7 +46,6 @@ namespace AGI {
 		// Get extensions required by glfw
 		m_BoundWindow->GetVulkanExtensions(&required_extensions);
 
-
 		// If in debug mode enable validation stuff.
 #ifdef AGI_DEBUG
 		AGI_TRACE("Vulkan validation is enabled.");
@@ -88,8 +87,8 @@ namespace AGI {
 		// NOTE: Whetever this should be filtered out of release build
 		//       is the user's decision.
 		AGI_TRACE("Vulkan extensions: ");
-		for (int i = 0; i < required_extensions.size(); ++i)
-			AGI_TRACE("    {}", required_extensions[i]);
+		for (const auto& ext : required_extensions)
+			AGI_TRACE("    {}", ext);
 
 #ifdef AGI_DEBUG
 		// Create debugging
@@ -100,21 +99,27 @@ namespace AGI {
 
 		VkDebugUtilsMessengerCreateInfoEXT debug_create_info = { VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
 		debug_create_info.messageSeverity = log_severity;
-		debug_create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+		debug_create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
 		debug_create_info.pfnUserCallback = vk_debug_callback;
 
 		VK_CHECK(vkCreateDebugMessenger, m_Instance, &debug_create_info, m_Allocator, &m_Debugger);
 #endif
+
 		if (glfwCreateWindowSurface(m_Instance, m_BoundWindow->GetGlfwWindow(), m_Allocator, &m_WindowSurface) != VK_SUCCESS)
 			AGI_ERROR("Failed to create Vulkan surface");
 
 		if (!CreateDevice())
 			AGI_ERROR("Failed to create Vulkan logical device");
+
+		if (!CreateSwapchain({ m_BoundWindow->GetProperties().Width, m_BoundWindow->GetProperties().Height }))
+			AGI_ERROR("Failed to create Vulkan swapchain");
 	}
 
 	void VulkanContext::Shutdown()
 	{
+		DestroySwapchain();
 		DestroyDevice();
+
 		vkDestroySurfaceKHR(m_Instance, m_WindowSurface, m_Allocator);
 #ifdef AGI_DEBUG
 		vkDestroyDebugMessenger(m_Instance, m_Debugger, m_Allocator);

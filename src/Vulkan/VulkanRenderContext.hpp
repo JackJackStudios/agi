@@ -61,6 +61,9 @@ namespace AGI {
 
 		bool CreateDevice();
 		void DestroyDevice();
+
+		bool CreateSwapchain(const glm::uvec2& size);
+		void DestroySwapchain();
 	private:
 #ifdef AGI_DEBUG
 		VkDebugUtilsMessengerEXT m_Debugger;
@@ -82,6 +85,16 @@ namespace AGI {
 			VkQueue PresentQueue;
 			VkQueue TransferQueue;
 		} m_Device;
+
+		struct VulkanSwapchain
+		{
+			VkSwapchainKHR Handle;
+			std::vector<VkImage> Images;
+			std::vector<VkImageView> ImageViews;
+
+			uint8_t FramesInFlight = 3;
+			VkSurfaceFormatKHR ImageFormat;
+		} m_Swapchain;
 	};
 
 }
