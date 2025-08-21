@@ -12,10 +12,7 @@ namespace AGI {
 		int	status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		AGI_VERIFY(status, "Failed to initialize Glad!");
 
-		AGI_INFO("OpenGL Info:");
-		AGI_INFO("  Vendor: {0}", (char*)glGetString(GL_VENDOR));
-		AGI_INFO("  Renderer: {0}", (char*)glGetString(GL_RENDERER));
-		AGI_INFO("  Version: {0}", (char*)glGetString(GL_VERSION));
+		AGI_INFO("Using OpenGL {} - {}", (char*)glGetString(GL_VERSION), (char*)glGetString(GL_RENDERER));
 
 		if (m_Settings.Blending)
 		{
