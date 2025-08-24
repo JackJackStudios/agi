@@ -3,20 +3,20 @@
 #include "agipch.hpp"
 #include "AGI/Window.hpp"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace AGI {
 
     class ImGuiLayer
     {
     public:
-        ImGuiLayer(Window* window);
+        ImGuiLayer(RenderContext* context);
         ~ImGuiLayer();
 
         void BeginFrame(bool dockspace = false);
         void EndFrame();
 
-        static std::unique_ptr<ImGuiLayer> Create(Window* window) { return std::make_unique<ImGuiLayer>(window); }
+        static std::unique_ptr<ImGuiLayer> Create(RenderContext* context) { return std::make_unique<ImGuiLayer>(context); }
     private:
         bool m_Dockspace;
 

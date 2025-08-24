@@ -19,7 +19,7 @@ namespace AGI {
 	public:
 		virtual ~RenderContext();
 
-		virtual void Init() = 0;
+		virtual bool Init() = 0;
 		virtual void Shutdown() = 0;
 		
 		// Global commands
@@ -39,11 +39,24 @@ namespace AGI {
 		
 		APIType GetType() const { return m_Settings.PreferedAPI; }
 		Window* GetBoundWindow() const { return m_BoundWindow; }
+		const ContextProperties& GetProps() const { return m_Properties; }
+
+		void PrintProperties()
+		{
+			const char* apiType = "";
+			switch (GetType())
+			{
+			case APIType::OpenGL: apiType = "OpenGL"; break;
+			}
+
+			AGI_INFO("Using {} {} - {}", apiType, m_Properties.Version, m_Properties.Renderer);
+		}
 
 		static RenderContext* Create(Window* window);
 	protected:
 		Window* m_BoundWindow;
 		Settings m_Settings;
+		ContextProperties m_Properties;
 	private:
 		inline static RenderContext* s_CurrentContext;
 	};

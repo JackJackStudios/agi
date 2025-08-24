@@ -5,14 +5,25 @@ void WindowLoop(AGI::RenderContext* context)
     auto window = context->GetBoundWindow();
     context->Init();
 
+    auto imgui = AGI::ImGuiLayer::Create(context);
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
     while (!window->ShouldClose())
     {
         context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
         context->Clear();
 
+        imgui->BeginFrame();
+        ImGui::ShowAboutWindow();
+        imgui->EndFrame();
+
         window->OnUpdate();
     }
 
+    imgui.reset();
     context->Shutdown();
 }
 

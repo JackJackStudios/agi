@@ -5,20 +5,29 @@
 
 namespace AGI {
 
-	void OpenGLContext::Init()
+	bool OpenGLContext::Init()
 	{
 		m_BoundWindow->Init();
 
 		int	status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		AGI_VERIFY(status, "Failed to initialize Glad!");
-
-		AGI_INFO("Using OpenGL {} - {}", (char*)glGetString(GL_VERSION), (char*)glGetString(GL_RENDERER));
+		if (status != true)
+		{
+			AGI_ERROR("Failed to init OpenGL");
+			return false;
+		}
+		
+		m_Properties.Renderer = (char*)glGetString(GL_RENDERER);
+		m_Properties.Version = (char*)glGetString(GL_VERSION);
+		m_Properties.Vendor = (char*)glGetString(GL_VENDOR);
 
 		if (m_Settings.Blending)
 		{
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
+
+		PrintProperties();
+		return true;
 	}
 
 	void OpenGLContext::Shutdown()

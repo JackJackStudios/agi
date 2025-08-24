@@ -13,7 +13,7 @@ namespace AGI {
 	class OpenGLContext : public RenderContext
 	{
 	public:
-		virtual void Init() override;
+		virtual bool Init() override;
 		virtual void Shutdown() override;
 
 		virtual void DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount = 0) override;

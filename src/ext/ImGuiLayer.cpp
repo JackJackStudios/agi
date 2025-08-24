@@ -1,22 +1,19 @@
-#include "AGI/ext/ImGuiLayer.hpp"
+#include "ImGuiLayer.hpp"
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include <imgui.h>
+#include <imgui/imgui.h>
 
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 
 namespace AGI {
 
-    ImGuiLayer::ImGuiLayer(Window* window)
-		: m_Window(window->GetGlfwWindow())
+    ImGuiLayer::ImGuiLayer(RenderContext* context)
+		: m_Window(context->GetBoundWindow()->GetGlfwWindow())
     {
 		IMGUI_CHECKVERSION();
-
-        // Setup Dear ImGui context
 		m_Context = ImGui::CreateContext();
-    	ImGui::SetCurrentContext(m_Context);
 
 		ImGui::StyleColorsDark();
 
@@ -26,8 +23,6 @@ namespace AGI {
 
     ImGuiLayer::~ImGuiLayer()
     {
-		ImGui::SetCurrentContext(m_Context);
-
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext(m_Context);
@@ -35,9 +30,6 @@ namespace AGI {
 
 	void ImGuiLayer::BeginFrame(bool dockspace)
 	{
-		ImGui::SetCurrentContext(m_Context);
-		glfwMakeContextCurrent(m_Window);
-
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -78,13 +70,6 @@ namespace AGI {
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-        	glfwMakeContextCurrent(m_Window);
-        }
     }
 
 }

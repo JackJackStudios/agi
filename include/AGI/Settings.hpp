@@ -25,6 +25,13 @@ namespace AGI {
 		Windowed = 0, Maximized, Fullscreen,
 	};
 
+	struct ContextProperties
+	{
+		std::string Vendor;
+		std::string Version;
+		std::string Renderer;
+	};
+
 	struct WindowProps
 	{
 		std::string Title = "AGI-Window";
