@@ -12,6 +12,14 @@
         AGI_ERROR("{} failed with result: {}", #function, (int32_t)VK_CONCAT(function##_result_, __LINE__)); \
     }
 
+#define VK_CHECK_RETURN(function, ...) \
+    VkResult VK_CONCAT(function##_result_, __LINE__) = function(__VA_ARGS__); \
+    if (VK_CONCAT(function##_result_, __LINE__) != VK_SUCCESS) \
+    { \
+        AGI_ERROR("{} failed with result: {}", #function, (int32_t)VK_CONCAT(function##_result_, __LINE__)); \
+		return false; \
+    }
+
 template<typename T, VkResult(*EnumFunc)(uint32_t*, T*)>
 std::vector<T> Enumerate()
 {

@@ -51,16 +51,16 @@ namespace AGI {
         createInfo.clipped = VK_TRUE;
         createInfo.oldSwapchain = 0;
 
-        VK_CHECK(vkCreateSwapchainKHR, m_Device.Logical, &createInfo, m_Allocator, &m_Swapchain.Handle);
+        VK_CHECK_RETURN(vkCreateSwapchainKHR, m_Device.Logical, &createInfo, m_Allocator, &m_Swapchain.Handle);
         
         uint32_t image_count = 0;
-        VK_CHECK(vkGetSwapchainImagesKHR, m_Device.Logical, m_Swapchain.Handle, &image_count, 0);
+        VK_CHECK_RETURN(vkGetSwapchainImagesKHR, m_Device.Logical, m_Swapchain.Handle, &image_count, 0);
         if (m_Swapchain.FramesInFlight != image_count) return false;
 
         m_Swapchain.Images.resize(m_Swapchain.FramesInFlight);
         m_Swapchain.ImageViews.resize(m_Swapchain.FramesInFlight);
 
-        VK_CHECK(vkGetSwapchainImagesKHR, m_Device.Logical, m_Swapchain.Handle, &image_count, m_Swapchain.Images.data());
+        VK_CHECK_RETURN(vkGetSwapchainImagesKHR, m_Device.Logical, m_Swapchain.Handle, &image_count, m_Swapchain.Images.data());
 
         for (int i = 0; i < m_Swapchain.ImageViews.size(); ++i)
         {
@@ -74,7 +74,7 @@ namespace AGI {
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
 
-            VK_CHECK(vkCreateImageView, m_Device.Logical, &viewInfo, m_Allocator, &m_Swapchain.ImageViews[i]);
+            VK_CHECK_RETURN(vkCreateImageView, m_Device.Logical, &viewInfo, m_Allocator, &m_Swapchain.ImageViews[i]);
         }
 
 		return true;

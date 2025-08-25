@@ -56,7 +56,7 @@ namespace AGI {
 		device_create_info.ppEnabledExtensionNames = requirements.Extensions.data();
 		device_create_info.pEnabledFeatures = &device_features;
 
-		VK_CHECK(vkCreateDevice, m_Device.Physical, &device_create_info, m_Allocator, &m_Device.Logical);
+		VK_CHECK_RETURN(vkCreateDevice, m_Device.Physical, &device_create_info, m_Allocator, &m_Device.Logical);
 
 		vkGetDeviceQueue(m_Device.Logical, m_Device.QueueInfo.GraphicsIndex, 0, &m_Device.GraphicsQueue);
 		vkGetDeviceQueue(m_Device.Logical, m_Device.QueueInfo.PresentIndex, 0, &m_Device.PresentQueue);

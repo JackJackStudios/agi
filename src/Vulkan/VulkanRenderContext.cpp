@@ -86,9 +86,16 @@ namespace AGI {
 
 		// NOTE: Whetever this should be filtered out of release build
 		//       is the user's decision.
-		AGI_TRACE("Vulkan extensions: ");
+		std::string extensions_str;
 		for (const auto& ext : required_extensions)
-			AGI_TRACE("    {}", ext);
+			extensions_str.append(" ").append(ext);
+
+#ifdef AGI_DEBUG
+		for (const auto& val : required_validation)
+			extensions_str.append(" ").append(val);
+#endif
+
+		AGI_TRACE("Vulkan extensions:{}", extensions_str);
 
 #ifdef AGI_DEBUG
 		// Create debugging
@@ -104,6 +111,8 @@ namespace AGI {
 
 		VK_CHECK(vkCreateDebugMessenger, m_Instance, &debug_create_info, m_Allocator, &m_Debugger);
 #endif
+		
+		m_BoundWindow->Init();
 
 		if (glfwCreateWindowSurface(m_Instance, m_BoundWindow->GetGlfwWindow(), m_Allocator, &m_WindowSurface) != VK_SUCCESS)
 			AGI_ERROR("Failed to create Vulkan surface");
@@ -111,7 +120,7 @@ namespace AGI {
 		if (!CreateDevice())
 			AGI_ERROR("Failed to create Vulkan logical device");
 
-		if (!CreateSwapchain({ m_BoundWindow->GetProperties().Width, m_BoundWindow->GetProperties().Height }))
+		if (!CreateSwapchain({ m_BoundWindow->GetWidth(), m_BoundWindow->GetHeight() }))
 			AGI_ERROR("Failed to create Vulkan swapchain");
 	}
 
