@@ -3,6 +3,9 @@
 #include "AGI/RenderContext.hpp"
 #include "Vulkan.hpp"
 
+#include "VulkanRenderPass.hpp"
+#include "VulkanCommandBuffer.hpp"
+
 namespace AGI {
 
 	struct DeviceRequirements
@@ -32,6 +35,32 @@ namespace AGI {
 		std::vector<VkPresentModeKHR> PresentModes;
 	};
 
+	struct VulkanDevice
+	{
+		VkPhysicalDevice Physical = nullptr;
+		VkDevice Logical;
+
+		QueueIndexes QueueInfo;
+		SwapchainSupport SwapchainInfo;
+
+		VkQueue GraphicsQueue;
+		VkQueue PresentQueue;
+		VkQueue TransferQueue;
+
+		VkCommandPool GraphicsPool;
+	};
+
+	struct VulkanSwapchain
+	{
+		VkSwapchainKHR Handle;
+		std::vector<VkImage> Images;
+		std::vector<VkImageView> ImageViews;
+
+		uint8_t FramesInFlight = 3;
+		VkSurfaceFormatKHR ImageFormat;
+	};
+
+
 	class VulkanContext : public RenderContext
 	{
 	public:
@@ -50,14 +79,15 @@ namespace AGI {
 		virtual Shader CreateShader(const ShaderSources& shaderSources) override { return nullptr; }
 		virtual Texture CreateTexture(const TextureSpecification& spec) override { return nullptr; }
 		virtual VertexArray CreateVertexArray() override { return nullptr; }
+
+		const VulkanDevice& GetDevice() const { return m_Device; }
+		const VulkanSwapchain& GetSwapchain() const { return m_Swapchain; }
+		const VkAllocationCallbacks* GetAllocator() const { return m_Allocator; }
+
 	private:
 		bool MatchPhysicalDevice(VkPhysicalDevice* chosen_device, DeviceRequirements& requirements);
 		void QuerySwapchainSupport(VkPhysicalDevice device, SwapchainSupport* swapchain_info);
-		bool DeviceMeetsRequirements(
-			VkPhysicalDevice device,
-			QueueIndexes* queue_info,
-			SwapchainSupport* swapchain_support,
-			const DeviceRequirements* requirements);
+		bool DeviceMeetsRequirements(VkPhysicalDevice device, QueueIndexes* queue_info, SwapchainSupport* swapchain_support, const DeviceRequirements* requirements);
 
 		bool CreateDevice();
 		void DestroyDevice();
@@ -73,28 +103,11 @@ namespace AGI {
 
 		VkSurfaceKHR m_WindowSurface;
 
-		struct VulkanDevice
-		{
-			VkPhysicalDevice Physical = nullptr;
-			VkDevice Logical;
-
-			QueueIndexes QueueInfo;
-			SwapchainSupport SwapchainInfo;
-
-			VkQueue GraphicsQueue;
-			VkQueue PresentQueue;
-			VkQueue TransferQueue;
-		} m_Device;
-
-		struct VulkanSwapchain
-		{
-			VkSwapchainKHR Handle;
-			std::vector<VkImage> Images;
-			std::vector<VkImageView> ImageViews;
-
-			uint8_t FramesInFlight = 3;
-			VkSurfaceFormatKHR ImageFormat;
-		} m_Swapchain;
+		VulkanDevice m_Device;
+		VulkanSwapchain m_Swapchain;
+		VulkanRenderPass m_MainRenderpass;
+		
+		std::vector<VulkanCommandBuffer> m_GraphicsCommands;
 	};
 
 }

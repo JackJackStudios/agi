@@ -61,6 +61,13 @@ namespace AGI {
 		vkGetDeviceQueue(m_Device.Logical, m_Device.QueueInfo.GraphicsIndex, 0, &m_Device.GraphicsQueue);
 		vkGetDeviceQueue(m_Device.Logical, m_Device.QueueInfo.PresentIndex, 0, &m_Device.PresentQueue);
 		vkGetDeviceQueue(m_Device.Logical, m_Device.QueueInfo.TransferIndex, 0, &m_Device.TransferQueue);
+
+		// Create command pool for graphics queue.
+		VkCommandPoolCreateInfo pool_create_info = { VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO };
+		pool_create_info.queueFamilyIndex = m_Device.QueueInfo.GraphicsIndex;
+		pool_create_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		
+		VK_CHECK_RETURN(vkCreateCommandPool, m_Device.Logical, &pool_create_info, m_Allocator, &m_Device.GraphicsPool);
 		return true;
 	}
 

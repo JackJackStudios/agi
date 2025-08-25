@@ -122,10 +122,21 @@ namespace AGI {
 
 		if (!CreateSwapchain({ m_BoundWindow->GetWidth(), m_BoundWindow->GetHeight() }))
 			AGI_ERROR("Failed to create Vulkan swapchain");
+
+		RenderPassSpecification spec;
+		spec.ClearColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+		spec.RenderArea.y = m_BoundWindow->GetWidth();
+		spec.RenderArea.w = m_BoundWindow->GetHeight();
+		spec.ColourFormat = m_Swapchain.ImageFormat.format;
+
+		if (!m_MainRenderpass.Create(this, spec))
+			AGI_ERROR("Failed to create Vulkan render pass");
 	}
 
 	void VulkanContext::Shutdown()
 	{
+		m_MainRenderpass.Destroy();
+
 		DestroySwapchain();
 		DestroyDevice();
 
@@ -138,10 +149,12 @@ namespace AGI {
 
 	void VulkanContext::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
+		// TODO: Recreate swapchain
 	}
 
 	void VulkanContext::SetClearColour(const glm::vec4& colour)
 	{
+		m_MainRenderpass.SetClearColour(colour);
 	}
 
 	void VulkanContext::SetTextureAlignment(int align)
