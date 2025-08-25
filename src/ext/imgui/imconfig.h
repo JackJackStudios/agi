@@ -13,8 +13,6 @@
 //-----------------------------------------------------------------------------
 
 #pragma once
-#include <AGI/agi.hpp>
-#include <glm/glm.hpp>
 
 struct ImGuiContext;
 extern thread_local ImGuiContext* MyImGuiTLS;
@@ -109,14 +107,6 @@ extern thread_local ImGuiContext* MyImGuiTLS;
 //---- Define constructor and implicit cast operators to convert back<>forth between your math types and ImVec2/ImVec4.
 // This will be inlined as part of ImVec2 and ImVec4 class declarations.
 
-#define IM_VEC2_CLASS_EXTRA                                                     \
-        constexpr ImVec2(const glm::vec2& f) : x(f.x), y(f.y) {}                   \
-        operator glm::vec2() const { return glm::vec2(x,y); }
-
-#define IM_VEC4_CLASS_EXTRA                                                     \
-        constexpr ImVec4(const glm::vec4& f) : x(f.x), y(f.y), z(f.z), w(f.w) {}   \
-        operator glm::vec4() const { return glm::vec4(x,y,z,w); }
-
 //---- ...Or use Dear ImGui's own very basic math operators.
 #define IMGUI_DEFINE_MATH_OPERATORS
 
@@ -134,7 +124,6 @@ extern thread_local ImGuiContext* MyImGuiTLS;
 
 //---- Debug Tools: Macro to break in Debugger (we provide a default implementation of this in the codebase)
 // (use 'Metrics->Tools->Item Picker' to pick widgets with the mouse and break into them for easy debugging.)
-#define IM_DEBUG_BREAK()  AGI_DEBUGBREAK()
 
 //---- Debug Tools: Enable highlight ID conflicts _before_ hovering items. When io.ConfigDebugHighlightIdConflicts is set.
 // (THIS WILL SLOW DOWN DEAR IMGUI. Only use occasionally and disable after use)
