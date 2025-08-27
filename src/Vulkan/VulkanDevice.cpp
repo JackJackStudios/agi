@@ -73,6 +73,7 @@ namespace AGI {
 
 	void VulkanContext::DestroyDevice()
 	{
+		vkDestroyCommandPool(m_Device.Logical, m_Device.GraphicsPool, m_Allocator);
 		vkDestroyDevice(m_Device.Logical, m_Allocator);
 	}
 

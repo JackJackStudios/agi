@@ -5,6 +5,7 @@
 
 #include "VulkanRenderPass.hpp"
 #include "VulkanCommandBuffer.hpp"
+#include "VulkanFramebuffer.hpp"
 
 namespace AGI {
 

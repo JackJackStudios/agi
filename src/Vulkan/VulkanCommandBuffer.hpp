@@ -14,7 +14,7 @@ namespace AGI {
         };
         VulkanCommandBuffer() = default;
 
-        bool Allocate(VulkanContext* context, VkCommandPool* pool, bool is_primary);
+        bool Allocate(VulkanContext* context, VkCommandPool pool, bool is_primary);
         void Free();
 
         // Setters and getters
@@ -29,7 +29,7 @@ namespace AGI {
         void Reset();
     private:
         VulkanContext* m_BoundContext = nullptr;
-        VkCommandPool* m_Parent = nullptr;
+        VkCommandPool m_Parent = nullptr;
 
         VkCommandBuffer m_RendererID = nullptr;
         State m_CurrentState = State::NotAllocated;

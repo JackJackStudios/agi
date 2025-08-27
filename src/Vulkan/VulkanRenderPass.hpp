@@ -8,8 +8,8 @@ namespace AGI {
 	struct RenderPassSpecification
 	{
 		// x, y, width, height
-		glm::vec4 RenderArea;
-		glm::vec4 ClearColor;
+		glm::vec4 RenderArea = { 0.0f, 0.0f, 0.0f, 0.0f };
+		glm::vec4 ClearColor = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 		VkFormat ColourFormat;
 
@@ -32,6 +32,7 @@ namespace AGI {
 
 		// Setters and getters
 		void SetClearColour(const glm::vec4& colour) { m_Specification.ClearColor = colour; }
+		VkRenderPass GetHandle() const { return m_RendererID; }
 
 		// Changes state
 		void Begin(VulkanCommandBuffer& command, VkFramebuffer framebuffer);

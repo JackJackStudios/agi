@@ -125,16 +125,25 @@ namespace AGI {
 
 		RenderPassSpecification spec;
 		spec.ClearColor = { 0.1f, 0.1f, 0.1f, 1.0f };
-		spec.RenderArea.y = m_BoundWindow->GetWidth();
+		spec.RenderArea.z = m_BoundWindow->GetWidth();
 		spec.RenderArea.w = m_BoundWindow->GetHeight();
 		spec.ColourFormat = m_Swapchain.ImageFormat.format;
 
 		if (!m_MainRenderpass.Create(this, spec))
 			AGI_ERROR("Failed to create Vulkan render pass");
+
+		for (int i = 0; i < m_Swapchain.FramesInFlight; ++i)
+		{
+			VulkanCommandBuffer& buf = m_GraphicsCommands.emplace_back();
+			buf.Allocate(this, m_Device.GraphicsPool, true);
+		}
 	}
 
 	void VulkanContext::Shutdown()
 	{
+		for (int i = 0; i < m_GraphicsCommands.size(); ++i)
+			m_GraphicsCommands[i].Free();
+
 		m_MainRenderpass.Destroy();
 
 		DestroySwapchain();

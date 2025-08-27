@@ -5,13 +5,19 @@
 
 namespace AGI {
 
-	bool VulkanCommandBuffer::Allocate(VulkanContext* context, VkCommandPool* pool, bool is_primary)
+	bool VulkanCommandBuffer::Allocate(VulkanContext* context, VkCommandPool pool, bool is_primary)
 	{
 		m_BoundContext = context;
 		m_Parent = pool;
 
+		if (m_Parent == nullptr || m_BoundContext == nullptr)
+		{
+			AGI_ERROR("VulkanCommandBuffer cannot be created with no context or pool attached");
+			return false;
+		}
+
 		VkCommandBufferAllocateInfo allocateInfo = { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO };
-		allocateInfo.commandPool = *pool;
+		allocateInfo.commandPool = pool;
 		allocateInfo.level = is_primary ? VK_COMMAND_BUFFER_LEVEL_PRIMARY : VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 		allocateInfo.commandBufferCount = 1;
 		
@@ -23,7 +29,7 @@ namespace AGI {
 	{
 		if (m_RendererID)
 		{
-			vkFreeCommandBuffers(m_BoundContext->GetDevice().Logical, *m_Parent, 1, &m_RendererID);
+			vkFreeCommandBuffers(m_BoundContext->GetDevice().Logical, m_Parent, 1, &m_RendererID);
 			m_RendererID = nullptr;
 		}
 	}
