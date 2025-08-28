@@ -124,13 +124,18 @@ namespace AGI {
 			AGI_ERROR("Failed to create Vulkan swapchain");
 
 		RenderPassSpecification spec;
-		spec.ClearColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 		spec.RenderArea.z = m_BoundWindow->GetWidth();
 		spec.RenderArea.w = m_BoundWindow->GetHeight();
 		spec.ColourFormat = m_Swapchain.ImageFormat.format;
 
 		if (!m_MainRenderpass.Create(this, spec))
 			AGI_ERROR("Failed to create Vulkan render pass");
+
+		for (int i = 0; i < m_Swapchain.FramesInFlight; ++i)
+		{
+			VulkanFramebuffer& frambuffer = m_Swapchain.Framebuffers.emplace_back();
+			frambuffer.Create(this, &m_MainRenderpass, { m_BoundWindow->GetWidth(), m_BoundWindow->GetHeight() }, { m_Swapchain.ImageViews[i] });
+		}
 
 		for (int i = 0; i < m_Swapchain.FramesInFlight; ++i)
 		{
@@ -143,6 +148,9 @@ namespace AGI {
 	{
 		for (int i = 0; i < m_GraphicsCommands.size(); ++i)
 			m_GraphicsCommands[i].Free();
+
+		for (int i = 0; i < m_Swapchain.Framebuffers.size(); ++i)
+			m_Swapchain.Framebuffers[i].Destroy();
 
 		m_MainRenderpass.Destroy();
 
@@ -163,7 +171,6 @@ namespace AGI {
 
 	void VulkanContext::SetClearColour(const glm::vec4& colour)
 	{
-		m_MainRenderpass.SetClearColour(colour);
 	}
 
 	void VulkanContext::SetTextureAlignment(int align)

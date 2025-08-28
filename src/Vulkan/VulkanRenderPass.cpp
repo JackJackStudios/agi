@@ -79,7 +79,7 @@ namespace AGI {
 		}
 	}
 
-	void VulkanRenderPass::Begin(VulkanCommandBuffer& command, VkFramebuffer framebuffer)
+	void VulkanRenderPass::Begin(VulkanCommandBuffer& command, const glm::vec4& colour, VkFramebuffer framebuffer)
 	{
 		VkRenderPassBeginInfo beginInfo = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO };
 		beginInfo.renderPass = m_RendererID;
@@ -90,10 +90,10 @@ namespace AGI {
 		beginInfo.renderArea.extent.height = m_Specification.RenderArea.w;
 
 		VkClearValue clearColour = {};
-		clearColour.color.float32[0] = m_Specification.ClearColor.x;
-		clearColour.color.float32[1] = m_Specification.ClearColor.y;
-		clearColour.color.float32[2] = m_Specification.ClearColor.z;
-		clearColour.color.float32[3] = m_Specification.ClearColor.w;
+		clearColour.color.float32[0] = colour.x;
+		clearColour.color.float32[1] = colour.y;
+		clearColour.color.float32[2] = colour.z;
+		clearColour.color.float32[3] = colour.w;
 
 		beginInfo.clearValueCount = 1;
 		beginInfo.pClearValues = &clearColour;

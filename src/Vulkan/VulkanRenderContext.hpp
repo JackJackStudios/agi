@@ -56,6 +56,7 @@ namespace AGI {
 		VkSwapchainKHR Handle;
 		std::vector<VkImage> Images;
 		std::vector<VkImageView> ImageViews;
+		std::vector<VulkanFramebuffer> Framebuffers;
 
 		uint8_t FramesInFlight = 3;
 		VkSurfaceFormatKHR ImageFormat;
@@ -109,6 +110,7 @@ namespace AGI {
 		VulkanRenderPass m_MainRenderpass;
 		
 		std::vector<VulkanCommandBuffer> m_GraphicsCommands;
+		glm::vec4 m_ClearColour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	};
 
 }
