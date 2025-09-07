@@ -4,7 +4,7 @@ namespace AGI {
 
 	enum class APIType
 	{
-		OpenGL = 0,
+		OpenGL = 0, Vulkan,
 	};
 	
 	class Window;

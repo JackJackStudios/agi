@@ -59,9 +59,10 @@ namespace AGI {
 		{
 			switch (type)
 			{
-			case APIType::OpenGL: return GLFW_OPENGL_API; break;
+				case APIType::OpenGL: return GLFW_OPENGL_API;
+				case APIType::Vulkan: return GLFW_NO_API;
 
-			default: AGI_VERIFY(false, "Undefined APIType"); break;
+				default: AGI_VERIFY(false, "Undefined APIType"); break;
 			}
 
 			return 0;
@@ -179,6 +180,17 @@ namespace AGI {
 	{
 		glfwSetWindowTitle(m_Window, title.c_str());
 		m_Properties.Title = title;
+	}
+
+	void AGIWindow::GetVulkanExtensions(std::vector<const char*>* requiredExtensions)
+	{
+		uint32_t extensionCount;
+		const char** extensions = glfwGetRequiredInstanceExtensions(&extensionCount);
+
+		for (int i = 0; i < extensionCount; i++)
+		{
+			requiredExtensions->emplace_back(extensions[i]);
+		}
 	}
 
     bool AGIWindow::IsKeyOn(int32_t key) const

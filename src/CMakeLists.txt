@@ -2,12 +2,15 @@
 add_subdirectory(OpenGL/glad)
 
 file(GLOB SOURCE_DIR "Utils.cpp" "Window.cpp")
-file(GLOB OPENGL_SOURCE "OpenGL/**.cpp")
+file(GLOB_RECURSE OPENGL_SOURCE "OpenGL/**.cpp")
+file(GLOB_RECURSE VULKAN_SOURCE "Vulkan/**.cpp")
 
-add_library(agi STATIC ${SOURCE_DIR} ${OPENGL_SOURCE})
+add_library(agi STATIC ${SOURCE_DIR} ${OPENGL_SOURCE} ${VULKAN_SOURCE})
 
 target_include_directories(agi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")
-target_link_libraries(agi PUBLIC glm glad glfw)
+
+find_package(Vulkan REQUIRED)
+target_link_libraries(agi PUBLIC glm glad glfw Vulkan::Vulkan)
 
 target_include_directories(agi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_precompile_headers(agi PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include/agipch.hpp")
