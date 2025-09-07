@@ -80,11 +80,12 @@ int main(void)
     while (!window->ShouldClose())
     {
         context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        context->Clear();
+        context->BeginFrame();
         
         context->DrawIndexed(squareVA);
 
-        window->OnUpdate();
+        context->EndFrame();
+        window->PollEvents();
     }
 
     context->Shutdown();

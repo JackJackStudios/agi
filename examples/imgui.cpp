@@ -31,13 +31,14 @@ int main(void)
     while (!window->ShouldClose())
     {
         context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        context->Clear();
+        context->BeginFrame();
 
         imgui->BeginFrame();
         ImGui::ShowDemoWindow();
         imgui->EndFrame();
 
-        window->OnUpdate();
+        context->EndFrame();
+        window->PollEvents();
     }
 
     imgui.reset();

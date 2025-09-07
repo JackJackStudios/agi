@@ -1,6 +1,9 @@
 #include "agipch.hpp"
 #include "VulkanRenderContext.hpp"
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 static VKAPI_ATTR VkBool32 VKAPI_CALL vk_debug_callback(
 	VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -28,11 +31,11 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL vk_debug_callback(
 
 namespace AGI {
 
-	void VulkanContext::Init()
+	bool VulkanContext::Init()
 	{
 		VkApplicationInfo app_info = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
 		app_info.apiVersion = VK_API_VERSION_1_2;
-		app_info.pApplicationName = m_BoundWindow->GetProperties().Title.c_str();
+		app_info.pApplicationName = m_BoundWindow->GetTitle().c_str();
 		app_info.applicationVersion = VK_MAKE_API_VERSION(0, 1, 0, 0);
 		app_info.engineVersion = VK_MAKE_API_VERSION(0, 0, 3, 0);
 		app_info.pEngineName = "AGI";
@@ -44,98 +47,104 @@ namespace AGI {
 		std::vector<const char*> required_validation;
 		
 		// Get extensions required by glfw
-		m_BoundWindow->GetVulkanExtensions(&required_extensions);
+		uint32_t extensionCount;
+		const char** extensions = glfwGetRequiredInstanceExtensions(&extensionCount);
 
-		// If in debug mode enable validation stuff.
-#ifdef AGI_DEBUG
-		AGI_TRACE("Vulkan validation is enabled.");
+		for (int i = 0; i < extensionCount; i++)
+			required_extensions.emplace_back(extensions[i]);
 
-		required_extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-		
-		//required_validation.emplace_back("VK_LAYER_LUNARG_api_dump");
-		required_validation.emplace_back("VK_LAYER_KHRONOS_validation");
-
-		auto available_layers = Enumerate<VkLayerProperties, vkEnumerateInstanceLayerProperties>();
-
-		// Verify that layers exists
-		for (const auto& required_layer : required_validation)
+		if (m_Settings.EnableValidation)
 		{
-			bool found = false;
-			for (const auto& available_layer : available_layers)
+			required_extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+			required_validation.emplace_back("VK_LAYER_KHRONOS_validation");
+
+			auto available_layers = Enumerate<VkLayerProperties, vkEnumerateInstanceLayerProperties>();
+
+			// Verify that layers exists
+			for (const auto& required_layer : required_validation)
 			{
-				if (strcmp(required_layer, available_layer.layerName) == 0)
+				bool found = false;
+				for (const auto& available_layer : available_layers)
 				{
-					found = true;
-					break;
+					if (strcmp(required_layer, available_layer.layerName) == 0)
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if (!found)
+				{
+					AGI_ERROR("Required validation layer is missing: {}", required_layer);
+					return false;
 				}
 			}
-
-			if (!found) 
-			{
-				AGI_ERROR("Required validation layer is missing: {}", required_layer);
-			}
 		}
-#endif
 
 		create_info.enabledExtensionCount = required_extensions.size();
 		create_info.ppEnabledExtensionNames = required_extensions.data();
 		create_info.enabledLayerCount = required_validation.size();
 		create_info.ppEnabledLayerNames = required_validation.data();
 
-		VK_CHECK(vkCreateInstance, &create_info, m_Allocator, &m_Instance);
+		VK_CHECK_RETURN(vkCreateInstance, &create_info, m_Allocator, &m_Instance);
 
-		// NOTE: Whetever this should be filtered out of release build
-		//       is the user's decision.
-		std::string extensions_str;
-		for (const auto& ext : required_extensions)
-			extensions_str.append(" ").append(ext);
+		if (m_Settings.EnableValidation)
+		{
+			// Create debugging
+			uint32_t log_severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
+				VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+				VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
+				VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
 
-#ifdef AGI_DEBUG
-		for (const auto& val : required_validation)
-			extensions_str.append(" ").append(val);
-#endif
+			VkDebugUtilsMessengerCreateInfoEXT debug_create_info = { VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
+			debug_create_info.messageSeverity = log_severity;
+			debug_create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+			debug_create_info.pfnUserCallback = vk_debug_callback;
 
-		AGI_TRACE("Vulkan extensions:{}", extensions_str);
-
-#ifdef AGI_DEBUG
-		// Create debugging
-		uint32_t log_severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
-			                    VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-			                    VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |  
-		                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
-
-		VkDebugUtilsMessengerCreateInfoEXT debug_create_info = { VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
-		debug_create_info.messageSeverity = log_severity;
-		debug_create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
-		debug_create_info.pfnUserCallback = vk_debug_callback;
-
-		VK_CHECK(vkCreateDebugMessenger, m_Instance, &debug_create_info, m_Allocator, &m_Debugger);
-#endif
+			VK_CHECK(vkCreateDebugMessenger, m_Instance, &debug_create_info, m_Allocator, &m_Debugger);
+		}
 		
 		m_BoundWindow->Init();
 
 		if (glfwCreateWindowSurface(m_Instance, m_BoundWindow->GetGlfwWindow(), m_Allocator, &m_WindowSurface) != VK_SUCCESS)
+		{
 			AGI_ERROR("Failed to create Vulkan surface");
+			return false;
+		}
 
 		if (!CreateDevice())
+		{
 			AGI_ERROR("Failed to create Vulkan logical device");
+			return false;
+		}
 
-		if (!CreateSwapchain({ m_BoundWindow->GetWidth(), m_BoundWindow->GetHeight() }))
+		if (!CreateSwapchain(m_BoundWindow->GetSize()))
+		{
 			AGI_ERROR("Failed to create Vulkan swapchain");
+			return false;
+		}
+
+		VkPhysicalDeviceProperties props;
+		vkGetPhysicalDeviceProperties(m_Device.Physical, &props);
+		m_Properties.Renderer = std::format("{} ({})", props.deviceName, DeviceTypeToString(props.deviceType));
+		m_Properties.Version = std::format("{}.{}.{}", VK_API_VERSION_MAJOR(props.apiVersion), VK_API_VERSION_MINOR(props.apiVersion), VK_API_VERSION_PATCH(props.apiVersion));
 
 		RenderPassSpecification spec;
-		spec.RenderArea.z = m_BoundWindow->GetWidth();
-		spec.RenderArea.w = m_BoundWindow->GetHeight();
+		spec.RenderArea.z = m_BoundWindow->GetSize().x;
+		spec.RenderArea.w = m_BoundWindow->GetSize().y;
 		spec.ColourFormat = m_Swapchain.ImageFormat.format;
 
 		if (!m_MainRenderpass.Create(this, spec))
+		{
 			AGI_ERROR("Failed to create Vulkan render pass");
+			return false;
+		}
 
 		for (int i = 0; i < m_Swapchain.FramesInFlight; ++i)
 		{
 			// Create framebuffers
 			VulkanFramebuffer& frambuffer = m_Swapchain.Framebuffers.emplace_back();
-			frambuffer.Create(this, &m_MainRenderpass, { m_BoundWindow->GetWidth(), m_BoundWindow->GetHeight() }, { m_Swapchain.ImageViews[i] });
+			frambuffer.Create(this, &m_MainRenderpass, m_BoundWindow->GetSize(), { m_Swapchain.ImageViews[i] });
 
 			// Create command buffers
 			VulkanCommandBuffer& buf = m_GraphicsCommands.emplace_back();
@@ -151,6 +160,9 @@ namespace AGI {
 		}
 
 		m_ImagesInFlight.resize(m_Swapchain.Images.size());
+
+		PrintProperties();
+		return true;
 	}
 
 	void VulkanContext::Shutdown()
@@ -193,7 +205,7 @@ namespace AGI {
 		m_ClearColour = colour;
 	}
 
-	void VulkanContext::Clear()
+	void VulkanContext::BeginFrame()
 	{
 		// 1) Wait for the frame we’re about to use to be idle (GPU done with it)
 		m_InFlightFences[m_CurrentFrame].Wait(UINT64_MAX);
@@ -221,22 +233,20 @@ namespace AGI {
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
-		viewport.y = (float)m_BoundWindow->GetHeight();
-		viewport.width = (float)m_BoundWindow->GetWidth();
-		viewport.height = -(float)m_BoundWindow->GetHeight(); // flip Y (fine)
+		viewport.y = (float)m_BoundWindow->GetSize().y;
+		viewport.width = (float)m_BoundWindow->GetSize().x;
+		viewport.height = -(float)m_BoundWindow->GetSize().y; // flip Y (fine)
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = { m_BoundWindow->GetWidth(), m_BoundWindow->GetHeight() };
+		scissor.extent = { m_BoundWindow->GetSize().x, m_BoundWindow->GetSize().y };
 
 		vkCmdSetViewport(commands.GetHandle(), 0, 1, &viewport);
 		vkCmdSetScissor(commands.GetHandle(), 0, 1, &scissor);
 
 		m_MainRenderpass.Begin(commands, m_ClearColour, m_Swapchain.Framebuffers[m_ImageIndex].GetHandle());
-
-		EndFrame();
 	}
 
 	void VulkanContext::EndFrame()
@@ -276,11 +286,6 @@ namespace AGI {
 
 	void VulkanContext::DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount)
 	{
-	}
-
-	void VulkanContext::SetTextureAlignment(int align)
-	{
-		AGI_VERIFY(false, "");
 	}
 
 }

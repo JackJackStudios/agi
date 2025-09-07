@@ -2,34 +2,33 @@
 
 int main(void)
 {
-    // Init spdlog for AGI callbacks
     InitLogging();
 
-    // Create GLFW window and the AGI::RenderContext
     AGI::Settings settings;
     settings.PreferedAPI = AGI::APIType::Vulkan;
     settings.MessageFunc = OnAGIMessage;
     settings.Blending = true;
 
-    settings.Window.Width = 720;
-    settings.Window.Height = 720;
-    settings.Window.Title = EXECUTABLE_NAME;
+    AGI::WindowProps windowProps;
+    windowProps.Title = EXECUTABLE_NAME;
+    windowProps.Size = { 720, 720 };
 
-    auto window = AGI::Window::Create(settings);
+    auto window = AGI::Window::Create(settings, windowProps);
     auto context = AGI::RenderContext::Create(window);
 
     context->Init();
 
-    // Main loop now, you know the deal
     while (!window->ShouldClose())
     {
         context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        context->Clear();
+        context->BeginFrame();
 
-        window->OnUpdate();
+        context->EndFrame();
+        window->PollEvents();
     }
 
     context->Shutdown();
-    window.reset();
+    delete context;
+
     return 0;
 }

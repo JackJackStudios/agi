@@ -2,6 +2,7 @@
 #include <AGI/agi.hpp>
 
 #include "OpenGL/OpenGLRenderContext.hpp"
+#include "Vulkan/VulkanRenderContext.hpp"
 
 #include "AGI/Window.hpp"
 
@@ -19,6 +20,7 @@ namespace AGI {
 		switch (window->m_Settings.PreferedAPI)
 		{
 		case APIType::OpenGL: newapi = new OpenGLContext(); break;
+		case APIType::Vulkan: newapi = new VulkanContext(); break;
 
 		default: AGI_VERIFY(false, "Undefined APIType"); return nullptr;
 		}

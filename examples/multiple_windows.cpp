@@ -14,13 +14,14 @@ void WindowLoop(AGI::RenderContext* context)
     while (!window->ShouldClose())
     {
         context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        context->Clear();
+        context->BeginFrame();
 
         imgui->BeginFrame();
         ImGui::ShowAboutWindow();
         imgui->EndFrame();
 
-        window->OnUpdate();
+        context->EndFrame();
+        window->PollEvents();
     }
 
     imgui.reset();

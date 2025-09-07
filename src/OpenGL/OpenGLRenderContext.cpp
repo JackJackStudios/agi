@@ -2,6 +2,7 @@
 #include "OpenGLRenderContext.hpp"
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace AGI {
 
@@ -10,11 +11,7 @@ namespace AGI {
 		m_BoundWindow->Init();
 
 		int	status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		if (status != true)
-		{
-			AGI_ERROR("Failed to init OpenGL");
-			return false;
-		}
+		if (status == 0) return false;
 		
 		m_Properties.Renderer = (char*)glGetString(GL_RENDERER);
 		m_Properties.Version = (char*)glGetString(GL_VERSION);
@@ -35,6 +32,16 @@ namespace AGI {
 		m_BoundWindow->Shutdown();
 	}
 
+	void OpenGLContext::BeginFrame()
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	void OpenGLContext::EndFrame()
+	{
+		glfwSwapBuffers(m_BoundWindow->GetGlfwWindow());
+	}
+
 	void OpenGLContext::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
 		glViewport(x, y, width, height);
@@ -43,16 +50,6 @@ namespace AGI {
 	void OpenGLContext::SetClearColour(const glm::vec4& colour)
 	{
 		glClearColor(colour.r, colour.g, colour.b, colour.a);
-	}
-
-	void OpenGLContext::SetTextureAlignment(int align)
-	{
-		glGetIntegerv(GL_UNPACK_ALIGNMENT, &align);
-	}
-
-	void OpenGLContext::Clear()
-	{
-		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void OpenGLContext::DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount)

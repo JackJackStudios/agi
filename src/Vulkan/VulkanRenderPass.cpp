@@ -18,10 +18,8 @@ namespace AGI {
 
 		if (spec.RenderArea.z == 0 || spec.RenderArea.w == 0)
 		{
-			auto window = m_Context->GetBoundWindow();
-			AGI_WARN("Set render area to 0. Using window size ({}, {})", window->GetWidth(), window->GetHeight());
-
-			m_Specification.RenderArea = { spec.RenderArea.x, spec.RenderArea.y, window->GetWidth(), window->GetHeight() };
+			AGI_ERROR("Set render area to 0 in VulkanRenderPass");
+			return false;
 		}
 
 		// Currently only using one subpass

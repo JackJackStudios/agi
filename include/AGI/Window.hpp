@@ -1,13 +1,11 @@
 #pragma once
 
 #include "agipch.hpp"
-
 #include "Settings.hpp"
 
 #include <glm/glm.hpp>
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
 
 namespace AGI {
 
@@ -15,24 +13,23 @@ namespace AGI {
 	{
 	public:
 		Window(Settings& settings, WindowProps& props);
-		void Shutdown();
 
 		void Init();
-		void OnUpdate();
+		void Shutdown();
 
-		const glm::ivec2 GetSize() const { return m_Properties.Size; }
+		// Commands
+		void PollEvents();
+		bool ShouldClose(bool closing = false);
+		float GetDelta();
+
+		// Window attributes
+		glm::uvec2 GetSize() const { return m_Properties.Size; }
 		std::string GetTitle() const { return m_Properties.Title; }
 		glm::vec2 GetPosition() const;
 
-		// Window attributes
-		bool ShouldClose(bool closing = false) const;
-		void SetVisable(bool enabled);
+		// Setters
 		void SetTitle(const std::string& title);
-		void CenterScreen();
-
-		bool IsKeyOn(int32_t key) const;
-		bool IsMouseButtonOn(int32_t button) const;
-		glm::vec2 GetCursorPos() const;
+		void SetVisable(bool enabled);
 
 		void* GetNativeWindow() const;
 		GLFWwindow* GetGlfwWindow() const { return m_Window; }
@@ -50,14 +47,11 @@ namespace AGI {
 		void SetCharCallback(CharFunc callback)                     { m_Events.CharCallback = callback;           InstallCallbacks(); }
 		void SetDropCallback(DropFunc callback)                     { m_Events.DropCallback = callback;           InstallCallbacks(); }
 
-		float GetDelta();
-		float GetTime() { return glfwGetTime(); }
 		static Window* Create(Settings& settings, WindowProps& props) { return new Window(settings, props); }
 	private:
 		void InstallCallbacks();
 	private:
 		GLFWwindow* m_Window;
-		GLFWmonitor* m_Monitor;
 
 		Settings m_Settings;
 		WindowProps m_Properties;
@@ -79,6 +73,7 @@ namespace AGI {
 
 		int m_WindowIndex = -1;
 		float m_LastFrameTime = 0.0f;
+
 		friend class RenderContext;
 	};
 

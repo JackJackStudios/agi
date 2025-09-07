@@ -35,7 +35,7 @@ namespace AGI {
 	struct WindowProps
 	{
 		std::string Title = "AGI-Window";
-		glm::ivec2 Size = { 1280, 720 };
+		glm::uvec2 Size = { 1280, 720 };
 		bool Visible = true;
 		bool Resizable = true;
 		bool Borderless = false;
@@ -49,6 +49,12 @@ namespace AGI {
 		MessageCallbackFn MessageFunc;
 		
 		bool Blending;
+
+#ifdef AGI_DEBUG
+		bool EnableValidation = true;
+#else
+		bool EnableValidation = false;
+#endif	
 	};
 
 	APIType BestAPI();

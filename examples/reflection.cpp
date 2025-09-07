@@ -56,5 +56,6 @@ int main(void)
     context->Shutdown();
     delete context;
     
+    std::cin.get();
     return 0;
 }

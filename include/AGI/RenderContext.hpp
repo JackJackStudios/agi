@@ -22,12 +22,13 @@ namespace AGI {
 		virtual bool Init() = 0;
 		virtual void Shutdown() = 0;
 		
+		virtual void BeginFrame() = 0;
+		virtual void EndFrame() = 0;
+
 		// Global commands
 		virtual void DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount = 0) = 0;
 		virtual void SetClearColour(const glm::vec4& colour) = 0;
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
-		virtual void SetTextureAlignment(int align) = 0;
-		virtual void Clear() = 0;
 
 		// Creation functions
 		virtual VertexBuffer CreateVertexBuffer(uint32_t vertices, const BufferLayout& layout) = 0;
@@ -47,6 +48,7 @@ namespace AGI {
 			switch (GetType())
 			{
 			case APIType::OpenGL: apiType = "OpenGL"; break;
+			case APIType::Vulkan: apiType = "Vulkan"; break;
 			}
 
 			AGI_INFO("Using {} {} - {}", apiType, m_Properties.Version, m_Properties.Renderer);

@@ -98,14 +98,6 @@ namespace AGI {
 			bool result = DeviceMeetsRequirements(device, &m_Device.QueueInfo, &m_Device.SwapchainInfo, &requirements);
 			if (result)
 			{
-				AGI_TRACE("Using device: \"{}\" ({})", properties.deviceName, DeviceTypeToString(properties.deviceType));
-
-				AGI_TRACE(
-					"Vulkan API version: {}.{}.{}",
-					VK_API_VERSION_MAJOR(properties.apiVersion),
-					VK_API_VERSION_MINOR(properties.apiVersion),
-					VK_API_VERSION_PATCH(properties.apiVersion));
-
 				*chosen_device = device;
 				break;
 			}

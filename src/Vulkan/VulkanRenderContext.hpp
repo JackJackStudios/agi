@@ -67,14 +67,15 @@ namespace AGI {
 	class VulkanContext : public RenderContext
 	{
 	public:
-		virtual void Init() override;
+		virtual bool Init() override;
 		virtual void Shutdown() override;
+		
+		virtual void BeginFrame() override;
+		virtual void EndFrame() override;
 
 		virtual void DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount = 0) override;
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
 		virtual void SetClearColour(const glm::vec4& colour) override;
-		virtual void SetTextureAlignment(int align) override;
-		virtual void Clear() override;
 
 		virtual VertexBuffer CreateVertexBuffer(uint32_t vertices, const BufferLayout& layout) override { return nullptr; }
 		virtual IndexBuffer CreateIndexBuffer(uint32_t* indices, uint32_t size) override { return nullptr; }
@@ -88,8 +89,6 @@ namespace AGI {
 		const VkAllocationCallbacks* GetAllocator() const { return m_Allocator; }
 
 	private:
-		void EndFrame();
-
 		bool MatchPhysicalDevice(VkPhysicalDevice* chosen_device, DeviceRequirements& requirements);
 		void QuerySwapchainSupport(VkPhysicalDevice device, SwapchainSupport* swapchain_info);
 		bool DeviceMeetsRequirements(VkPhysicalDevice device, QueueIndexes* queue_info, SwapchainSupport* swapchain_support, const DeviceRequirements* requirements);

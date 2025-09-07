@@ -25,8 +25,8 @@ namespace AGI {
             switch (level)
             {
             case AGI::LogLevel::Trace:   std::cout << "[TRACE] AGI: " << message << std::endl; break;
-            case AGI::LogLevel::Info:    std::cout << "[INFO] AGI: " << message << std::endl; break;
-            case AGI::LogLevel::Warning: std::cout << "[WARN] AGI: " << message << std::endl; break;
+            case AGI::LogLevel::Info:    std::cout << "[INFO]  AGI: " << message << std::endl; break;
+            case AGI::LogLevel::Warning: std::cout << "[WARN]  AGI: " << message << std::endl; break;
             case AGI::LogLevel::Error:   std::cout << "[ERROR] AGI: " << message << std::endl; break;
             }
         }
