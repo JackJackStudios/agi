@@ -14,6 +14,8 @@ namespace AGI {
 
 		bool Create(VulkanContext* context, VulkanRenderPass* renderpass, const glm::vec2& size, const std::vector<VkImageView>& attachments);
 		void Destroy();
+
+		VkFramebuffer GetHandle() const { return m_RendererID; }
 	private:
 		VkFramebuffer m_RendererID = nullptr;
 

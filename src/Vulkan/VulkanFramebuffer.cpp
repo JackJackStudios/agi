@@ -29,6 +29,7 @@ namespace AGI {
 		createInfo.layers = 1;
 
 		VK_CHECK_RETURN(vkCreateFramebuffer, m_BoundContext->GetDevice().Logical, &createInfo, m_BoundContext->GetAllocator(), &m_RendererID);
+		return true;
 	}
 
 	void VulkanFramebuffer::Destroy()

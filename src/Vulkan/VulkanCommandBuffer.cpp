@@ -2,6 +2,7 @@
 #include "VulkanCommandBuffer.hpp"
 
 #include "VulkanRenderContext.hpp"
+#include "VulkanFence.hpp"
 
 namespace AGI {
 
@@ -23,6 +24,8 @@ namespace AGI {
 		
 		VK_CHECK_RETURN(vkAllocateCommandBuffers, m_BoundContext->GetDevice().Logical, &allocateInfo, &m_RendererID);
 		m_CurrentState = State::Ready;
+
+		return true;
 	}
 
 	void VulkanCommandBuffer::Free()

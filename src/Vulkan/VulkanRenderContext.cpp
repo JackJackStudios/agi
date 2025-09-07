@@ -133,19 +133,38 @@ namespace AGI {
 
 		for (int i = 0; i < m_Swapchain.FramesInFlight; ++i)
 		{
+			// Create framebuffers
 			VulkanFramebuffer& frambuffer = m_Swapchain.Framebuffers.emplace_back();
 			frambuffer.Create(this, &m_MainRenderpass, { m_BoundWindow->GetWidth(), m_BoundWindow->GetHeight() }, { m_Swapchain.ImageViews[i] });
-		}
 
-		for (int i = 0; i < m_Swapchain.FramesInFlight; ++i)
-		{
+			// Create command buffers
 			VulkanCommandBuffer& buf = m_GraphicsCommands.emplace_back();
 			buf.Allocate(this, m_Device.GraphicsPool, true);
+
+			// Create sync objects
+			VkSemaphoreCreateInfo createInfo = { VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
+			vkCreateSemaphore(m_Device.Logical, &createInfo, m_Allocator, &m_ImageAvailableSemaphores.emplace_back());
+			vkCreateSemaphore(m_Device.Logical, &createInfo, m_Allocator, &m_QueueCompleteSemaphores.emplace_back());
+
+			VulkanFence& fence = m_InFlightFences.emplace_back();
+			fence.Create(this, true);
 		}
+
+		m_ImagesInFlight.resize(m_Swapchain.Images.size());
 	}
 
 	void VulkanContext::Shutdown()
 	{
+		vkDeviceWaitIdle(m_Device.Logical);
+
+		for (int i = 0; i < m_Swapchain.FramesInFlight; ++i)
+		{
+			vkDestroySemaphore(m_Device.Logical, m_ImageAvailableSemaphores[i], m_Allocator);
+			vkDestroySemaphore(m_Device.Logical, m_QueueCompleteSemaphores[i], m_Allocator);
+
+			m_InFlightFences[i].Destroy();
+		}
+
 		for (int i = 0; i < m_GraphicsCommands.size(); ++i)
 			m_GraphicsCommands[i].Free();
 
@@ -166,23 +185,102 @@ namespace AGI {
 
 	void VulkanContext::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
-		// TODO: Recreate swapchain
+		AGI_WARN("TODO: Recreate swapchain");
 	}
 
 	void VulkanContext::SetClearColour(const glm::vec4& colour)
+	{
+		m_ClearColour = colour;
+	}
+
+	void VulkanContext::Clear()
+	{
+		// 1) Wait for the frame we’re about to use to be idle (GPU done with it)
+		m_InFlightFences[m_CurrentFrame].Wait(UINT64_MAX);
+		m_InFlightFences[m_CurrentFrame].Reset(); // reset right after a successful wait
+
+		// 2) Acquire next swapchain image (signal the per-frame "imageAvailable")
+		AcquireNextImage(
+			UINT64_MAX,
+			m_ImageAvailableSemaphores[m_CurrentFrame],
+			VK_NULL_HANDLE,
+			&m_ImageIndex
+		);
+
+		// 3) If that image is already in flight, wait for whichever frame used it last
+		if (m_ImagesInFlight[m_ImageIndex].GetHandle() != VK_NULL_HANDLE)
+			m_ImagesInFlight[m_ImageIndex].Wait(UINT64_MAX);
+
+		// Associate this image with the fence of the frame we're submitting now
+		m_ImagesInFlight[m_ImageIndex] = m_InFlightFences[m_CurrentFrame];
+
+		// 4) Build commands for this image
+		VulkanCommandBuffer& commands = m_GraphicsCommands[m_ImageIndex];
+		commands.Reset();
+		commands.Begin(false, false, false);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = (float)m_BoundWindow->GetHeight();
+		viewport.width = (float)m_BoundWindow->GetWidth();
+		viewport.height = -(float)m_BoundWindow->GetHeight(); // flip Y (fine)
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = { m_BoundWindow->GetWidth(), m_BoundWindow->GetHeight() };
+
+		vkCmdSetViewport(commands.GetHandle(), 0, 1, &viewport);
+		vkCmdSetScissor(commands.GetHandle(), 0, 1, &scissor);
+
+		m_MainRenderpass.Begin(commands, m_ClearColour, m_Swapchain.Framebuffers[m_ImageIndex].GetHandle());
+
+		EndFrame();
+	}
+
+	void VulkanContext::EndFrame()
+	{
+		m_MainRenderpass.End();
+
+		VulkanCommandBuffer& commands = m_GraphicsCommands[m_ImageIndex];
+		commands.End();
+
+		// 5) Submit once, waiting on "imageAvailable", signaling "renderFinished"
+		VkCommandBuffer cmd = commands.GetHandle();
+
+		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+		VkSubmitInfo submitInfo{ VK_STRUCTURE_TYPE_SUBMIT_INFO };
+		submitInfo.waitSemaphoreCount   = 1;
+		submitInfo.pWaitSemaphores      = &m_ImageAvailableSemaphores[m_CurrentFrame];
+		submitInfo.pWaitDstStageMask    = waitStages;
+		submitInfo.commandBufferCount   = 1;
+		submitInfo.pCommandBuffers      = &cmd;
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores    = &m_QueueCompleteSemaphores[m_CurrentFrame];
+
+		VK_CHECK(vkQueueSubmit,
+			m_Device.GraphicsQueue,
+			1,
+			&submitInfo,
+			m_InFlightFences[m_CurrentFrame].GetHandle() // this fence will be signaled when GPU finishes
+		);
+
+		// 6) Present waits on the render-finished semaphore
+		PresentSwapchain(m_QueueCompleteSemaphores[m_CurrentFrame], m_ImageIndex);
+
+		// 7) Advance frame index
+		m_CurrentFrame = (m_CurrentFrame + 1) % m_Swapchain.FramesInFlight;
+	}
+
+	void VulkanContext::DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount)
 	{
 	}
 
 	void VulkanContext::SetTextureAlignment(int align)
 	{
-	}
-
-	void VulkanContext::Clear()
-	{
-	}
-
-	void VulkanContext::DrawIndexed(const VertexArray& vertexArray, uint32_t indexCount)
-	{
+		AGI_VERIFY(false, "");
 	}
 
 }

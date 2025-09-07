@@ -88,4 +88,36 @@ namespace AGI {
         vkDestroySwapchainKHR(m_Device.Logical, m_Swapchain.Handle, m_Allocator);
 	}
 
+    bool VulkanContext::AcquireNextImage(uint64_t timeout, VkSemaphore signal_semaphore, VkFence fence, uint32_t* out_image)
+    {
+        VkResult result = vkAcquireNextImageKHR(m_Device.Logical, m_Swapchain.Handle, timeout, signal_semaphore, fence, out_image);
+        if (result == VK_ERROR_OUT_OF_DATE_KHR)
+        {
+            AGI_WARN("TODO: Recreate swapchain");
+            return false;
+        }
+
+        return vkResultIsSuccess(result);
+    }
+
+    bool VulkanContext::PresentSwapchain(VkSemaphore wait_semaphore, uint32_t image)
+    {
+        VkPresentInfoKHR present_info = { VK_STRUCTURE_TYPE_PRESENT_INFO_KHR };
+        present_info.waitSemaphoreCount = 1;
+        present_info.pWaitSemaphores = &wait_semaphore;
+        present_info.swapchainCount = 1;
+        present_info.pSwapchains = &m_Swapchain.Handle;
+        present_info.pImageIndices = &image;
+        present_info.pResults = 0;
+        
+        VkResult result = vkQueuePresentKHR(m_Device.PresentQueue, &present_info);
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) 
+        {
+            AGI_WARN("TODO: Recreate swapchain");
+            return false;
+        }
+            
+        return vkResultIsSuccess(result);
+    }
+
 };

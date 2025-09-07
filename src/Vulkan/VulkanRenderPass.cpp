@@ -75,7 +75,7 @@ namespace AGI {
 		if (m_RendererID)
 		{
 			vkDestroyRenderPass(m_Context->GetDevice().Logical, m_RendererID, m_Context->GetAllocator());
-			m_RendererID == nullptr;
+			m_RendererID = nullptr;
 		}
 	}
 

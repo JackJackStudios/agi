@@ -6,6 +6,7 @@
 #include "VulkanRenderPass.hpp"
 #include "VulkanCommandBuffer.hpp"
 #include "VulkanFramebuffer.hpp"
+#include "VulkanFence.hpp"
 
 namespace AGI {
 
@@ -87,6 +88,8 @@ namespace AGI {
 		const VkAllocationCallbacks* GetAllocator() const { return m_Allocator; }
 
 	private:
+		void EndFrame();
+
 		bool MatchPhysicalDevice(VkPhysicalDevice* chosen_device, DeviceRequirements& requirements);
 		void QuerySwapchainSupport(VkPhysicalDevice device, SwapchainSupport* swapchain_info);
 		bool DeviceMeetsRequirements(VkPhysicalDevice device, QueueIndexes* queue_info, SwapchainSupport* swapchain_support, const DeviceRequirements* requirements);
@@ -96,6 +99,9 @@ namespace AGI {
 
 		bool CreateSwapchain(const glm::uvec2& size);
 		void DestroySwapchain();
+
+		bool AcquireNextImage(uint64_t timeout, VkSemaphore signal_semaphore, VkFence fence, uint32_t* out_image);
+		bool PresentSwapchain(VkSemaphore wait_semaphore, uint32_t image);
 	private:
 #ifdef AGI_DEBUG
 		VkDebugUtilsMessengerEXT m_Debugger;
@@ -108,9 +114,19 @@ namespace AGI {
 		VulkanDevice m_Device;
 		VulkanSwapchain m_Swapchain;
 		VulkanRenderPass m_MainRenderpass;
-		
+
+		// TODO: What are these for? :/
+		std::vector<VkSemaphore> m_ImageAvailableSemaphores;
+		std::vector<VkSemaphore> m_QueueCompleteSemaphores;
+		std::vector<VulkanFence> m_InFlightFences;
+
+		std::vector<VulkanFence> m_ImagesInFlight;
+
 		std::vector<VulkanCommandBuffer> m_GraphicsCommands;
 		glm::vec4 m_ClearColour = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		uint32_t m_CurrentFrame = 0;
+		uint32_t m_ImageIndex = 0;
 	};
 
 }
