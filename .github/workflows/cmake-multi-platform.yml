@@ -12,19 +12,10 @@ jobs:
 
     strategy:
       fail-fast: false
-
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release, Debug]
         c_compiler: [gcc, clang, cl]
-        cpp_compiler: [g++, clang++, cl]
-        exclude:
-          - os: windows-latest
-            c_compiler: gcc
-          - os: windows-latest
-            c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
 
     steps:
     - uses: actions/checkout@v4
@@ -33,20 +24,19 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt update
-        sudo apt install xorg-dev libvulkan-dev vulkan-tools libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules
+        sudo apt install -y xorg-dev libvulkan-dev vulkan-tools libwayland-dev libxkbcommon-dev wayland-protocols
 
-    - name: Window dependencies
+    - name: Windows dependencies
       if: runner.os == 'Windows'
-      run: choco install -y vulkan-sdk
-      shell: powershell
-    
+      run: choco install vulkan-sdk --yes
+
     - name: Configure CMake
-      run: >
-        cmake -B build
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -S ${{ github.workspace }}
+      run: |
+        cmake -B build \
+          -DCMAKE_CXX_COMPILER=${{ matrix.c_compiler }} \
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -S ${{ github.workspace }}
 
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }}
