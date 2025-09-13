@@ -37,7 +37,7 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         curl -L https://sdk.lunarg.com/sdk/download/1.3.296.0/windows/VulkanSDK-1.3.296.0-Installer.exe -o ./Installer.exe
-        ./Installer.exe install --accept-licenses MIT2.0,Apache-2.0 --verbose
+        ./Installer.exe install --accept-licenses --verbose
         
     - name: Configure CMake
       run: |
