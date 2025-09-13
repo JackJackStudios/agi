@@ -33,27 +33,48 @@ jobs:
         sudo apt update
         sudo apt install -y xorg-dev libvulkan-dev vulkan-tools libwayland-dev libxkbcommon-dev wayland-protocols
 
-    - name: Windows dependencies
+    - name: Install Vulkan SDK on Windows
       if: runner.os == 'Windows'
       run: |
-        # Set the URL and installer name
-        $VulkanUrl = "https://sdk.lunarg.com/sdk/download/1.3.296.0/windows/VulkanSDK-1.3.296.0-Installer.exe?Human=true"
-        $InstallerPath = "$env:TEMP\VulkanSDK-Installer.exe"
+        # Set the Vulkan SDK version and URL
+        $VulkanVersion = "1.3.296.0"
+        $VulkanUrl = "https://sdk.lunarg.com/sdk/download/$VulkanVersion/windows/VulkanSDK-$VulkanVersion-Installer.exe"
         
-        # Download the Vulkan SDK installer
-        Write-Host "Downloading Vulkan SDK..."
-        Invoke-WebRequest -Uri $VulkanUrl -OutFile $InstallerPath
-        
-        # Run the installer silently
-        Write-Host "Installing Vulkan SDK silently..."
-        Start-Process -FilePath $InstallerPath -ArgumentList "/S" -Wait
-        
-        # Optional: clean up installer
-        Remove-Item $InstallerPath
-        
-        Write-Host "Vulkan SDK installation complete!"
+        # Set the installer path in TEMP
+        $InstallerPath = Join-Path $env:TEMP "VulkanSDK-Installer.exe"
+    
+        try {
+            Write-Host "Downloading Vulkan SDK $VulkanVersion..."
+            Invoke-WebRequest -Uri $VulkanUrl -OutFile $InstallerPath
+    
+            Write-Host "Installing Vulkan SDK silently..."
+            Start-Process -FilePath $InstallerPath -ArgumentList "/S" -Wait
+    
+            # Detect installation folder (default is C:\VulkanSDK\<version>)
+            $VulkanSdkPath = "C:\VulkanSDK\$VulkanVersion"
+            if (-Not (Test-Path $VulkanSdkPath)) {
+                throw "Vulkan SDK installation folder not found at $VulkanSdkPath"
+            }
+    
+            Write-Host "Adding Vulkan SDK to environment variables..."
+            # Set VULKAN_SDK environment variable for the user
+            [Environment]::SetEnvironmentVariable("VULKAN_SDK", $VulkanSdkPath, "User")
+            # Update PATH for this session
+            $env:PATH += ";$VulkanSdkPath\Bin"
+    
+            Write-Host "Vulkan SDK $VulkanVersion installation complete!"
+        }
+        catch {
+            Write-Error "Vulkan SDK installation failed: $_"
+            exit 1
+        }
+        finally {
+            # Clean up installer
+            if (Test-Path $InstallerPath) {
+                Remove-Item -Path $InstallerPath -Force -ErrorAction SilentlyContinue
+            }
+        }
       shell: powershell
-
 
     - name: Configure CMake
       run: |
