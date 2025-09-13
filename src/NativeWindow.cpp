@@ -1,6 +1,8 @@
 #include "agipch.hpp"
 #include "AGI/Window.hpp"
 
+#include <GLFW/glfw3.h>
+
 #if defined(AGI_WINDOWS)
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>

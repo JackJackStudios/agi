@@ -6,7 +6,6 @@
 #include "VulkanRenderPass.hpp"
 #include "VulkanCommandBuffer.hpp"
 #include "VulkanFramebuffer.hpp"
-#include "VulkanFence.hpp"
 
 namespace AGI {
 
@@ -102,9 +101,8 @@ namespace AGI {
 		bool AcquireNextImage(uint64_t timeout, VkSemaphore signal_semaphore, VkFence fence, uint32_t* out_image);
 		bool PresentSwapchain(VkSemaphore wait_semaphore, uint32_t image);
 	private:
-#ifdef AGI_DEBUG
 		VkDebugUtilsMessengerEXT m_Debugger;
-#endif
+
 		VkInstance m_Instance;
 		VkAllocationCallbacks* m_Allocator = nullptr;
 
@@ -117,9 +115,9 @@ namespace AGI {
 		// TODO: What are these for? :/
 		std::vector<VkSemaphore> m_ImageAvailableSemaphores;
 		std::vector<VkSemaphore> m_QueueCompleteSemaphores;
-		std::vector<VulkanFence> m_InFlightFences;
+		std::vector<VkFence> m_InFlightFences;
 
-		std::vector<VulkanFence> m_ImagesInFlight;
+		std::vector<VkFence> m_ImagesInFlight;
 
 		std::vector<VulkanCommandBuffer> m_GraphicsCommands;
 		glm::vec4 m_ClearColour = { 1.0f, 1.0f, 1.0f, 1.0f };

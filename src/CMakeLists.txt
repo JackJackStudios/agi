@@ -1,7 +1,7 @@
 # Global interface for other backends
 add_subdirectory(OpenGL/glad)
 
-file(GLOB SOURCE_DIR "Utils.cpp" "Window.cpp")
+file(GLOB SOURCE_DIR "Utils.cpp" "NativeWindow.cpp" "Window.cpp")
 file(GLOB_RECURSE OPENGL_SOURCE "OpenGL/**.cpp")
 file(GLOB_RECURSE VULKAN_SOURCE "Vulkan/**.cpp")
 

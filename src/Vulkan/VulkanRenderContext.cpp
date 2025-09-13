@@ -12,6 +12,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL vk_debug_callback(
 
 	switch (messageSeverity)
 	{
+	default:
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
 		AGI::Log::GenericLog(pCallbackData->pMessage, AGI::LogLevel::Trace);
 		break;
@@ -155,8 +156,11 @@ namespace AGI {
 			vkCreateSemaphore(m_Device.Logical, &createInfo, m_Allocator, &m_ImageAvailableSemaphores.emplace_back());
 			vkCreateSemaphore(m_Device.Logical, &createInfo, m_Allocator, &m_QueueCompleteSemaphores.emplace_back());
 
-			VulkanFence& fence = m_InFlightFences.emplace_back();
-			fence.Create(this, true);
+			VkFenceCreateInfo fenceInfo = { VK_STRUCTURE_TYPE_FENCE_CREATE_INFO };
+			createInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+			VkFence& fence = m_InFlightFences.emplace_back();
+			VK_CHECK_RETURN(vkCreateFence, m_Device.Logical, &fenceInfo, m_Allocator, &fence);
 		}
 
 		m_ImagesInFlight.resize(m_Swapchain.Images.size());
@@ -174,7 +178,7 @@ namespace AGI {
 			vkDestroySemaphore(m_Device.Logical, m_ImageAvailableSemaphores[i], m_Allocator);
 			vkDestroySemaphore(m_Device.Logical, m_QueueCompleteSemaphores[i], m_Allocator);
 
-			m_InFlightFences[i].Destroy();
+			vkDestroyFence(m_Device.Logical, m_InFlightFences[i], m_Allocator);
 		}
 
 		for (int i = 0; i < m_GraphicsCommands.size(); ++i)
@@ -208,8 +212,8 @@ namespace AGI {
 	void VulkanContext::BeginFrame()
 	{
 		// 1) Wait for the frame we’re about to use to be idle (GPU done with it)
-		m_InFlightFences[m_CurrentFrame].Wait(UINT64_MAX);
-		m_InFlightFences[m_CurrentFrame].Reset(); // reset right after a successful wait
+		vkWaitForFences(m_Device.Logical, 1, &m_InFlightFences[m_CurrentFrame], true, UINT64_MAX);
+		vkResetFences(m_Device.Logical, 1, &m_InFlightFences[m_CurrentFrame]); // reset right after a successful wait
 
 		// 2) Acquire next swapchain image (signal the per-frame "imageAvailable")
 		AcquireNextImage(
@@ -220,8 +224,8 @@ namespace AGI {
 		);
 
 		// 3) If that image is already in flight, wait for whichever frame used it last
-		if (m_ImagesInFlight[m_ImageIndex].GetHandle() != VK_NULL_HANDLE)
-			m_ImagesInFlight[m_ImageIndex].Wait(UINT64_MAX);
+		if (m_InFlightFences[m_CurrentFrame] != VK_NULL_HANDLE)
+			vkWaitForFences(m_Device.Logical, 1, &m_InFlightFences[m_CurrentFrame], true, UINT64_MAX);
 
 		// Associate this image with the fence of the frame we're submitting now
 		m_ImagesInFlight[m_ImageIndex] = m_InFlightFences[m_CurrentFrame];
@@ -274,7 +278,7 @@ namespace AGI {
 			m_Device.GraphicsQueue,
 			1,
 			&submitInfo,
-			m_InFlightFences[m_CurrentFrame].GetHandle() // this fence will be signaled when GPU finishes
+			m_InFlightFences[m_CurrentFrame] // this fence will be signaled when GPU finishes
 		);
 
 		// 6) Present waits on the render-finished semaphore

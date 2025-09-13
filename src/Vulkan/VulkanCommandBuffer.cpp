@@ -2,7 +2,6 @@
 #include "VulkanCommandBuffer.hpp"
 
 #include "VulkanRenderContext.hpp"
-#include "VulkanFence.hpp"
 
 namespace AGI {
 
