@@ -3,101 +3,10 @@
 #include <AGI/agi.hpp>
 #include <vulkan/vulkan.h>
 
-#define VK_CONCAT_IMPL(x, y) x##y
-#define VK_CONCAT(x, y) VK_CONCAT_IMPL(x, y)
-#define VK_CHECK(function, ...) \
-    VkResult VK_CONCAT(function##_result_, __LINE__) = function(__VA_ARGS__); \
-    if (!vkResultIsSuccess(VK_CONCAT(function##_result_, __LINE__))) \
-    { \
-        AGI_ERROR("{} failed with result: {}", #function, vkGetResultString(VK_CONCAT(function##_result_, __LINE__))); \
-    }
-
-#define VK_CHECK_RETURN(function, ...) \
-    VkResult VK_CONCAT(function##_result_, __LINE__) = function(__VA_ARGS__); \
-    if (!vkResultIsSuccess(VK_CONCAT(function##_result_, __LINE__))) \
-    { \
-        AGI_ERROR("{} failed with result: {}", #function, vkGetResultString(VK_CONCAT(function##_result_, __LINE__))); \
-		return false; \
-    }
-
-template<typename T, VkResult(*EnumFunc)(uint32_t*, T*)>
-std::vector<T> Enumerate()
-{
-    uint32_t count = 0;
-    VK_CHECK(EnumFunc, &count, nullptr);
-
-    std::vector<T> result;
-    if (count > 0) {
-        result.resize(count);
-        VK_CHECK(EnumFunc, &count, result.data());
-    }
-    return result;
-}
-
-template<typename T, typename F, typename... Args>
-std::vector<T> EnumerateParent(F&& vkEnumFunction, Args&&... args)
-{
-    uint32_t count = 0;
-    vkEnumFunction(std::forward<Args>(args)..., &count, nullptr);
-
-    std::vector<T> result(count);
-    vkEnumFunction(std::forward<Args>(args)..., &count, result.data());
-    return result;
-}
-
-
-static VkResult vkCreateDebugMessenger(
-	VkInstance instance,
-	const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-	const VkAllocationCallbacks* pAllocator,
-	VkDebugUtilsMessengerEXT* pDebugMessenger)
-{
-	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-	if (func == nullptr)
-		return VK_ERROR_EXTENSION_NOT_PRESENT;
-
-	return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-}
-
-static void vkDestroyDebugMessenger(
-	VkInstance instance,
-	VkDebugUtilsMessengerEXT debugMessenger,
-	const VkAllocationCallbacks* pAllocator)
-{
-	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-	if (func == nullptr)
-		return;
-
-	func(instance, debugMessenger, pAllocator);
-}
-
-static const char* DeviceTypeToString(VkPhysicalDeviceType type)
-{
-	switch (type)
-	{
-	default:
-	case VK_PHYSICAL_DEVICE_TYPE_OTHER:
-		return "Unknown";
-		break;
-	case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-		return "Integrated";
-		break;
-	case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-		return "Descrete";
-		break;
-	case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-		return "Virtual";
-		break;
-	case VK_PHYSICAL_DEVICE_TYPE_CPU:
-		return "CPU";
-		break;
-	}
-}
-
-static const char* vkGetResultString(VkResult result) 
+static const char* vkGetResultString(VkResult result)
 {
     // From: https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkResult.html
-    switch (result) 
+    switch (result)
     {
     default:
     case VK_SUCCESS:
@@ -230,4 +139,95 @@ static bool vkResultIsSuccess(VkResult result)
     }
 
     AGI_VERIFY(false, "Undefined vkResult. Please log an issue on the agi repository!");
+}
+
+#define VK_CONCAT_IMPL(x, y) x##y
+#define VK_CONCAT(x, y) VK_CONCAT_IMPL(x, y)
+#define VK_CHECK(function, ...) \
+    VkResult VK_CONCAT(function##_result_, __LINE__) = function(__VA_ARGS__); \
+    if (!vkResultIsSuccess(VK_CONCAT(function##_result_, __LINE__))) \
+    { \
+        AGI_ERROR("{} failed with result: {}", #function, vkGetResultString(VK_CONCAT(function##_result_, __LINE__))); \
+    }
+
+#define VK_CHECK_RETURN(function, ...) \
+    VkResult VK_CONCAT(function##_result_, __LINE__) = function(__VA_ARGS__); \
+    if (!vkResultIsSuccess(VK_CONCAT(function##_result_, __LINE__))) \
+    { \
+        AGI_ERROR("{} failed with result: {}", #function, vkGetResultString(VK_CONCAT(function##_result_, __LINE__))); \
+		return false; \
+    }
+
+template<typename T, VkResult(*EnumFunc)(uint32_t*, T*)>
+std::vector<T> Enumerate()
+{
+    uint32_t count = 0;
+    VK_CHECK(EnumFunc, &count, nullptr);
+
+    std::vector<T> result;
+    if (count > 0) {
+        result.resize(count);
+        VK_CHECK(EnumFunc, &count, result.data());
+    }
+    return result;
+}
+
+template<typename T, typename F, typename... Args>
+std::vector<T> EnumerateParent(F&& vkEnumFunction, Args&&... args)
+{
+    uint32_t count = 0;
+    vkEnumFunction(std::forward<Args>(args)..., &count, nullptr);
+
+    std::vector<T> result(count);
+    vkEnumFunction(std::forward<Args>(args)..., &count, result.data());
+    return result;
+}
+
+
+static VkResult vkCreateDebugMessenger(
+	VkInstance instance,
+	const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+	const VkAllocationCallbacks* pAllocator,
+	VkDebugUtilsMessengerEXT* pDebugMessenger)
+{
+	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+	if (func == nullptr)
+		return VK_ERROR_EXTENSION_NOT_PRESENT;
+
+	return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+}
+
+static void vkDestroyDebugMessenger(
+	VkInstance instance,
+	VkDebugUtilsMessengerEXT debugMessenger,
+	const VkAllocationCallbacks* pAllocator)
+{
+	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+	if (func == nullptr)
+		return;
+
+	func(instance, debugMessenger, pAllocator);
+}
+
+static const char* DeviceTypeToString(VkPhysicalDeviceType type)
+{
+	switch (type)
+	{
+	default:
+	case VK_PHYSICAL_DEVICE_TYPE_OTHER:
+		return "Unknown";
+		break;
+	case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+		return "Integrated";
+		break;
+	case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+		return "Descrete";
+		break;
+	case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+		return "Virtual";
+		break;
+	case VK_PHYSICAL_DEVICE_TYPE_CPU:
+		return "CPU";
+		break;
+	}
 }
