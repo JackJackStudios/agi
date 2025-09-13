@@ -102,9 +102,8 @@ namespace AGI {
 		bool AcquireNextImage(uint64_t timeout, VkSemaphore signal_semaphore, VkFence fence, uint32_t* out_image);
 		bool PresentSwapchain(VkSemaphore wait_semaphore, uint32_t image);
 	private:
-#ifdef AGI_DEBUG
 		VkDebugUtilsMessengerEXT m_Debugger;
-#endif
+
 		VkInstance m_Instance;
 		VkAllocationCallbacks* m_Allocator = nullptr;
 
