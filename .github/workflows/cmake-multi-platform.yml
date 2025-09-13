@@ -39,8 +39,16 @@ jobs:
 
     - name: Configure CMake
       run: |
+        if [[ "${{ matrix.c_compiler }}" == "gcc" ]]; then
+          CXX=g++
+        elif [[ "${{ matrix.c_compiler }}" == "clang" ]]; then
+          CXX=clang++
+        else
+          CXX=cl
+        fi
+        
         cmake -B build \
-          -DCMAKE_CXX_COMPILER=${{ matrix.c_compiler }} \
+          -DCMAKE_CXX_COMPILER=$CXX \
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -S ${{ github.workspace }}
