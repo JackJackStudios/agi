@@ -60,6 +60,25 @@ namespace AGI {
 		Settings m_Settings;
 		ContextProperties m_Properties;
 	private:
-		inline static RenderContext* s_CurrentContext;
+		using ContextFactoryFn = std::function<RenderContext* ()>;
+		static inline std::array<ContextFactoryFn, static_cast<size_t>(APIType::__COUNT)> s_ContextFactory = {};
+
+		template<typename T>
+		static void RegisterFactory(APIType type)
+		{
+			s_ContextFactory[static_cast<uint32_t>(type)] = []() -> RenderContext* { return new T(); };
+		}
+
+		template<typename T, APIType TApi>
+		friend struct Register;
+	};
+
+	template<typename T, APIType TApi>
+	struct Register
+	{
+		Register()
+		{
+			RenderContext::RegisterFactory<T>(TApi);
+		}
 	};
 }

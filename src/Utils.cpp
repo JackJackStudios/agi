@@ -1,10 +1,8 @@
 #include "agipch.hpp"
 #include <AGI/agi.hpp>
 
-#include "OpenGL/OpenGLRenderContext.hpp"
+#include "OpenGl/OpenGLRenderContext.hpp"
 #include "Vulkan/VulkanRenderContext.hpp"
-
-#include "AGI/Window.hpp"
 
 namespace AGI {
 
@@ -15,15 +13,9 @@ namespace AGI {
 
 	RenderContext* RenderContext::Create(Window* window)
 	{
-		RenderContext* newapi = nullptr;
-
-		switch (window->m_Settings.PreferedAPI)
-		{
-		case APIType::OpenGL: newapi = new OpenGLContext(); break;
-		case APIType::Vulkan: newapi = new VulkanContext(); break;
-
-		default: AGI_VERIFY(false, "Undefined APIType"); return nullptr;
-		}
+		auto& func = RenderContext::s_ContextFactory[static_cast<uint32_t>(window->m_Settings.PreferedAPI)];
+		RenderContext* newapi = (bool)func ? func() : nullptr;
+		AGI_VERIFY(newapi != nullptr, "RenderContext not defined for (APIType: {})", (uint32_t)window->m_Settings.PreferedAPI);
 
 		newapi->m_BoundWindow = window;
 		newapi->m_Settings = window->m_Settings;

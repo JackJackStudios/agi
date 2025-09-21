@@ -1,7 +1,9 @@
 #pragma once
 
+#include <atomic>
 #include <format>
 #include <cstring>
+#include <array>
 #include <functional>
 
 #if defined(AGI_WINDOWS)

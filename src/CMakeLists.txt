@@ -1,6 +1,6 @@
-# Global interface for other backends
 add_subdirectory(OpenGL/glad)
 
+# Global interface for other backends
 file(GLOB SOURCE_DIR "Utils.cpp" "NativeWindow.cpp" "Window.cpp")
 file(GLOB_RECURSE OPENGL_SOURCE "OpenGL/**.cpp")
 file(GLOB_RECURSE VULKAN_SOURCE "Vulkan/**.cpp")
@@ -8,7 +8,9 @@ file(GLOB_RECURSE VULKAN_SOURCE "Vulkan/**.cpp")
 add_library(agi STATIC ${SOURCE_DIR} ${OPENGL_SOURCE} ${VULKAN_SOURCE})
 
 target_include_directories(agi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../include")
-target_link_libraries(agi PUBLIC glm glad glfw Vulkan::Headers Vulkan::Loader)
+target_link_libraries(agi PUBLIC glm glfw)
+
+target_link_libraries(agi PUBLIC glad Vulkan::Headers Vulkan::Loader)
 
 target_include_directories(agi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_precompile_headers(agi PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include/agipch.hpp")
@@ -25,7 +27,3 @@ target_compile_definitions(agi PUBLIC
 
     AGI_VERSION="${PROJECT_VERSION}"
 )
-
-if (AGI_EXTENSIONS)
-    add_subdirectory(ext)
-endif()

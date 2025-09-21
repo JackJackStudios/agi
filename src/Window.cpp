@@ -1,6 +1,4 @@
 #include "AGI/Window.hpp"
-
-#include <atomic>
 #include <GLFW/glfw3.h>
 
 namespace AGI {

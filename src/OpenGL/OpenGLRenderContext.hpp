@@ -31,4 +31,6 @@ namespace AGI {
 		virtual VertexArray CreateVertexArray() override                                                { return ResourceBarrier<OpenGLVertexArray>::Create(); }
 	};
 
+	static Register<OpenGLContext, APIType::OpenGL> s_OpenGLRegister;
+
 }

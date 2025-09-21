@@ -21,6 +21,11 @@ if (AGI_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
+if (AGI_EXTENSIONS)
+    add_subdirectory(src/ext)
+endif()
+
+
 FetchContent_Declare(
     glm
     GIT_REPOSITORY https://github.com/icaven/glm.git

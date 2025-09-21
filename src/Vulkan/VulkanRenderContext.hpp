@@ -126,4 +126,6 @@ namespace AGI {
 		uint32_t m_ImageIndex = 0;
 	};
 
+	static Register<VulkanContext, APIType::Vulkan> s_VulkanRegister;
+
 }

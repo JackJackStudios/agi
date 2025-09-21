@@ -2,8 +2,7 @@
 
 #include "agipch.hpp"
 
-namespace AGI
-{
+namespace AGI {
 
     class RefCounted
     {

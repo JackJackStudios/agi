@@ -2,9 +2,9 @@
 
 namespace AGI {
 
-	enum class APIType
+	enum class APIType : uint32_t
 	{
-		OpenGL = 0, Vulkan,
+		OpenGL = 0, Vulkan, __COUNT
 	};
 	
 	class Window;
