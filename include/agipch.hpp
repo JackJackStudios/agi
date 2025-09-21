@@ -1,12 +1,8 @@
 #pragma once
 
-#include <memory>
-#include <functional>
-#include <filesystem>
-#include <string>
 #include <format>
-#include <vector>
 #include <cstring>
+#include <functional>
 
 #if defined(AGI_WINDOWS)
 #define AGI_DEBUGBREAK() __debugbreak()
@@ -15,9 +11,8 @@
 #define AGI_DEBUGBREAK() raise(SIGTRAP)
 #endif
 
+#include "AGI/ResourceBarrier.hpp"
 #include "AGI/RenderContext.hpp"
 #include "AGI/Log.hpp"
 
 #include <glm/glm.hpp>
-
-

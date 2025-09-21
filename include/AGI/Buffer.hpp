@@ -114,18 +114,24 @@ namespace AGI {
 
 		bool HasElement(const std::string& name) const
 		{
-			return std::any_of(begin(), end(), [&](const BufferElement& e) {
-        		return e.Name == name;
-    		});
+			for (const auto& element : m_Elements)
+			{
+				if (element.Name == name)
+					return true;
+			}
+
+			return false;
 		};
 
 		BufferElement& GetElement(const std::string& name)
 		{
-			auto it = std::find_if(begin(), end(), [&](const BufferElement& e) {
-				return e.Name == name;
-			});
-		
-			return *it;
+			AGI_VERIFY(HasElement(name), "Element \"{}\" does not exist", name);
+
+			for (auto& element : m_Elements)
+			{
+				if (element.Name == name)
+					return element;
+			}
 		}
 
 		void Resize(size_t size)
@@ -136,13 +142,12 @@ namespace AGI {
 
 		BufferElement& operator[](int idx)
 		{
-			AGI_VERIFY(idx < m_Elements.size(), "idx out of range for BufferElement");
+			AGI_VERIFY(idx < m_Elements.size(), "Out of range for BufferElement");
 			return m_Elements[idx];
 		}
 
 		BufferElement& operator[](const std::string& name)
 		{
-			AGI_VERIFY(HasElement(name), "Element \"{}\" does not exist", name);
 			return GetElement(name);
 		}
 
@@ -155,7 +160,7 @@ namespace AGI {
 		uint32_t m_Stride = 0;
 	};
 
-	class VertexBufferBase
+	class VertexBufferBase : public RefCounted
 	{
 	public:
 		virtual ~VertexBufferBase() = default;
@@ -171,9 +176,9 @@ namespace AGI {
 		virtual uint32_t GetSize() const = 0;
 	};
 
-	using VertexBuffer = std::shared_ptr<VertexBufferBase>;
+	using VertexBuffer = ResourceBarrier<VertexBufferBase>;
 
-	class IndexBufferBase
+	class IndexBufferBase : public RefCounted
 	{
 	public:
 		virtual ~IndexBufferBase() = default;
@@ -184,6 +189,6 @@ namespace AGI {
 		virtual uint32_t GetCount() const = 0;
 	};
 
-	using IndexBuffer = std::shared_ptr<IndexBufferBase>;
+	using IndexBuffer = ResourceBarrier<IndexBufferBase>;
 
 }

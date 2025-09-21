@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(AGI VERSION 0.3 LANGUAGES C CXX)
+project(AGI VERSION 0.4 LANGUAGES C CXX)
 
 message(STATUS "AGI: Version ${PROJECT_VERSION}")
 

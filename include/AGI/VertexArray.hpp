@@ -4,7 +4,7 @@
 
 namespace AGI {
 
-	class VertexArrayBase
+	class VertexArrayBase : public RefCounted
 	{
 	public:
 		virtual ~VertexArrayBase() = default;
@@ -19,6 +19,6 @@ namespace AGI {
 		virtual const IndexBuffer& GetIndexBuffer() const = 0;
 	};
 
-	using VertexArray = std::shared_ptr<VertexArrayBase>;
+	using VertexArray = ResourceBarrier<VertexArrayBase>;
 
 }

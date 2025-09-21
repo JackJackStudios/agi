@@ -17,7 +17,7 @@ namespace AGI {
 
 	using ShaderSources = std::unordered_map<ShaderType, std::string>;
 
-	class ShaderBase
+	class ShaderBase : public RefCounted
 	{
 	public:
 		virtual ~ShaderBase() = default;
@@ -44,6 +44,6 @@ namespace AGI {
 
 	};
 
-	using Shader = std::shared_ptr<ShaderBase>;
+	using Shader = ResourceBarrier<ShaderBase>;
 
 }

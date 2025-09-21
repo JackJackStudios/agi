@@ -13,7 +13,7 @@ namespace AGI {
 		std::vector<FramebufferTextureFormat> Attachments;
 	};
 
-	class FramebufferBase
+	class FramebufferBase : public RefCounted
 	{
 	public:
 		virtual ~FramebufferBase() = default;
@@ -32,6 +32,6 @@ namespace AGI {
 		virtual uint32_t GetAttachmentID(uint32_t index = 0) = 0;
 	};
 
-	using Framebuffer = std::shared_ptr<FramebufferBase>;
+	using Framebuffer = ResourceBarrier<FramebufferBase>;
 
 }

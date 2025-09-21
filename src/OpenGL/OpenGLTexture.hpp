@@ -21,7 +21,7 @@ namespace AGI {
 
 		virtual bool operator==(const Texture& other) const override
 		{
-			return m_RendererID == ((OpenGLTexture*)other.get())->m_RendererID;
+			return m_RendererID == ((OpenGLTexture*)other.Raw())->m_RendererID;
 		}
 	private:
 		TextureSpecification m_Specification;

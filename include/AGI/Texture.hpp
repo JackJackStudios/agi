@@ -35,7 +35,7 @@ namespace AGI {
 		uint32_t Datasize = 0;
 	};
 
-	class TextureBase
+	class TextureBase : public RefCounted
 	{
 	public:
 		virtual ~TextureBase() = default;
@@ -49,9 +49,9 @@ namespace AGI {
 
 		virtual void Bind(uint32_t slot = 0) const = 0;
 
-		virtual bool operator==(const std::shared_ptr<TextureBase>& other) const = 0;
+		virtual bool operator==(const ResourceBarrier<TextureBase>& other) const = 0;
 	};
 
-	using Texture = std::shared_ptr<TextureBase>;
+	using Texture = ResourceBarrier<TextureBase>;
 
 }
