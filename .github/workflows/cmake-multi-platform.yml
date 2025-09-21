@@ -2,14 +2,12 @@ name: CMake build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-    env:
-      VULKAN_SDK: C:/VulkanSDK/1.3.296.0
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -27,37 +25,30 @@ jobs:
             c_compiler: cl
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Linux dependencies
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt update
-        sudo apt install -y xorg-dev libvulkan-dev vulkan-tools libwayland-dev libxkbcommon-dev wayland-protocols
+      - name: Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install -y xorg-dev libwayland-dev libxkbcommon-dev wayland-protocols
 
-    - name: Install Vulkan SDK on Windows
-      if: runner.os == 'Windows'
-      run: |
-        curl -L https://sdk.lunarg.com/sdk/download/1.3.296.0/windows/VulkanSDK-1.3.296.0-Installer.exe -o ./Installer.exe
-        ./Installer.exe install --accept-licenses --accept-messages --confirm-command
-        
-    - name: Configure CMake
-      run: |
-        if [[ "${{ matrix.c_compiler }}" == "gcc" ]]; then
-          CXX=g++
-        elif [[ "${{ matrix.c_compiler }}" == "clang" ]]; then
-          CXX=clang++
-        else
-          CXX=cl
-        fi
-        
-        cmake -B build \
-          -DCMAKE_CXX_COMPILER=$CXX \
-          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -S "$GITHUB_WORKSPACE" \
-          $([[ "$RUNNER_OS" == "Windows" ]] && echo "-DVulkan_LIBRARY=${{ env.VULKAN_SDK }}/Lib/vulkan-1.lib -DVulkan_INCLUDE_DIR=${{ env.VULKAN_SDK }}/Include")
-      shell: bash
+      - name: Configure CMake
+        run: |
+          if [[ "${{ matrix.c_compiler }}" == "gcc" ]]; then
+            CXX=g++
+          elif [[ "${{ matrix.c_compiler }}" == "clang" ]]; then
+            CXX=clang++
+          else
+            CXX=cl
+          fi
 
-    - name: Build
-      run: cmake --build build --config ${{ matrix.build_type }}
+          cmake -B build \
+            -DCMAKE_CXX_COMPILER=$CXX \
+            -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -S "$GITHUB_WORKSPACE"
+        shell: bash
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} -j4
