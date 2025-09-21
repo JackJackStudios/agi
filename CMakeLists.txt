@@ -34,3 +34,17 @@ FetchContent_Declare(
     GIT_TAG        3.4
 )
 FetchContent_MakeAvailable(GLFW)
+
+FetchContent_Declare(
+    VulkanHeaders
+    GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
+    GIT_TAG main
+)
+FetchContent_MakeAvailable(VulkanHeaders)
+
+FetchContent_Declare(
+    VulkanLoader
+    GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Loader.git
+    GIT_TAG main
+)
+FetchContent_MakeAvailable(VulkanLoader)
