@@ -1,7 +1,7 @@
 #include "agipch.hpp"
 #include <AGI/agi.hpp>
 
-#include "OpenGl/OpenGLRenderContext.hpp"
+#include "OpenGL/OpenGLRenderContext.hpp"
 #include "Vulkan/VulkanRenderContext.hpp"
 
 namespace AGI {
