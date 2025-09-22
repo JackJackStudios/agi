@@ -4,6 +4,7 @@
 #include "AGI/Window.hpp"
 
 #include <imgui.h>
+#include <memory>
 
 namespace AGI {
 
