@@ -13,22 +13,17 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 endif()
 
 option(AGI_EXAMPLES "Build AGI examples and it's dependencies" ${MAIN_PROJECT})
-option(AGI_EXTENSIONS "Use extensions and download it's dependencies" ON)
 
 add_subdirectory(src)
+add_subdirectory(src/agi_imgui)
 
 if (AGI_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if (AGI_EXTENSIONS)
-    add_subdirectory(src/ext)
-endif()
-
-
 FetchContent_Declare(
     glm
-    GIT_REPOSITORY https://github.com/icaven/glm.git
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
     GIT_TAG        master
 )
 FetchContent_MakeAvailable(glm)

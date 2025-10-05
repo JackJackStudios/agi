@@ -5,7 +5,7 @@ void WindowLoop(AGI::RenderContext* context)
     auto window = context->GetBoundWindow();
     context->Init();
 
-    auto imgui = AGI::ImGuiLayer::Create(context);
+    auto imgui = std::make_unique<AGI::ImGuiLayer>(context);
 
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;

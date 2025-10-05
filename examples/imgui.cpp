@@ -21,7 +21,7 @@ int main(void)
 
     context->Init();
 
-    auto imgui = AGI::ImGuiLayer::Create(context);
+    auto imgui = std::make_unique<AGI::ImGuiLayer>(context);
 
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;

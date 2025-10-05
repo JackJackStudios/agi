@@ -3,8 +3,7 @@
 #include "agipch.hpp"
 #include "AGI/Window.hpp"
 
-#include <imgui.h>
-#include <memory>
+#include <imgui/imgui.h>
 
 namespace AGI {
 
@@ -16,8 +15,6 @@ namespace AGI {
 
         void BeginFrame(bool dockspace = false);
         void EndFrame();
-
-        static std::unique_ptr<ImGuiLayer> Create(RenderContext* context) { return std::make_unique<ImGuiLayer>(context); }
     private:
         bool m_Dockspace;
 
