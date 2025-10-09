@@ -15,7 +15,6 @@ endif()
 option(AGI_EXAMPLES "Build AGI examples and it's dependencies" ${MAIN_PROJECT})
 
 add_subdirectory(src)
-add_subdirectory(src/agi_imgui)
 
 if (AGI_EXAMPLES)
     add_subdirectory(examples)
