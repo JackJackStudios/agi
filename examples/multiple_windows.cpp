@@ -4,27 +4,16 @@ void WindowLoop(AGI::RenderContext* context)
 {
     auto window = context->GetBoundWindow();
     context->Init();
-
-    auto imgui = std::make_unique<AGI::ImGuiLayer>(context);
-
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
+    
     while (!window->ShouldClose())
     {
         context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
         context->BeginFrame();
 
-        imgui->BeginFrame();
-        ImGui::ShowAboutWindow();
-        imgui->EndFrame();
-
         context->EndFrame();
         window->PollEvents();
     }
-
-    imgui.reset();
+    
     context->Shutdown();
 }
 
