@@ -47,14 +47,9 @@ namespace AGI {
 	{
 		APIType PreferedAPI;
 		MessageCallbackFn MessageFunc;
-		
-		bool Blending;
 
-#ifdef AGI_DEBUG
 		bool EnableValidation = true;
-#else
-		bool EnableValidation = false;
-#endif	
+		bool Blending;
 	};
 
 	APIType BestAPI();

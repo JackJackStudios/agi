@@ -12,7 +12,7 @@ namespace AGI {
 	class Window
 	{
 	public:
-		Window(Settings& settings, WindowProps& props);
+		Window(const Settings& settings, const WindowProps& props);
 
 		void Init();
 		void Shutdown();
@@ -51,8 +51,6 @@ namespace AGI {
 	private:
 		void InstallCallbacks();
 	private:
-		GLFWwindow* m_Window;
-
 		Settings m_Settings;
 		WindowProps m_Properties;
 
@@ -70,6 +68,8 @@ namespace AGI {
 			CharFunc CharCallback = nullptr;
 			DropFunc DropCallback = nullptr;
 		} m_Events;
+
+		GLFWwindow* m_Window = nullptr;
 
 		int m_WindowIndex = -1;
 		float m_LastFrameTime = 0.0f;

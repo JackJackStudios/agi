@@ -21,17 +21,14 @@ namespace AGI {
 
 	struct TextureSpecification
 	{
-		uint32_t Width;
-		uint32_t Height;
-
-		bool Grayscale = false;
+		glm::uvec2 Size;
 		bool LinearFiltering = false;
 
 		ImageFormat Format = ImageFormat::RGB;
 		WrappingType Wrapping = WrappingType::Repeat;
 		uint16_t BytesPerChannel = 8;
 
-		uint8_t* Data = nullptr;
+		void* Data = nullptr;
 		uint32_t Datasize = 0;
 	};
 
@@ -40,16 +37,12 @@ namespace AGI {
 	public:
 		virtual ~TextureBase() = default;
 
-		virtual uint32_t GetWidth() const = 0;
-		virtual uint32_t GetHeight() const = 0;
+		virtual const glm::uvec2& GetSize() const = 0;
 		virtual TextureSpecification GetSpecification() const = 0;
 		virtual uint32_t GetRendererID() const = 0;
 
 		virtual void SetData(void* data, uint32_t size) = 0;
-
 		virtual void Bind(uint32_t slot = 0) const = 0;
-
-		virtual bool operator==(const ResourceBarrier<TextureBase>& other) const = 0;
 	};
 
 	using Texture = ResourceBarrier<TextureBase>;

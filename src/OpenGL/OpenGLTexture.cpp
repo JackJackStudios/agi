@@ -110,8 +110,8 @@ namespace AGI {
             GL_TEXTURE_2D, 
             0, 
             Utils::GetInternalFormat(m_Specification), 
-            m_Specification.Width, 
-            m_Specification.Height, 
+            m_Specification.Size.x, 
+            m_Specification.Size.y,
             0, 
             Utils::GetFormat(m_Specification), 
             Utils::GetDataType(m_Specification), 
@@ -124,7 +124,7 @@ namespace AGI {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, Utils::GetWrappingType(m_Specification));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, Utils::GetWrappingType(m_Specification));
 
-        if (m_Specification.Grayscale || m_Specification.Format == ImageFormat::RED)
+        if (m_Specification.Format == ImageFormat::RED)
         {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_RED);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_RED);
@@ -142,10 +142,14 @@ namespace AGI {
 
     void OpenGLTexture::SetData(void* data, uint32_t size)
     {
-        AGI_VERIFY(size == m_Specification.Width * m_Specification.Height * Utils::ImageFormatToChannels(m_Specification.Format), "Data must be entire texture!");
+        if (size != m_Specification.Size.x * m_Specification.Size.y * Utils::ImageFormatToChannels(m_Specification.Format))
+        {
+            AGI_ERROR("Data must be entire texture");
+            return;
+        }
 
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Specification.Width, m_Specification.Height, Utils::GetFormat(m_Specification), GL_UNSIGNED_BYTE, data);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Specification.Size.x, m_Specification.Size.y, Utils::GetFormat(m_Specification), Utils::GetDataType(m_Specification), data);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

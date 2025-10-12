@@ -29,8 +29,6 @@ void InitLogging()
     
     s_ClientLogger = std::make_shared<spdlog::logger>("APP", sink);
     spdlog::register_logger(s_ClientLogger);
-    s_ClientLogger->set_level(spdlog::level::trace);
-    s_ClientLogger->flush_on(spdlog::level::trace);
 }
 
 AGI::Texture LoadTexture(AGI::RenderContext* context, const std::filesystem::path& path)
@@ -43,12 +41,10 @@ AGI::Texture LoadTexture(AGI::RenderContext* context, const std::filesystem::pat
     AGI_VERIFY(data, "Failed to load sprite \"{}\" ", path.string());
 
     AGI::TextureSpecification textureSpec;
-    textureSpec.Width = width;
-    textureSpec.Height = height;
+    textureSpec.Size = { width, height };
     textureSpec.Format = AGI::Utils::ChannelsToImageFormat(channels);
 
-    AGI::Texture texture = context->CreateTexture(textureSpec);
-    texture->SetData(data, width * height * channels);
-
-    return texture;
+    textureSpec.Data = data;
+    textureSpec.Datasize = width * height * channels;
+    return context->CreateTexture(textureSpec);
 }

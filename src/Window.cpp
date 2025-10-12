@@ -9,37 +9,35 @@ namespace AGI {
 	}
 
 	static std::atomic<uint32_t> s_WindowCount = 0;
-	static std::atomic<bool> s_GLFWinit = false;
+	static std::atomic<GLFWwindow*> s_LastWindow = nullptr;
 
-	// Main Thread
-	Window::Window(Settings& settings, WindowProps& props)
+	Window::Window(const Settings& settings, const WindowProps& props)
 		: m_Settings(settings), m_Properties(props)
 	{
 		Log::Init(m_Settings.MessageFunc);
 
-		if (!s_GLFWinit)
+		if (s_WindowCount == 0)
 		{
 			int success = glfwInit();
 			AGI_VERIFY(success, "Could not intialize window system!");
 			glfwSetErrorCallback(GLFWErrorCallback);
-
-			s_GLFWinit = true;
 		}
+
+		m_WindowIndex = s_WindowCount;
+		++s_WindowCount;
 	}
 
 	void Window::Init()
 	{
+		glfwWindowHint(GLFW_RESIZABLE, m_Properties.Resizable);
+		glfwWindowHint(GLFW_VISIBLE, m_Properties.Visible);
+		glfwWindowHint(GLFW_DECORATED, !m_Properties.Borderless);
+		glfwWindowHint(GLFW_MAXIMIZED, m_Properties.Mode == WindowMode::Maximized);
+		glfwWindowHint(GLFW_CLIENT_API, (m_Settings.PreferedAPI == APIType::OpenGL ? GLFW_OPENGL_API : GLFW_NO_API));
 		AGI_INFO("Creating window \"{}\" ({}, {})", m_Properties.Title, m_Properties.Size.x, m_Properties.Size.y);
 
-		glfwWindowHint(GLFW_RESIZABLE,  m_Properties.Resizable);
-		glfwWindowHint(GLFW_VISIBLE,    m_Properties.Visible);
-		glfwWindowHint(GLFW_DECORATED,  !m_Properties.Borderless);
-		glfwWindowHint(GLFW_MAXIMIZED,  m_Properties.Mode == WindowMode::Maximized);
-		glfwWindowHint(GLFW_CLIENT_API, (m_Settings.PreferedAPI == APIType::OpenGL ? GLFW_OPENGL_API : GLFW_NO_API));
-		m_Window = glfwCreateWindow(m_Properties.Size.x, m_Properties.Size.y, m_Properties.Title.c_str(), m_Properties.Mode == WindowMode::Fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
-
-		m_WindowIndex = s_WindowCount;
-		s_WindowCount++;
+		m_Window = glfwCreateWindow(m_Properties.Size.x, m_Properties.Size.y, m_Properties.Title.c_str(), m_Properties.Mode == WindowMode::Fullscreen ? glfwGetPrimaryMonitor() : nullptr, s_LastWindow);
+		s_LastWindow = m_Window;
 
 		if (m_Settings.PreferedAPI == APIType::OpenGL)
 		{
@@ -55,12 +53,10 @@ namespace AGI {
 	void Window::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);
-		s_WindowCount--;
+		--s_WindowCount;
 
 		if (s_WindowCount == 0)
-		{
 			glfwTerminate();
-		}
 	}
 
 	void Window::PollEvents()
