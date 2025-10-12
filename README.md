@@ -23,7 +23,7 @@ To include AGI into a CMake project as a static library:
 1. Add this repository to your workspace
 2. Add a `add_subdirectory(agi)` call to your top-level CMakeLists.txt
 4. Link `agi` with the necessary targets for the entire library:
-5. Use `#include <AGI/agi.hpp>` to use library
+5. `#include <AGI/agi.hpp>` to use library
 
 To test and twick AGI examples:
 ```console
@@ -39,11 +39,11 @@ To use **AGI** in your application, simply include the main header:
 #include <AGI/agi.hpp>
 ```
 
-Initialization Overview
-	1.	Create a AGI::Window — this internally uses GLFW to create the OS window.
-	2.	Create a AGI::RenderContext — this sets up the rendering backend (e.g., OpenGL, Vulkan, or DirectX).
-	3.	Call Init() on the RenderContext — this performs thread-specific initialization.
- Note: All subsequent calls to the Window or RenderContext must occur on the same thread that called Init().
+### Initialization Overview
+1.	Create a AGI::Window — this internally uses GLFW to create the OS window.
+2.	Create a AGI::RenderContext — this sets up the rendering backend (e.g., OpenGL, Vulkan, or DirectX).
+3.	Call Init() on the RenderContext — this performs thread-specific initialization.
+Note: All subsequent calls to the Window or RenderContext must occur on the same thread that called Init().
 
 If you don’t provide a custom logging callback, AGI will automatically print messages to std::cout.
 
