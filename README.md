@@ -20,28 +20,32 @@ Key features:
 ## Building AGI
 To include AGI into a CMake project as a static library:
 
-1. Add this repository as a submodule or use FetchContent
-2. Enable/disable extensions with options `AGI_EXTENSIONS`
-3. Add a `add_subdirectory(agi)` call to your CMakeLists.txt
-4. Add `agi` dependency to the necessary targets for the entire library:
-5. To use extensions included in the repository enable `AGI_EXTENSIONS` in CMake and add dependencies:
-	* `agi_imgui` for the ImGui extension
+1. Add this repository to your workspace
+2. Add a `add_subdirectory(agi)` call to your top-level CMakeLists.txt
+4. Link `agi` with the necessary targets for the entire library:
+5. Use `#include <AGI/agi.hpp>` to use library
 
-To build AGI with examples:
-
+To test and twick AGI examples:
 ```console
-git clone --recursive https://github.com/JackKnox/agi
+git clone https://github.com/JackJackStudios/agi
 cd agi
 mkdir build && cd build
 cmake ..
 ```
-You can then run `cmake --build .` to build the repository including examples or use your prefered IDE to run the executables and tweek the source code.
 
 ## Using AGI in your Application
-To use AGI in your application simply include `agi/agi.hpp`. To initialize the library you first must create a `AGI::Window` which uses GLFW, create the `RenderContext` which sets up the relevent AGI (e.g OpenGL, Vulkan).
-Then you must call `Init()` on the `RenderContext`, this function calles all thread-specific initialisation, this is useful if you create a render thread. However any calles to either the `Window` or `RenderContext` must happen on the same thread after this call.
+To use **AGI** in your application, simply include the main header:
+```cpp
+#include <AGI/agi.hpp>
+```
 
-The example below setups up AGI with a custom message callback, if you don't do this AGI will output to `std::cout`.
+Initialization Overview
+	1.	Create a AGI::Window — this internally uses GLFW to create the OS window.
+	2.	Create a AGI::RenderContext — this sets up the rendering backend (e.g., OpenGL, Vulkan, or DirectX).
+	3.	Call Init() on the RenderContext — this performs thread-specific initialization.
+ Note: All subsequent calls to the Window or RenderContext must occur on the same thread that called Init().
+
+If you don’t provide a custom logging callback, AGI will automatically print messages to std::cout.
 
 ```cpp
 #include <iostream>
@@ -63,11 +67,9 @@ int main()
     AGI::Settings settings;
     settings.PreferedAPI = AGI::BestAPI();
     settings.MessageFunc = OnAGIMessage;
-    settings.Blending = true;
 
     AGI::WindowProps windowProps;
-    windowProps.Width = 720;
-    windowProps.Height = 720;
+    windowProps.Width = { 720, 720 };
     windowProps.Title = EXECUTABLE_NAME;
 
     auto window = AGI::Window::Create(settings, windowProps);
@@ -78,9 +80,10 @@ int main()
     while (!window->ShouldClose())
     {
         context->SetClearColour({ 0.1f, 0.1f, 0.1f, 1 });
-        context->Clear();
+        context->BeginFrame();
 
-        window->OnUpdate();
+        context->EndFrame();
+        window->PollEvents();
     }
 
     context->Shutdown();
