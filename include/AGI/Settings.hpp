@@ -49,7 +49,8 @@ namespace AGI {
 		MessageCallbackFn MessageFunc;
 
 		bool EnableValidation = true;
-		bool Blending;
+		bool ShareResources = true;
+		bool Blending = false;
 	};
 
 	APIType BestAPI();

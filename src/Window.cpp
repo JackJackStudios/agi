@@ -36,7 +36,7 @@ namespace AGI {
 		glfwWindowHint(GLFW_CLIENT_API, (m_Settings.PreferedAPI == APIType::OpenGL ? GLFW_OPENGL_API : GLFW_NO_API));
 		AGI_INFO("Creating window \"{}\" ({}, {})", m_Properties.Title, m_Properties.Size.x, m_Properties.Size.y);
 
-		m_Window = glfwCreateWindow(m_Properties.Size.x, m_Properties.Size.y, m_Properties.Title.c_str(), m_Properties.Mode == WindowMode::Fullscreen ? glfwGetPrimaryMonitor() : nullptr, s_LastWindow);
+		m_Window = glfwCreateWindow(m_Properties.Size.x, m_Properties.Size.y, m_Properties.Title.c_str(), m_Properties.Mode == WindowMode::Fullscreen ? glfwGetPrimaryMonitor() : nullptr, m_Settings.ShareResources ? s_LastWindow : nullptr);
 		s_LastWindow = m_Window;
 
 		if (m_Settings.PreferedAPI == APIType::OpenGL)

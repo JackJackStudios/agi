@@ -7,7 +7,6 @@ int main(void)
     AGI::Settings settings;
     settings.PreferedAPI = AGI::APIType::Vulkan;
     settings.MessageFunc = OnAGIMessage;
-    settings.Blending = true;
 
     AGI::WindowProps windowProps;
     windowProps.Title = EXECUTABLE_NAME;
