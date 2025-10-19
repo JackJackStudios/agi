@@ -38,7 +38,7 @@ namespace AGI {
 		virtual ~TextureBase() = default;
 
 		virtual const glm::uvec2& GetSize() const = 0;
-		virtual TextureSpecification GetSpecification() const = 0;
+		virtual const TextureSpecification& GetSpecification() const = 0;
 		virtual uint32_t GetRendererID() const = 0;
 
 		virtual void SetData(void* data, uint32_t size) = 0;

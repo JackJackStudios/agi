@@ -11,7 +11,7 @@ namespace AGI {
 		virtual ~OpenGLTexture();
 
 		virtual const glm::uvec2& GetSize() const override { return m_Specification.Size; }
-		virtual TextureSpecification GetSpecification() const override { return m_Specification; }
+		virtual const TextureSpecification& GetSpecification() const override { return m_Specification; }
 		virtual uint32_t GetRendererID() const override { return m_RendererID; }
 
 		virtual void SetData(void* data, uint32_t size) override;

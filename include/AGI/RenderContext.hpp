@@ -49,6 +49,7 @@ namespace AGI {
 			{
 			case APIType::OpenGL: apiType = "OpenGL"; break;
 			case APIType::Vulkan: apiType = "Vulkan"; break;
+			default: apiType = "UNKNOWN";
 			}
 
 			AGI_INFO("Using {} {} - {}", apiType, m_Properties.Version, m_Properties.Renderer);
