@@ -37,6 +37,8 @@ namespace AGI {
 		AGI_INFO("Creating window \"{}\" ({}, {})", m_Properties.Title, m_Properties.Size.x, m_Properties.Size.y);
 
 		m_Window = glfwCreateWindow(m_Properties.Size.x, m_Properties.Size.y, m_Properties.Title.c_str(), m_Properties.Mode == WindowMode::Fullscreen ? glfwGetPrimaryMonitor() : nullptr, m_Settings.ShareResources ? s_LastWindow.load() : nullptr);
+		CenterScreen();
+
 		s_LastWindow = m_Window;
 
 		if (m_Settings.PreferedAPI == APIType::OpenGL)
@@ -49,7 +51,19 @@ namespace AGI {
 		InstallCallbacks();
 	}
 
-	// Main Thread
+	void Window::CenterScreen()
+	{
+		GLFWmonitor* primary = glfwGetPrimaryMonitor();
+		const GLFWvidmode* mode = glfwGetVideoMode(primary);
+
+		int monitorX, monitorY;
+		glfwGetMonitorPos(primary, &monitorX, &monitorY);
+
+		int xpos = monitorX + (mode->width - m_Properties.Size.x) / 2;
+		int ypos = monitorY + (mode->height - m_Properties.Size.y) / 2;
+		glfwSetWindowPos(m_Window, xpos, ypos);
+	}
+
 	void Window::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);

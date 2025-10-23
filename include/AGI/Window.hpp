@@ -18,18 +18,17 @@ namespace AGI {
 		void Shutdown();
 
 		// Commands
-		void PollEvents();
+		void SetTitle(const std::string& title);
+		void SetVisable(bool enabled);
 		bool ShouldClose(bool closing = false);
+		void PollEvents();
+		void CenterScreen();
 		float GetDelta();
 
 		// Window attributes
 		glm::uvec2 GetSize() const { return m_Properties.Size; }
 		std::string GetTitle() const { return m_Properties.Title; }
 		glm::vec2 GetPosition() const;
-
-		// Setters
-		void SetTitle(const std::string& title);
-		void SetVisable(bool enabled);
 
 		void* GetNativeWindow() const;
 		GLFWwindow* GetGlfwWindow() const { return m_Window; }
