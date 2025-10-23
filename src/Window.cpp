@@ -37,7 +37,7 @@ namespace AGI {
 		AGI_INFO("Creating window \"{}\" ({}, {})", m_Properties.Title, m_Properties.Size.x, m_Properties.Size.y);
 
 		m_Window = glfwCreateWindow(m_Properties.Size.x, m_Properties.Size.y, m_Properties.Title.c_str(), m_Properties.Mode == WindowMode::Fullscreen ? glfwGetPrimaryMonitor() : nullptr, m_Settings.ShareResources ? s_LastWindow.load() : nullptr);
-		CenterScreen();
+		if (m_Properties.Mode == WindowMode::Windowed) CenterScreen();
 
 		s_LastWindow = m_Window;
 
